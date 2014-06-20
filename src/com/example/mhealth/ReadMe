@@ -1,0 +1,7 @@
+The opening activity is the Login where the user is asked for his credentials and the information is checked if it is true.
+Then the app moves to Options where there are options for:
+1) GETQuery: get a patient and its details
+2) PostQuery: post a patient and its details
+3) Create_Activity: create a sensor and also mention the concepts to be mapped
+4) Sensorconcept: First retrieve the sensor concepts and take respective readings for them and post.
+5) GetIput: take input from another app
