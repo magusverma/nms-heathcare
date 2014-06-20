@@ -1,0 +1,4 @@
+*
+!src/*
+!res/layout/*
+!AndroidManifest.xml
