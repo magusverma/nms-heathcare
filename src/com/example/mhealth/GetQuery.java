@@ -54,7 +54,7 @@ public class GetQuery extends ActionBarActivity implements View.OnClickListener 
 	TextView age,gender,birthdate;
 	public Patient patient = new Patient();
 	String[] countries; //magus
-	static couch_api ca;
+	static couch_api ca; //magus
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -182,9 +182,12 @@ public class GetQuery extends ActionBarActivity implements View.OnClickListener 
 		String str = inputStreamToString(responseEntity.getContent()).toString();
 		httpClient.getConnectionManager().shutdown();  
 		
+		//magus
 		// Couch Wrangling
-				
-		        ca.syncSensors(username, password, url);
+			//This does httpget and adds entries to sensor database
+			ca.syncSensors(username, password, url);
+			ca.UpdateorCreateViews();
+			ca.getSensor("jamun");
 		// Couch Wrangling Ends here
 		
 		return (str);            	

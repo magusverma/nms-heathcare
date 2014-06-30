@@ -31,7 +31,9 @@ import android.annotation.SuppressLint;
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Database;
 import com.couchbase.lite.Document;
+import com.couchbase.lite.Emitter;
 import com.couchbase.lite.Manager;
+import com.couchbase.lite.Mapper;
 import com.couchbase.lite.Query;
 import com.couchbase.lite.QueryEnumerator;
 import com.couchbase.lite.QueryRow;
@@ -241,6 +243,43 @@ public class couch_api{
 			
 		}
 	}
-	
+	public void UpdateorCreateViews(){
+		Database database = getDatabase("sensor");
+		com.couchbase.lite.View sntoi = database.getView("sensor_name_to_id");
+		sntoi.setMap(
+			new Mapper() {
+		    @Override
+		    public void map(Map<String, Object> document, Emitter emitter) {
+		    	String sn =(String) document.get("sensor_name");
+		    	Integer si =(Integer) document.get("sensor_id");
+				Log.d(TAG, TAG+" sn : "+ sn +" si : "+ si);
+				emitter.emit(sn, si);						
+		    }
+
+		}, "1");		
+	}
+	// return Map<String,Object> ? 
+	public Document getSensor(String sensor_name){
+		Database database = getDatabase("sensor");
+		Query query_sr = database.getView("sensor_name_to_id").createQuery();
+//		query_sr.setLimit(20);
+		query_sr.setStartKey(sensor_name);
+//		query_sr.setEndKey("13");
+		
+		QueryEnumerator result_sr = null;
+		try {
+			result_sr = query_sr.run();
+		} catch (CouchbaseLiteException e) {
+			e.printStackTrace();
+		}
+		Iterator<QueryRow> it = result_sr;
+		QueryRow row = it.next();
+		Log.d(TAG, TAG + " row = "+row);
+		System.out.println(row);
+		Document d = database.getDocument(row.getDocumentId());
+		System.out.println("Retrieved Document "+ String.valueOf(d.getProperties()));
+		return d; 
+		// use d using "d.getProperty(key)"
+	}
 	//Log.d(TAG, "Begin Hello World App");	
 }
