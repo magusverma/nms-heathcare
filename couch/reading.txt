@@ -1,0 +1,1 @@
+06-30 19:47:44.807: D/couch_db(7682): {_rev=1-d802bd201de4f574e915be491e701ef8, sensor=1, readings={5092=100, 5090=100}, patient=1, _id=d167cf12-6aa8-47a5-8deb-145254a922cc}
