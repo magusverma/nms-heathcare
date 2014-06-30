@@ -145,7 +145,8 @@ public class couch_api{
 			    Log.d(TAG, TAG + " row = "+row);
 			}
 		}
-	}	
+	}
+	
 	//Concept Document = {id:5090 , uuid:asda-asdasd ,name:”asdaSD” }
 	public Map<String, Object> makeConceptMap(Integer concept_id,String concept_uuid,String concept_name){
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -185,6 +186,19 @@ public class couch_api{
 //		TODO:Remove This
 //		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 //		StrictMode.setThreadPolicy(policy);
+		
+		//Flush
+		Database database = getDatabase("sensor");
+		System.out.println("Flushing Documents = "+database.getDocumentCount());
+		try {
+			database.delete();
+		} catch (CouchbaseLiteException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		database = getDatabase("sensor");
+		System.out.println("Document Count = "+database.getDocumentCount());
+		//
 		
 		System.out.println("Username="+username);
 		System.out.println("Password="+password);

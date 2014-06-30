@@ -1,39 +1,44 @@
-07-01 00:07:47.018: I/System.out(29559): Manager Created!
-07-01 00:07:51.945: I/System.out(29559): Username=admin
-07-01 00:07:51.945: I/System.out(29559): Password=Admin123
-07-01 00:07:51.945: I/System.out(29559): URL=http://192.168.1.3:8080/openmrs
-07-01 00:07:52.935: I/System.out(29559): Adding following SCM to LocalStore12Twelfth sensor{HEIGHT (CM)=576b65fc-ddf8-11e3-b4c4-a0b3cc71229c, BLOOD OXYGEN SATURATION=576b68b0-ddf8-11e3-b4c4-a0b3cc71229c}
-07-01 00:07:52.935: D/couch_db(29559): Writing in database=sensor docContent={sensor_concepts={HEIGHT (CM)=576b65fc-ddf8-11e3-b4c4-a0b3cc71229c, BLOOD OXYGEN SATURATION=576b68b0-ddf8-11e3-b4c4-a0b3cc71229c}, sensor_name=Twelfth sensor, sensor_id=12}
-07-01 00:07:52.955: D/dalvikvm(29559): Trying to load lib /data/app-lib/com.example.mhealth-1/libcom_couchbase_touchdb_TDCollateJSON.so 0x418e3350
-07-01 00:07:52.956: D/dalvikvm(29559): Added shared lib /data/app-lib/com.example.mhealth-1/libcom_couchbase_touchdb_TDCollateJSON.so 0x418e3350
-07-01 00:07:52.957: V/TDCollateJSON(29559): SQLite3 handle is 1423941528
-07-01 00:07:52.958: D/dalvikvm(29559): Trying to load lib /data/app-lib/com.example.mhealth-1/libcom_couchbase_touchdb_RevCollator.so 0x418e3350
-07-01 00:07:52.959: D/dalvikvm(29559): Added shared lib /data/app-lib/com.example.mhealth-1/libcom_couchbase_touchdb_RevCollator.so 0x418e3350
-07-01 00:07:52.962: I/System.out(29559): com.couchbase.lite.Database[/data/data/com.example.mhealth/files/sensor.cblite]
-07-01 00:07:53.153: D/couch_db(29559): Document written to database named sensor with ID = 53b7d7c9-b0d4-4f78-8826-038025825d35
-07-01 00:07:53.166: D/couch_db(29559): Checking if written by retrieving , retrievedDocument:
-07-01 00:07:53.166: D/couch_db(29559): {_rev=1-22acebc68283d34160b9d2e390ff8c8e, sensor_concepts={HEIGHT (CM)=576b65fc-ddf8-11e3-b4c4-a0b3cc71229c, BLOOD OXYGEN SATURATION=576b68b0-ddf8-11e3-b4c4-a0b3cc71229c}, sensor_id=12, _id=53b7d7c9-b0d4-4f78-8826-038025825d35, sensor_name=Twelfth sensor}
-07-01 00:07:53.166: I/System.out(29559): Adding following SCM to LocalStore12Twelfth sensor{HEIGHT (CM)=576b65fc-ddf8-11e3-b4c4-a0b3cc71229c, BLOOD OXYGEN SATURATION=576b68b0-ddf8-11e3-b4c4-a0b3cc71229c}
-07-01 00:07:53.167: D/couch_db(29559): Writing in database=sensor docContent={sensor_concepts={HEIGHT (CM)=576b65fc-ddf8-11e3-b4c4-a0b3cc71229c, BLOOD OXYGEN SATURATION=576b68b0-ddf8-11e3-b4c4-a0b3cc71229c}, sensor_name=Twelfth sensor, sensor_id=12}
-07-01 00:07:53.167: I/System.out(29559): com.couchbase.lite.Database[/data/data/com.example.mhealth/files/sensor.cblite]
-07-01 00:07:53.184: D/couch_db(29559): Document written to database named sensor with ID = b005ab87-1aed-4985-84a8-30176ca90662
-07-01 00:07:53.186: D/couch_db(29559): Checking if written by retrieving , retrievedDocument:
-07-01 00:07:53.186: D/couch_db(29559): {_rev=1-22acebc68283d34160b9d2e390ff8c8e, sensor_concepts={HEIGHT (CM)=576b65fc-ddf8-11e3-b4c4-a0b3cc71229c, BLOOD OXYGEN SATURATION=576b68b0-ddf8-11e3-b4c4-a0b3cc71229c}, sensor_id=12, _id=b005ab87-1aed-4985-84a8-30176ca90662, sensor_name=Twelfth sensor}
-07-01 00:07:53.187: I/System.out(29559): Adding following SCM to LocalStore2824{X-RAY, ABDOMEN=576172ad-ddf8-11e3-b4c4-a0b3cc71229c}
-07-01 00:07:53.187: D/couch_db(29559): Writing in database=sensor docContent={sensor_concepts={X-RAY, ABDOMEN=576172ad-ddf8-11e3-b4c4-a0b3cc71229c}, sensor_name=24, sensor_id=28}
-07-01 00:07:53.187: I/System.out(29559): com.couchbase.lite.Database[/data/data/com.example.mhealth/files/sensor.cblite]
-07-01 00:07:53.203: D/couch_db(29559): Document written to database named sensor with ID = 1dc63f1f-61cd-4b74-b250-a366610222c2
-07-01 00:07:53.205: D/couch_db(29559): Checking if written by retrieving , retrievedDocument:
-07-01 00:07:53.205: D/couch_db(29559): {_rev=1-590acfa5536ab939de1b81b989793d9b, sensor_concepts={X-RAY, ABDOMEN=576172ad-ddf8-11e3-b4c4-a0b3cc71229c}, sensor_id=28, _id=1dc63f1f-61cd-4b74-b250-a366610222c2, sensor_name=24}
-07-01 00:07:53.206: I/System.out(29559): Adding following SCM to LocalStore40jamun{LYMPHOCYTES=57682bb4-ddf8-11e3-b4c4-a0b3cc71229c, BANDS=576829b5-ddf8-11e3-b4c4-a0b3cc71229c}
-07-01 00:07:53.206: D/couch_db(29559): Writing in database=sensor docContent={sensor_concepts={LYMPHOCYTES=57682bb4-ddf8-11e3-b4c4-a0b3cc71229c, BANDS=576829b5-ddf8-11e3-b4c4-a0b3cc71229c}, sensor_name=jamun, sensor_id=40}
-07-01 00:07:53.207: I/System.out(29559): com.couchbase.lite.Database[/data/data/com.example.mhealth/files/sensor.cblite]
-07-01 00:07:53.223: D/couch_db(29559): Document written to database named sensor with ID = d187d453-8216-4a0f-bf2a-d234ca8850c6
-07-01 00:07:53.226: D/couch_db(29559): Checking if written by retrieving , retrievedDocument:
-07-01 00:07:53.226: D/couch_db(29559): {_rev=1-2df84c43b6f9a7a312923d815e8cebc9, sensor_concepts={LYMPHOCYTES=57682bb4-ddf8-11e3-b4c4-a0b3cc71229c, BANDS=576829b5-ddf8-11e3-b4c4-a0b3cc71229c}, sensor_id=40, _id=d187d453-8216-4a0f-bf2a-d234ca8850c6, sensor_name=jamun}
-07-01 00:07:53.226: I/System.out(29559): Adding following SCM to LocalStore40jamun{LYMPHOCYTES=57682bb4-ddf8-11e3-b4c4-a0b3cc71229c, BANDS=576829b5-ddf8-11e3-b4c4-a0b3cc71229c}
-07-01 00:07:53.226: D/couch_db(29559): Writing in database=sensor docContent={sensor_concepts={LYMPHOCYTES=57682bb4-ddf8-11e3-b4c4-a0b3cc71229c, BANDS=576829b5-ddf8-11e3-b4c4-a0b3cc71229c}, sensor_name=jamun, sensor_id=40}
-07-01 00:07:53.227: I/System.out(29559): com.couchbase.lite.Database[/data/data/com.example.mhealth/files/sensor.cblite]
-07-01 00:07:53.241: D/couch_db(29559): Document written to database named sensor with ID = d93e80f3-233a-465d-ba3d-9879850edc59
-07-01 00:07:53.244: D/couch_db(29559): Checking if written by retrieving , retrievedDocument:
-07-01 00:07:53.244: D/couch_db(29559): {_rev=1-2df84c43b6f9a7a312923d815e8cebc9, sensor_concepts={LYMPHOCYTES=57682bb4-ddf8-11e3-b4c4-a0b3cc71229c, BANDS=576829b5-ddf8-11e3-b4c4-a0b3cc71229c}, sensor_id=40, _id=d93e80f3-233a-465d-ba3d-9879850edc59, sensor_name=jamun}
+07-01 00:58:10.088: I/System.out(2762): Flushing Documents = 7
+07-01 00:58:10.207: V/TDCollateJSON(2762): SQLite3 handle is 1423955744
+07-01 00:58:10.510: I/System.out(2762): Document Count = 0
+07-01 00:58:10.510: I/System.out(2762): Username=admin
+07-01 00:58:10.511: I/System.out(2762): Password=Admin123
+07-01 00:58:10.511: I/System.out(2762): URL=http://192.168.1.3:8080/openmrs
+07-01 00:58:10.763: I/System.out(2762): Adding following SCM to LocalStore12Twelfth sensor{HEIGHT (CM)=576b65fc-ddf8-11e3-b4c4-a0b3cc71229c, BLOOD OXYGEN SATURATION=576b68b0-ddf8-11e3-b4c4-a0b3cc71229c}
+07-01 00:58:10.764: D/couch_db(2762): Writing in database=sensor docContent={sensor_concepts={HEIGHT (CM)=576b65fc-ddf8-11e3-b4c4-a0b3cc71229c, BLOOD OXYGEN SATURATION=576b68b0-ddf8-11e3-b4c4-a0b3cc71229c}, sensor_name=Twelfth sensor, sensor_id=12}
+07-01 00:58:10.766: I/System.out(2762): com.couchbase.lite.Database[/data/data/com.example.mhealth/files/sensor.cblite]
+07-01 00:58:10.953: D/couch_db(2762): Document written to database named sensor with ID = 6b57fafe-ecca-4e68-a225-2eced27edc61
+07-01 00:58:10.966: D/couch_db(2762): Checking if written by retrieving , retrievedDocument:
+07-01 00:58:10.966: D/couch_db(2762): {_rev=1-22acebc68283d34160b9d2e390ff8c8e, sensor_concepts={HEIGHT (CM)=576b65fc-ddf8-11e3-b4c4-a0b3cc71229c, BLOOD OXYGEN SATURATION=576b68b0-ddf8-11e3-b4c4-a0b3cc71229c}, sensor_id=12, _id=6b57fafe-ecca-4e68-a225-2eced27edc61, sensor_name=Twelfth sensor}
+07-01 00:58:10.967: I/System.out(2762): Adding following SCM to LocalStore12Twelfth sensor{HEIGHT (CM)=576b65fc-ddf8-11e3-b4c4-a0b3cc71229c, BLOOD OXYGEN SATURATION=576b68b0-ddf8-11e3-b4c4-a0b3cc71229c}
+07-01 00:58:10.967: D/couch_db(2762): Writing in database=sensor docContent={sensor_concepts={HEIGHT (CM)=576b65fc-ddf8-11e3-b4c4-a0b3cc71229c, BLOOD OXYGEN SATURATION=576b68b0-ddf8-11e3-b4c4-a0b3cc71229c}, sensor_name=Twelfth sensor, sensor_id=12}
+07-01 00:58:10.967: I/System.out(2762): com.couchbase.lite.Database[/data/data/com.example.mhealth/files/sensor.cblite]
+07-01 00:58:10.983: D/couch_db(2762): Document written to database named sensor with ID = fe794302-5ec4-455b-833b-41c8f89361df
+07-01 00:58:10.986: D/couch_db(2762): Checking if written by retrieving , retrievedDocument:
+07-01 00:58:10.986: D/couch_db(2762): {_rev=1-22acebc68283d34160b9d2e390ff8c8e, sensor_concepts={HEIGHT (CM)=576b65fc-ddf8-11e3-b4c4-a0b3cc71229c, BLOOD OXYGEN SATURATION=576b68b0-ddf8-11e3-b4c4-a0b3cc71229c}, sensor_id=12, _id=fe794302-5ec4-455b-833b-41c8f89361df, sensor_name=Twelfth sensor}
+07-01 00:58:10.986: I/System.out(2762): Adding following SCM to LocalStore2824{X-RAY, ABDOMEN=576172ad-ddf8-11e3-b4c4-a0b3cc71229c}
+07-01 00:58:10.986: D/couch_db(2762): Writing in database=sensor docContent={sensor_concepts={X-RAY, ABDOMEN=576172ad-ddf8-11e3-b4c4-a0b3cc71229c}, sensor_name=24, sensor_id=28}
+07-01 00:58:10.987: I/System.out(2762): com.couchbase.lite.Database[/data/data/com.example.mhealth/files/sensor.cblite]
+07-01 00:58:11.001: D/couch_db(2762): Document written to database named sensor with ID = b1e3acf6-4acf-4a49-941a-78b94d7db933
+07-01 00:58:11.004: D/couch_db(2762): Checking if written by retrieving , retrievedDocument:
+07-01 00:58:11.004: D/couch_db(2762): {_rev=1-590acfa5536ab939de1b81b989793d9b, sensor_concepts={X-RAY, ABDOMEN=576172ad-ddf8-11e3-b4c4-a0b3cc71229c}, sensor_id=28, _id=b1e3acf6-4acf-4a49-941a-78b94d7db933, sensor_name=24}
+07-01 00:58:11.004: I/System.out(2762): Adding following SCM to LocalStore40jamun{LYMPHOCYTES=57682bb4-ddf8-11e3-b4c4-a0b3cc71229c, BANDS=576829b5-ddf8-11e3-b4c4-a0b3cc71229c}
+07-01 00:58:11.004: D/couch_db(2762): Writing in database=sensor docContent={sensor_concepts={LYMPHOCYTES=57682bb4-ddf8-11e3-b4c4-a0b3cc71229c, BANDS=576829b5-ddf8-11e3-b4c4-a0b3cc71229c}, sensor_name=jamun, sensor_id=40}
+07-01 00:58:11.005: I/System.out(2762): com.couchbase.lite.Database[/data/data/com.example.mhealth/files/sensor.cblite]
+07-01 00:58:11.020: D/couch_db(2762): Document written to database named sensor with ID = 5aac97cd-44c2-4544-9d32-708b0c69d28c
+07-01 00:58:11.023: D/couch_db(2762): Checking if written by retrieving , retrievedDocument:
+07-01 00:58:11.023: D/couch_db(2762): {_rev=1-2df84c43b6f9a7a312923d815e8cebc9, sensor_concepts={LYMPHOCYTES=57682bb4-ddf8-11e3-b4c4-a0b3cc71229c, BANDS=576829b5-ddf8-11e3-b4c4-a0b3cc71229c}, sensor_id=40, _id=5aac97cd-44c2-4544-9d32-708b0c69d28c, sensor_name=jamun}
+07-01 00:58:11.024: I/System.out(2762): Adding following SCM to LocalStore40jamun{LYMPHOCYTES=57682bb4-ddf8-11e3-b4c4-a0b3cc71229c, BANDS=576829b5-ddf8-11e3-b4c4-a0b3cc71229c}
+07-01 00:58:11.025: D/couch_db(2762): Writing in database=sensor docContent={sensor_concepts={LYMPHOCYTES=57682bb4-ddf8-11e3-b4c4-a0b3cc71229c, BANDS=576829b5-ddf8-11e3-b4c4-a0b3cc71229c}, sensor_name=jamun, sensor_id=40}
+07-01 00:58:11.025: I/System.out(2762): com.couchbase.lite.Database[/data/data/com.example.mhealth/files/sensor.cblite]
+07-01 00:58:11.041: D/couch_db(2762): Document written to database named sensor with ID = fd026539-d053-40da-aa59-d0d7a3e2f3d8
+07-01 00:58:11.043: D/couch_db(2762): Checking if written by retrieving , retrievedDocument:
+07-01 00:58:11.043: D/couch_db(2762): {_rev=1-2df84c43b6f9a7a312923d815e8cebc9, sensor_concepts={LYMPHOCYTES=57682bb4-ddf8-11e3-b4c4-a0b3cc71229c, BANDS=576829b5-ddf8-11e3-b4c4-a0b3cc71229c}, sensor_id=40, _id=fd026539-d053-40da-aa59-d0d7a3e2f3d8, sensor_name=jamun}
+07-01 00:58:11.090: D/couch_db(2762): couch_db sn : Twelfth sensor si : 12
+07-01 00:58:11.093: D/couch_db(2762): couch_db sn : Twelfth sensor si : 12
+07-01 00:58:11.095: D/couch_db(2762): couch_db sn : 24 si : 28
+07-01 00:58:11.096: D/couch_db(2762): couch_db sn : jamun si : 40
+07-01 00:58:11.098: D/couch_db(2762): couch_db sn : jamun si : 40
+07-01 00:58:11.113: D/couch_db(2762): couch_db row = {id=5aac97cd-44c2-4544-9d32-708b0c69d28c, value=40, key=jamun}
+07-01 00:58:11.113: I/System.out(2762): {id=5aac97cd-44c2-4544-9d32-708b0c69d28c, value=40, key=jamun}
+07-01 00:58:11.114: I/System.out(2762): Retrieved Document {_rev=1-2df84c43b6f9a7a312923d815e8cebc9, sensor_concepts={LYMPHOCYTES=57682bb4-ddf8-11e3-b4c4-a0b3cc71229c, BANDS=576829b5-ddf8-11e3-b4c4-a0b3cc71229c}, sensor_id=40, _id=5aac97cd-44c2-4544-9d32-708b0c69d28c, sensor_name=jamun}
