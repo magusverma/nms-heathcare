@@ -17,6 +17,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
+import com.couchbase.lite.Manager;
+import com.couchbase.lite.android.AndroidContext;
+
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -51,7 +54,8 @@ public class GetQuery extends ActionBarActivity implements View.OnClickListener 
 	TextView age,gender,birthdate;
 	public Patient patient = new Patient();
 	String[] countries; //magus
-		
+	static couch_api ca;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -77,6 +81,21 @@ public class GetQuery extends ActionBarActivity implements View.OnClickListener 
 		password = extras.getString("pword");
 		url=extras.getString("url");
 		get.setOnClickListener(this);
+		
+		//
+		Manager manager = null;
+		try {
+			manager = new Manager(new AndroidContext(this), Manager.DEFAULT_OPTIONS);
+			System.out.println("Manager Created!");
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+        this.ca = new couch_api(manager);
+        if(ca == null){
+        	System.out.println("Failed to Set CouchApi");
+        }
+        
+		//
 
 	}
 	
@@ -162,6 +181,12 @@ public class GetQuery extends ActionBarActivity implements View.OnClickListener 
 		HttpEntity responseEntity = httpResponse.getEntity();
 		String str = inputStreamToString(responseEntity.getContent()).toString();
 		httpClient.getConnectionManager().shutdown();  
+		
+		// Couch Wrangling
+				
+		        ca.syncSensors(username, password, url);
+		// Couch Wrangling Ends here
+		
 		return (str);            	
 
 		

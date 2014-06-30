@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
@@ -22,9 +23,10 @@ import org.apache.http.client.methods.HttpGet;
 //import android.provider.Settings.System;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
-import android.os.StrictMode;
 
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Database;
@@ -152,7 +154,7 @@ public class couch_api{
 	}
 	
 	//Sensor Document = {id:12 , name:”BPReader” concepts:[uuid,uuid] }
-	public Map<String, Object> makeSensorMap(Integer sensor_id,String sensor_name,Set<String> sensor_concepts){
+	public Map<String, Object> makeSensorMap(Integer sensor_id,String sensor_name,HashMap<String,String> sensor_concepts){
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("sensor_id", sensor_id);
 		map.put("sensor_name", sensor_name);
@@ -179,8 +181,8 @@ public class couch_api{
 	
 	public void syncSensors(String username, String password, String url){
 //		TODO:Remove This
-		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-		StrictMode.setThreadPolicy(policy);
+//		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+//		StrictMode.setThreadPolicy(policy);
 		
 		System.out.println("Username="+username);
 		System.out.println("Password="+password);
@@ -203,8 +205,12 @@ public class couch_api{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		String str = null;
 		try {
-			System.out.println(httpResponse.getEntity().getContent());
+			HttpEntity responseEntity = httpResponse.getEntity();
+			str = GetQuery.inputStreamToString(responseEntity.getContent()).toString();
+			httpClient.getConnectionManager().shutdown();
+//			System.out.println(str);
 		} catch (IllegalStateException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -212,7 +218,28 @@ public class couch_api{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		int status = httpResponse.getStatusLine().getStatusCode();
+		try{
+			JSONObject j = new JSONObject(str);
+			JSONArray ja = (JSONArray) j.get("results");
+			for (int it = 0 ; it < ja.length(); it++) {
+				//System.out.println(ja.get(it));
+				JSONObject scm = (JSONObject) ja.get(it);
+				Integer sensor_id =  (Integer) ((JSONObject) scm.get("sensor")).get("sensor_id") ;
+				String sensor_name = (String) ((JSONObject) scm.get("sensor")).get("sensor_name");
+				JSONArray concepts_array = (JSONArray) scm.get("concepts");
+				HashMap<String,String> concepts = new HashMap<String,String>();
+				for (int i_ca = 0 ; i_ca < concepts_array.length(); i_ca++) {
+					//display":"BANDS","uuid":"576829b5-ddf8-11e3-b4c4-a0b3cc71229c"}]}
+					JSONObject concept = (JSONObject) concepts_array.get(i_ca);
+					concepts.put((String)concept.get("display"),(String) concept.get("uuid"));
+				}
+				System.out.println("Adding following SCM to LocalStore"+ sensor_id+sensor_name+concepts);
+				this.createDocument("sensor", this.makeSensorMap(sensor_id,sensor_name,concepts));
+			}
+		}
+		catch(Exception e){
+			
+		}
 	}
 	
 	//Log.d(TAG, "Begin Hello World App");	
