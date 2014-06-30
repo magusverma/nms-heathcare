@@ -1,5 +1,10 @@
 package com.example.mhealth;
 
+import java.io.IOException;
+
+import com.couchbase.lite.Manager;
+import com.couchbase.lite.android.AndroidContext;
+
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -42,6 +47,18 @@ public class Options extends ActionBarActivity implements View.OnClickListener{
 		b3.setOnClickListener(this);
 		b4.setOnClickListener(this);
 		b5.setOnClickListener(this);
+		
+		// Couch Wrangling
+		Manager manager = null;
+		try {
+			manager = new Manager(new AndroidContext(this), Manager.DEFAULT_OPTIONS);
+			System.out.println("Manager Created!");
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+        couch_api a = new couch_api(manager);
+        a.syncSensors(username, password, url);
+		// Couch Wrangling Ends here
 	}
 	
 	public void buttonClick1()

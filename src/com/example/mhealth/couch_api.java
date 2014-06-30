@@ -9,48 +9,39 @@ package com.example.mhealth;
  */
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
-import org.json.JSONObject;
+import org.apache.http.HttpResponse;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+//import android.provider.Settings.System;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.DefaultHttpClient;
 
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarActivity;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import android.annotation.SuppressLint;
+import android.os.StrictMode;
 
-import com.couchbase.client.CouchbaseClient;
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Database;
 import com.couchbase.lite.Document;
-import com.couchbase.lite.Emitter;
 import com.couchbase.lite.Manager;
-import com.couchbase.lite.Mapper;
 import com.couchbase.lite.Query;
 import com.couchbase.lite.QueryEnumerator;
-import com.couchbase.lite.QueryOptions;
 import com.couchbase.lite.QueryRow;
 import com.couchbase.lite.android.AndroidContext;
 import com.couchbase.lite.util.Log;
-//import android.provider.Settings.System;
      
 //extends ActionBarActivity needed for AndroidContext .. what to do?
+@SuppressLint("NewApi")
 public class couch_api{
 	final String TAG = "couch_db";
 	Manager manager;
-	Database database;
+//	Database database;
 	AndroidContext ac;
 	
 	couch_api(Manager manager){
@@ -82,6 +73,10 @@ public class couch_api{
 	
 	public Database getDatabase(String dbname) {
 //		setDatabase(dbname);
+		if (!Manager.isValidDatabaseName(dbname)) {
+		    Log.e(TAG, "Bad database name");
+		    return null;
+		}
 		try {
 			return manager.getDatabase(dbname);
 		} catch (CouchbaseLiteException e) {
@@ -89,22 +84,6 @@ public class couch_api{
 			e.printStackTrace();
 		}
 		return null;
-	}
-
-	public void setDatabase(String dbname) {
-		if (!Manager.isValidDatabaseName(dbname)) {
-		    Log.e(TAG, "Bad database name");
-		    return;
-		}
-		// create a new database
-		Database database;
-		try {
-		    database = manager.getDatabase(dbname);
-		    Log.d (TAG, "Database created");
-		} catch (CouchbaseLiteException e) {
-		    Log.e(TAG, "Cannot get database");
-		    return;
-		}             
 	}
 	
 	public void createDocument(String dbname,Map<String, Object> docContent){
@@ -128,7 +107,7 @@ public class couch_api{
 	}
 	
 	public QueryEnumerator getAllDocument(String dbname){
-		database = getDatabase(dbname);
+		Database database = getDatabase(dbname);
 		Query query = database.createAllDocumentsQuery();
 		QueryEnumerator result = null;
 		try {
@@ -147,7 +126,8 @@ public class couch_api{
 	public void getAllDocument(){
 		String[] dbs = {"sensor","concept","patient","reading"};
 		for (String dbname : dbs){
-			database = getDatabase(dbname);
+			Log.d(TAG, TAG + " Data for DB="+ dbname);
+			Database database = getDatabase(dbname);
 			Query query = database.createAllDocumentsQuery();
 			QueryEnumerator result = null;
 			try {
@@ -195,6 +175,44 @@ public class couch_api{
 		map.put("sensor", sensor_id);	
 		map.put("readings", readings);			
 		return map;
+	}
+	
+	public void syncSensors(String username, String password, String url){
+//		TODO:Remove This
+		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+		StrictMode.setThreadPolicy(policy);
+		
+		System.out.println("Username="+username);
+		System.out.println("Password="+password);
+		System.out.println("URL="+url);
+		
+		
+		HttpClient httpClient = new DefaultHttpClient();
+		HttpGet httpGet = new HttpGet(url+"/ws/rest/v1/sensor/scm");
+		httpGet.addHeader(BasicScheme.authenticate(
+		 new UsernamePasswordCredentials(username, password),
+		 "UTF-8", false));
+
+		HttpResponse httpResponse = null;
+		try {
+			httpResponse = httpClient.execute(httpGet);
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			System.out.println(httpResponse.getEntity().getContent());
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		int status = httpResponse.getStatusLine().getStatusCode();
 	}
 	
 	//Log.d(TAG, "Begin Hello World App");	

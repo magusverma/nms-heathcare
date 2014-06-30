@@ -54,29 +54,29 @@ public class Login extends ActionBarActivity implements View.OnClickListener{
         //btn.setOnClickListener((android.view.View.OnClickListener) this);;  
         
         // CouchBase Wrangling
-        Manager manager = null;
-		try {
-			manager = new Manager(new AndroidContext(this), Manager.DEFAULT_OPTIONS);
-			System.out.println("Manager Created!");
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-        couch_api a = new couch_api(manager);
-        
-        a.createDocument("concept", a.makeConceptMap(2, "uuid-of00concept2", "Weight or Something"));
-        a.createDocument("patient",a.makePatientMap(2, "Mahesh"));
-        
-        Set<String> concepts = new HashSet<String>() ;
-        concepts.add("First Concept uuid");
-        concepts.add("Second Concept uuid");
-        a.createDocument("sensor", a.makeSensorMap(1, "My Sensor", concepts));
-        
-        HashMap<String, Object> readings = new HashMap<String, Object>();
-    	readings.put("5090", "100");
-    	readings.put("5092", "100");
-	    a.createDocument("reading",a.makeReadingMap(1, 1,readings ));        
-        
-        a.getAllDocument();
+//      Manager manager = null;
+//		try {
+//			manager = new Manager(new AndroidContext(this), Manager.DEFAULT_OPTIONS);
+//			System.out.println("Manager Created!");
+//		} catch (IOException e1) {
+//			e1.printStackTrace();
+//		}
+//        couch_api a = new couch_api(manager);
+//        
+//        a.createDocument("concept", a.makeConceptMap(2, "uuid-of00concept2", "Weight or Something"));
+//        a.createDocument("patient",a.makePatientMap(2, "Mahesh"));
+//        
+//        Set<String> concepts = new HashSet<String>() ;
+//        concepts.add("First Concept uuid");
+//        concepts.add("Second Concept uuid");
+//        a.createDocument("sensor", a.makeSensorMap(1, "My Sensor", concepts));
+//        
+//        HashMap<String, Object> readings = new HashMap<String, Object>();
+//    	readings.put("5090", "100");
+//    	readings.put("5092", "100");
+//	    a.createDocument("reading",a.makeReadingMap(1, 1,readings ));        
+//        
+//        a.getAllDocument();
         //End CouchBase Wrangling
 	}
 
