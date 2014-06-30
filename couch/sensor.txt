@@ -1,0 +1,1 @@
+06-30 19:47:44.772: D/couch_db(7682): {_rev=1-017857bfde6b5d9eda2283f2c2463a1b, sensor_concepts=[Second Concept uuid, First Concept uuid], sensor_id=1, _id=4d629613-4a2f-40c0-b758-7cb7c689b9a1, sensor_name=My Sensor}

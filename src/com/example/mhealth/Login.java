@@ -1,8 +1,12 @@
 package com.example.mhealth;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
@@ -12,28 +16,21 @@ import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+import org.json.JSONObject;
 
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
+import com.couchbase.lite.Manager;
+import com.couchbase.lite.android.AndroidContext;
+
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.os.Build;
-import android.content.Context;
+
+import com.couchbase.lite.Manager;
 
 public class Login extends ActionBarActivity implements View.OnClickListener{
 	
@@ -56,12 +53,31 @@ public class Login extends ActionBarActivity implements View.OnClickListener{
         btn.setOnClickListener(this);
         //btn.setOnClickListener((android.view.View.OnClickListener) this);;  
         
+        // CouchBase Wrangling
+        Manager manager = null;
+		try {
+			manager = new Manager(new AndroidContext(this), Manager.DEFAULT_OPTIONS);
+			System.out.println("Manager Created!");
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+        couch_api a = new couch_api(manager);
         
+        a.createDocument("concept", a.makeConceptMap(2, "uuid-of00concept2", "Weight or Something"));
+        a.createDocument("patient",a.makePatientMap(2, "Mahesh"));
         
+        Set<String> concepts = new HashSet<String>() ;
+        concepts.add("First Concept uuid");
+        concepts.add("Second Concept uuid");
+        a.createDocument("sensor", a.makeSensorMap(1, "My Sensor", concepts));
         
+        HashMap<String, Object> readings = new HashMap<String, Object>();
+    	readings.put("5090", "100");
+    	readings.put("5092", "100");
+	    a.createDocument("reading",a.makeReadingMap(1, 1,readings ));        
         
-
-		
+        a.getAllDocument();
+        //End CouchBase Wrangling
 	}
 
 	public void buttonClick()
