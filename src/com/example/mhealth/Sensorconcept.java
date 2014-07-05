@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,6 +33,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.couchbase.lite.Document;
 import com.couchbase.lite.Manager;
 import com.couchbase.lite.android.AndroidContext;
 
@@ -192,6 +194,7 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
 	
 	public static String Httpget (String username, String password, String uri,String query) throws ClientProtocolException, IOException
 	{
+		System.out.println("Looking up for Sensors Online");
 		HttpClient httpClient = new DefaultHttpClient();
 		HttpGet httpGet = new HttpGet(uri+"/ws/rest/v1/sensor/scm/"+query);
 		httpGet.addHeader(BasicScheme.authenticate(new UsernamePasswordCredentials(username, password),"UTF-8", false));
@@ -199,9 +202,25 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
 		HttpEntity responseEntity = httpResponse.getEntity();
 		String str = inputStreamToString(responseEntity.getContent()).toString();
 		httpClient.getConnectionManager().shutdown();
-		return str;  
-		         
-    	} 
+		return str;
+	} 
+	
+	public static String get_sensor_concepts_from_db(String id){
+		String str="";
+		Document retrievedDocument = ca.getSensor(id);
+		if(retrievedDocument != null){
+			System.out.println("Using Sensor Found in Database");
+			HashMap<String,Object> sensor_concepts = (HashMap<String, Object>) ((Map) retrievedDocument.getProperty("sensor_concepts"));
+			for (String key: sensor_concepts.keySet()){
+				System.out.println(key);
+				str = str + key + "*"; 
+			}
+		}
+		else{
+			System.out.println("No Such Sensor Found with ID="+id);
+		}
+		return str;
+	}
 	
 
 	public static String Httppost(String username, String password ,String uri, String uu, String dat, String sens, String pat) throws ClientProtocolException, IOException, JSONException
@@ -299,39 +318,63 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
 	
 	
 	
-	private class MyAsyncTask2 extends AsyncTask<String, String, String>
+	private class MyAsyncTask2 extends AsyncTask<String, String, String> //Marker
 	{
 		String res1,res2,res3;
 		@Override
 		protected String doInBackground(String... params) {
-			try {
-				res1 = (Httpget(params[0],params[1], params[2],params[3]));
-			} catch (ClientProtocolException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			
+			Document retrievedDocument = ca.getSensor(params[3]);
+			if(retrievedDocument != null){
+				System.out.println("Using Sensor Found in Database");
+				HashMap<String,Object> sensor_concepts = (HashMap<String, Object>) ((Map) retrievedDocument.getProperty("sensor_concepts"));
+				res2 = new String("");
+				for (String key: sensor_concepts.keySet()){
+					System.out.println(key);
+					res2 = res2 + sensor_concepts.get(key) + "*"; 
+				}
+				//2=uu, 3=dat
+				String uua[] = res2.split("\\*");
+				String daa[] = params[4].split("\\*");
+				//
+					System.out.println("Running CouchBase Code");
+					HashMap<String,Object> readings = new HashMap<String,Object>();
+					for(int i=0;i<uua.length;i++)
+					{
+						readings.put(uua[i], daa[i]);
+					}
+					String pat = patient.getText().toString();
+					String sens = sensor.getText().toString();
+					ca.createDocument("reading", ca.makeReadingMap(pat, sens, readings));
+				//					
 			}
-			   try {
-				res2=JsonParse2(res1);
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			
+			else{
+				try {
+					res1 = (Httpget(params[0],params[1], params[2],params[3]));
+				} catch (ClientProtocolException e1) {
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				   try {
+					res2=JsonParse2(res1);
+					System.out.println("res2:"+res2);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				   try {
+					res3=Httppost(params[0],params[1],params[2],res2,params[4],sensor.getText().toString(),patient.getText().toString());
+				} catch (ClientProtocolException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
 			}
-			   try {
-				res3=Httppost(params[0],params[1],params[2],res2,params[4],sensor.getText().toString(),patient.getText().toString());
-			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			   return res3;
+			return res3;
+			
 		}
 		
 		 protected void onPostExecute(String params){
@@ -340,32 +383,71 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
 		
 		
 	}
-private  class MyAsyncTask extends AsyncTask<String, String, String>{
+	
+//	public void create_extra_form_fields(Set<String> fields){
+//		//TODO ScrollView
+//		String arrayString[];
+//		EditText ed;
+//		final List<EditText> allEds = new ArrayList<EditText>();
+//		
+//		if(fields.size()==0){
+//		    Toast.makeText(getApplicationContext(),"No Concepts found.", Toast.LENGTH_LONG).show();
+//		}
+//
+//		else{		    
+//		    System.out.println("array string length " + fields.size());
+//		    for(String field:fields){
+//		        TextView rowTextView = new TextView(Sensorconcept.this);
+//		        rowTextView.setText(field);
+//		        main1.addView(rowTextView);
+//		        ed = new EditText(Sensorconcept.this);
+//		        allEds.add(ed);
+//		        ed.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT));
+//		        main1.addView(ed);
+//		    }
+//		    
+//		    
+//		    b2=new Button(Sensorconcept.this);
+//		    b2.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));
+//		    b2.setText("Post Readings");
+//		    //b2.setOnClickListener(Sensorconcept.this);
+//		    main1.addView(b2);
+//		    
+//		    b2.setOnClickListener(new View.OnClickListener() {
+//		        @Override
+//		        public void onClick(View v) {
+//		            System.out.println("Clicked Submit Button");
+//		        }
+//		    });
+//		}
+//		    	
+//	}
+	
+	private  class MyAsyncTask extends AsyncTask<String, String, String>{
 		
 		String res1,res2;
 		  
 		  protected String doInBackground(String... params) {
-			  
-			   try {
-				   
-				   res1 = (Httpget(params[0],params[1], params[2],params[3]));
-				   res2=JsonParse(res1);
-				   
-				  
-				  
-				   
-			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		       
-				return res2;
+			   res2 = get_sensor_concepts_from_db(params[3]); // params[3] has sensor_id
+			   if(res2.length()==0){
+				   try {
+					   res1 = (Httpget(params[0],params[1], params[2],params[3]));
+					   res2=JsonParse(res1);
+				   } catch (ClientProtocolException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+			   }
+			   if(res2.equals("")){
+				   return "zero";
+			   }
+			   return res2;
 		  }
 		  
 		  
@@ -447,7 +529,14 @@ private  class MyAsyncTask extends AsyncTask<String, String, String>{
 	public void onClick(View v) {
 		
 		
-			query=sensor.getText().toString();	
+			query=sensor.getText().toString();
+//			Set<String> fields= new HashSet<String>();
+//			fields.add("First");
+//			fields.add("Second");
+//			fields.add("Third");
+//			fields.add("Fourth");
+//			fields.add("Fifth");		
+//			create_extra_form_fields(fields);
 		  new MyAsyncTask().execute(username,password,url,query);
 		
 		

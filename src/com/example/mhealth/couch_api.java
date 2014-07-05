@@ -335,12 +335,19 @@ public class couch_api{
 			e.printStackTrace();
 		}
 		Iterator<QueryRow> it = result_sr;
-		QueryRow row = it.next();
-//		Log.d(TAG, TAG + " row = "+row);
-		System.out.println(row);
-		Document d = database.getDocument(row.getDocumentId());
-		System.out.println("Search Result Document "+ String.valueOf(d.getProperties()));
-		return d; 
+		if(it.hasNext()){
+			QueryRow row = it.next();
+	//		Log.d(TAG, TAG + " row = "+row);
+			System.out.println(row);
+			
+			Document d = database.getDocument(row.getDocumentId());
+			System.out.println("Search Result Document "+ String.valueOf(d.getProperties()));
+			return d;
+		}
+		else {
+			System.out.println("No Document Found");
+			return null;
+		}
 		// use d using "d.getProperty(key)"
 	}
 	public Integer push_readings(String username,String password,String uri){

@@ -1,0 +1,1 @@
+07-05 17:00:18.638: I/System.out(30521): Search Result Document {_rev=1-a893bee09edace6ef2400da5032b261e, sensor_concepts={HEIGHT (CM)=576b65fc-ddf8-11e3-b4c4-a0b3cc71229c, BLOOD OXYGEN SATURATION=576b68b0-ddf8-11e3-b4c4-a0b3cc71229c}, sensor_id=2, _id=1b862866-5ef8-49fb-a330-660f62fdd2c7, sensor_name=maguss}

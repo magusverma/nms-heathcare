@@ -73,7 +73,7 @@ public class Login extends ActionBarActivity implements View.OnClickListener{
 //        a.createDocument("sensor", a.makeSensorMap(1, "My Sensor", concepts));
 //    
         
-//        a.clearAllDatabases();
+        a.clearAllDatabases();
 //        HashMap<String, Object> readings = new HashMap<String, Object>();
 //    	readings.put("576b65fc-ddf8-11e3-b4c4-a0b3cc71229c", "100");
 //    	readings.put("576b68b0-ddf8-11e3-b4c4-a0b3cc71229c", "100");
