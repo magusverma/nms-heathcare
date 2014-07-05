@@ -3,7 +3,7 @@ package com.example.mhealth;
 public class Patient {
 	
 	
-	private Integer patientId = null;
+	private String patientId = null;
 	private String identifier = null;
 	private Integer age =0;
 	private String givenName = null;
@@ -32,7 +32,7 @@ public class Patient {
     	return givenName + " " + middleName + " " + familyName + " " + identifier;
     }
 	
-	public Integer getPatientId() {
+	public String getPatientId() {
 		return patientId;
 	}
 	
@@ -60,7 +60,7 @@ public class Patient {
 		return gender;
 	}
 
-	public void setPatientId(Integer pid) {
+	public void setPatientId(String pid) {
 		patientId = pid;
 	}
 
