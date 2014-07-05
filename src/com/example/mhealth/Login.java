@@ -44,6 +44,7 @@ public class Login extends ActionBarActivity implements View.OnClickListener{
 	public String username;
 	public String password;
 	public String url;
+	public String abc;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -112,7 +113,8 @@ private  class MyAsyncTask extends AsyncTask<String, String, String>{
 				   
 			   } catch (HttpHostConnectException e) {
 				   return "refused";
-				   
+			   }   catch (IllegalStateException e) {
+					   return "no"; 
 			} catch (ClientProtocolException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -143,6 +145,10 @@ private  class MyAsyncTask extends AsyncTask<String, String, String>{
 			 {
 				 buttonClick();
 			 }
+			 else if (params.equals("no"))
+			 {
+				 Toast.makeText(getApplicationContext(), "Invalid URL", Toast.LENGTH_LONG).show();
+			 }
 		  }
 		  
 		  protected void onProgressUpdate(Integer... progress){
@@ -154,7 +160,7 @@ private  class MyAsyncTask extends AsyncTask<String, String, String>{
 		if(user.getText().toString().length()<1 || pwd.getText().toString().length()<1 || add.getText().toString().length()<1 ){
 					
 					// out of range
-					Toast.makeText(this, "please enter complete details", Toast.LENGTH_LONG).show();
+					Toast.makeText(this, "Please enter complete details", Toast.LENGTH_LONG).show();
 				}
 		
 		else
