@@ -61,6 +61,12 @@
                 </action>
             </intent-filter>
         </receiver>
+         <receiver android:name="com.example.mhealth.MyBroadcastReceiver2" >
+            <intent-filter>
+                <action android:name="MyBroadcast2" >
+                </action>
+            </intent-filter>
+        </receiver>
         <receiver
             android:name="com.example.mhealth.NetworkChangeReceiver"
             android:label="NetworkChangeReceiver" >

@@ -25,26 +25,32 @@ import android.preference.PreferenceManager;
 public class GetInput extends Activity implements OnClickListener{
 	Button b1;
 	TextView t1;
+	TextView t2;
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.get_inputlayout);
 		b1=(Button)findViewById(R.id.button1);
 		t1=(TextView)findViewById(R.id.textView1);
-		
+		t2=(TextView)findViewById(R.id.textView2);
 		b1.setOnClickListener(this);
-		int mInt=0;
+		int mInt=2,mInt2=1;
 		
 		try{
 		Bundle b = getIntent().getExtras();
-		mInt= b.getInt("Here");		
+		mInt= b.getInt("Pulse");
+		mInt2=b.getInt("Oxygen");
 		//Toast.makeText(getApplicationContext(),"mInt Value is "+mInt, Toast.LENGTH_LONG).show();
-		t1.setText("Value is"+mInt);
-		if(mInt!=0)
-		{ t1.setText("Value is"+mInt);
-			
-			
-		}
+		t1.setText("Pulse Reading is"+mInt);
+	
+		t2.setText("Oxygen Reading is"+mInt2);
+				
+
+		
+		
+		
+		
+		
 		}catch(Exception e)
 		{}
 		
@@ -61,7 +67,7 @@ public class GetInput extends Activity implements OnClickListener{
     Intent i=null;
      PackageManager manager = getPackageManager();
      try {
-         i = manager.getLaunchIntentForPackage("com.example.newapp");
+         i = manager.getLaunchIntentForPackage("org.opendatakit.sensors.drivers.xpodpulseox");
          if (i == null)
              throw new PackageManager.NameNotFoundException();
          i.addCategory(Intent.CATEGORY_LAUNCHER);
