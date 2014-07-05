@@ -8,11 +8,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
-
+import java.util.Iterator;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
-
+import android.widget.Toast;
+import android.content.*;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -28,11 +29,14 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
+import android.text.TextWatcher;
 import android.os.Bundle;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
@@ -43,47 +47,61 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
+import android.content.SharedPreferences.Editor;
+import android.text.Editable;
 public class Sensorconcept extends ActionBarActivity implements View.OnClickListener {
 
-	EditText sensor,patient;
+	AutoCompleteTextView  sensor;
+	EditText patient;
 	Button b1,b2;;
+	Button b3,b4;
 	String query;
 	LinearLayout main1;
 	String username;
 	String password;
 	String url;
 	TextView S, S1;
-	HashMap<String, String> scm_name_to_id;
+	static HashMap<String, String> scm_name_to_id;
 	String[] sensor_name_hinting_array;
-
+	 List<EditText> allEds;
+	 SharedPreferences prefs;
+	   ArrayAdapter<String> sensor_adapter;
+	   
+	  /*
 	public String get_scm() throws ClientProtocolException, IOException{
 		HttpClient httpClient = new DefaultHttpClient();
 		ResponseHandler<String> resonseHandler = new BasicResponseHandler();
-		System.out.println(url+"/ws/rest/v1/sensor/scm"+" "+username+password);
-		HttpGet getMethod = new HttpGet(this.url+"/ws/rest/v1/sensor/scm");    
+	//magus	System.out.println(url+"/ws/rest/v1/sensor/scm"+" "+username+password);
+		HttpGet getMethod = new HttpGet(this.url+"/ws/rest/v1/sensor/sm");    
 		getMethod.setHeader( "Content-Type", "application/json");
 		getMethod.addHeader(BasicScheme.authenticate(new UsernamePasswordCredentials(username,password),"UTF-8", false));
 		String response = httpClient.execute(getMethod,resonseHandler);
+		Toast.makeText(getApplicationContext(),"get scm "+response, Toast.LENGTH_LONG).show();
 		return response;
 	}
 	
 	// By Magus
-		public void process_sensor_hinting() throws ClientProtocolException, IOException{
+		/*public void process_sensor_hinting() throws ClientProtocolException, IOException{
+			
+			
 			JSONObject query = null;
 			try {
+				
 				query = new JSONObject(get_scm());
+	
 			} catch (JSONException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
+			
 			}
 			JSONArray results = null;
 			try {
 				results = query.getJSONArray("results");
+				Toast.makeText(getApplicationContext(),"result length"+results.length(), Toast.LENGTH_LONG).show();
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				Toast.makeText(getApplicationContext(),"Exceptn 2", Toast.LENGTH_LONG).show();
 			}
 			
 			// Iterates over SCMs JSON Array
@@ -92,6 +110,7 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
 				try {
 					current_sensor = (JSONObject) ((JSONObject)results.get(it)).get("sensor");
 					scm_name_to_id.put(current_sensor.get("sensor_name").toString(), current_sensor.get("sensor_id").toString());
+					Toast.makeText(getApplicationContext(),"herer loop", Toast.LENGTH_SHORT).show();
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -99,8 +118,8 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
 			
 			Set<String> hinting_set = scm_name_to_id.keySet();
 			sensor_name_hinting_array = hinting_set.toArray(new String[hinting_set.size()]);
-		}
-	    /*  try {
+			Toast.makeText(getApplicationContext(),"herer outloop", Toast.LENGTH_SHORT).show();
+	     try {
 				process_sensor_hinting();
 			} catch (ClientProtocolException e) {
 				// TODO Auto-generated catch block
@@ -110,15 +129,19 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
 				e.printStackTrace();
 			}
 		    
-		     E1 = new AutoCompleteTextView(this);
-		  	 E1.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT));     
-		      main1.addView(E1);
-		     ArrayAdapter<String> sensor_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, sensor_name_hinting_array );
-		     ((AutoCompleteTextView) E1).setAdapter(sensor_adapter);
-		*/
+		   //    Toast(getApplicationContext(),"here"+sensor_name_hinting_array,Toast.LENGTH_SHORT).show();
+	     for(String e:sensor_name_hinting_array)
+			{    Toast.makeText(getApplicationContext(),"herer"+e, Toast.LENGTH_LONG).show();
+				
+			}
+		    sensor_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, sensor_name_hinting_array );
+		     ((AutoCompleteTextView) sensor).setAdapter(sensor_adapter);
+}
+*/
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-	
+		final String HIGH_SCORES = "HighScores";
+		 prefs =getSharedPreferences(HIGH_SCORES,getApplicationContext().MODE_PRIVATE); // 0 - for private mode
 		main1=new LinearLayout(this);
        main1.setOrientation(LinearLayout.VERTICAL);
   	 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -130,9 +153,38 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
       S.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));     
       S.setText("Enter sensor Id");
       main1.addView(S);
-  	 sensor =new EditText(this);
+  	 sensor =new  AutoCompleteTextView(this);
   	 sensor.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT));     
       main1.addView(sensor);
+      sensor.addTextChangedListener(new TextWatcher(){
+    	  public void onTextChanged(CharSequence s, int start, int before, int count) {
+  System.out.println();
+              // TODO Auto-generated method stub
+          }
+
+          @Override
+          public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+              // TODO Auto-generated method stub
+        	try{
+        		//Toast.makeText(getApplicationContext(),"before",Toast.LENGTH_SHORT).show();
+        	
+        
+        		 new MyAsync3().execute(username,password,url,query);
+        	}catch(Exception e)
+        	{ }
+        	
+          }
+
+          @Override
+          public void afterTextChanged(Editable s) {
+              // TODO Auto-generated method stub
+        	  System.out.println();    }
+    	  
+    	  
+      });
+      sensor.setAdapter(sensor_adapter);
+      
       S1=new TextView(this);
       S1.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));     
       S1.setText("Enter Patient Id");
@@ -144,9 +196,9 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
       b1.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));   
       b1.setText("Get Concepts");
       b1.setOnClickListener(this);
+      
       main1.addView(b1);
       setContentView(main1);
-		
 		
 		
 	
@@ -265,7 +317,21 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
 		return res;
 	}
 	
-	
+	public static String Httpget2 (String username, String password, String uri,String query) throws ClientProtocolException, IOException
+	{
+		HttpClient httpClient = new DefaultHttpClient();
+		HttpGet httpGet = new HttpGet(uri+"/ws/rest/v1/sensor/scm");
+		httpGet.addHeader(BasicScheme.authenticate(new UsernamePasswordCredentials(username, password),"UTF-8", false));
+		HttpResponse httpResponse = httpClient.execute(httpGet);
+		HttpEntity responseEntity = httpResponse.getEntity();
+		String str = inputStreamToString(responseEntity.getContent()).toString();
+		httpClient.getConnectionManager().shutdown();
+	//	Toast.makeText(getApplicationContext().this,"Successful", Toast.LENGTH_LONG).show();
+	System.out.println("httpget22222"+str);	
+		
+		return str;  
+		         
+    	} 
 	
 	
 	private class MyAsyncTask2 extends AsyncTask<String, String, String>
@@ -341,11 +407,11 @@ private  class MyAsyncTask extends AsyncTask<String, String, String>{
 		  protected void onPostExecute(String params){
 			  
 			  String arrayString[];
-			  //Toast.makeText(getApplicationContext(),params, Toast.LENGTH_LONG).show();
-			 // Toast.makeText(getApplicationContext(),"PostExecute.", Toast.LENGTH_LONG).show();
+			 
+			
 			  EditText ed;
-			final List<EditText> allEds = new ArrayList<EditText>();
-			  //Toast.makeText(getApplicationContext(),"PostExecute2.", Toast.LENGTH_LONG).show();
+			 allEds = new ArrayList<EditText>();
+			
 			  if(params.equals("zero"))
 			  {
 				  Toast.makeText(getApplicationContext(),"No Concepts found.", Toast.LENGTH_LONG).show();
@@ -357,23 +423,25 @@ private  class MyAsyncTask extends AsyncTask<String, String, String>{
 	      arrayString= params.split("\\*");
 	     
 	     final int size=arrayString.length;
-         // Toast.makeText(getApplicationContext(),size +"  ", Toast.LENGTH_LONG).show();
+        
           System.out.println("array string length"+size);
 
-	 
-	 
+      
 	 for(int i=0;i<size;i++)
-	 {
+	 {  
+		 
 		// Toast.makeText(getApplicationContext(),i+"  ", Toast.LENGTH_LONG).show();
 		 TextView rowTextView = new TextView(Sensorconcept.this);
 		 rowTextView.setText(arrayString[i]);
 		 main1.addView(rowTextView);
 	    ed = new EditText(Sensorconcept.this);
+	  
+	  
 	    allEds.add(ed);
      ed.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT));
 	    main1.addView(ed);	 
-		
-		 
+	 
+	      
 	 }
 	 
 	
@@ -381,7 +449,6 @@ private  class MyAsyncTask extends AsyncTask<String, String, String>{
      b2.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));   
      b2.setText("Post Readings");
      b2.setOnClickListener(Sensorconcept.this);
-     main1.addView(b2);
     
      b2.setOnClickListener(new View.OnClickListener() {
     	    @Override
@@ -398,8 +465,66 @@ private  class MyAsyncTask extends AsyncTask<String, String, String>{
     	    	 new MyAsyncTask2().execute(username,password,url,query,send);
     	    }
     	});
-	 
-		  
+     main1.addView(b2);
+     b3=new Button(Sensorconcept.this);
+     b3.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));   
+     b3.setText("Go to app");
+     main1.addView(b3);
+     b3.setOnClickListener(new View.OnClickListener(){
+    	 @Override
+    	 public void onClick(View v)
+    	 { Intent i1 = new Intent();
+
+    	    Intent i=null;
+    	     PackageManager manager = getPackageManager();
+    	     try {
+    	         i = manager.getLaunchIntentForPackage("org.opendatakit.sensors.drivers.xpodpulseox");
+    	         if (i == null)
+    	             throw new PackageManager.NameNotFoundException();
+    	         i.addCategory(Intent.CATEGORY_LAUNCHER);
+    	         startActivityForResult(i,0);
+    	     } catch (PackageManager.NameNotFoundException e) {
+    	    	 Toast.makeText(getApplicationContext(),"Package not found exception", Toast.LENGTH_LONG).show(); 
+    	     }
+    	     
+    	     
+    	
+    	 
+    	 }
+     });
+    
+	     b4=new Button(Sensorconcept.this);
+	     b4.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));   
+	     b4.setText("Get the values");
+	     main1.addView(b4);
+	     b4.setOnClickListener(new View.OnClickListener(){
+	    	 @Override
+	    	 public void onClick(View v){
+	    		 
+	    		   String a[]=new String[size]; 
+	    	       Integer a2[]=new Integer[size];
+	    	    	
+	    	    		int s1=prefs.getInt("array_size",0);
+	    	    	    for(int j=0;j<size;j++) 
+	    	    		{      
+	    	    	    	
+	    	   			{ 
+	    	   				
+	    	   				EditText e;
+	    	    			e=allEds.get(j);
+	    	    			a2[j]=prefs.getInt("Value"+j,0);
+	    	    			e.setText(Integer.toString(a2[j]));
+	    	 	    		  
+	    	   				
+	    	   				
+	    	   			 
+	    	   		 }
+ 	    	
+	    	    		}
+	    		 
+	    		 
+	    	 }	 }); 
+	
 	
 			 
 		  }
@@ -409,17 +534,82 @@ private  class MyAsyncTask extends AsyncTask<String, String, String>{
 			    
 		  }
 		  }
-		 
+public static String JsonParse3(String str) throws JSONException
+{ String res=" ";
+scm_name_to_id=new HashMap<String, String>();
+JSONObject query = null;
+	query = new JSONObject(str);
+	JSONArray results = null;
+	results = query.getJSONArray("results");
+	for (int it = 0 ; it < results.length(); it++) {
+		JSONObject current_sensor = null;
+		
+			current_sensor = (JSONObject) ((JSONObject)results.get(it)).get("sensor");
+		
+			res=res+current_sensor.get("sensor_name").toString()+"*";
+			System.out.println("id"+current_sensor.get("sensor_id").toString());
+			
+		scm_name_to_id.put(current_sensor.get("sensor_name").toString(), current_sensor.get("sensor_id").toString());
+			//Toast.makeText(getApplicationContext(),"herer loop", Toast.LENGTH_SHORT).show();
+		System.out.println("in jason"+res);
+	} 
+
+	return res;
 	
+}
+
+		 
+	private class MyAsync3 extends AsyncTask<String, String, String>
+	{
+		String res1,res2,res3;
+		@Override
+		protected String doInBackground(String... params) {
+			try {
+				res1 = JsonParse3(Httpget2(username,password, url,null));
+			} catch (ClientProtocolException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			   
+			   return res1;
+		}
+		
+		 protected void onPostExecute(String params){
+			// Toast.makeText(getApplicationContext(),"Successful"+params, Toast.LENGTH_LONG).show();
+	System.out.println("post strtg"+params);
+			 String[] arrayString;
+			try{  
+			  arrayString= params.split("\\*");
+			for(String e:arrayString)
+			{
+				System.out.println(e);
+			}
+			  
+			//  System.out.println("in post"+arrayString);
+			  sensor_adapter = new ArrayAdapter<String>(Sensorconcept.this, android.R.layout.simple_list_item_1, arrayString );	  
+			  // ((AutoCompleteTextView) sensor).setAdapter(sensor_adapter); 
+		 sensor.setAdapter(sensor_adapter);
+		 }
+		  catch(Exception e) {
+			  }
+		  }
+		
+	}
+		
 
 @Override
 public void onClick(View v) {
 	
-	
-		query=sensor.getText().toString();	
-	  new MyAsyncTask().execute(username,password,url,query);
-	
-	
+	System.out.println(scm_name_to_id.get("new"));
+	String q1;
+		query=sensor.getText().toString();
+		
+	q1=	scm_name_to_id.get(query);
+	  new MyAsyncTask().execute(username,password,url,q1);	
 }
 	
 }
+
