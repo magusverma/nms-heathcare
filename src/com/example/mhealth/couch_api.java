@@ -9,8 +9,10 @@ package com.example.mhealth;
  */
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,11 +21,16 @@ import org.apache.http.HttpResponse;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 //import android.provider.Settings.System;
 import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
@@ -47,9 +54,18 @@ public class couch_api{
 	Manager manager;
 //	Database database;
 	AndroidContext ac;
+	final String sensors_db_name = "sensor" ;
+	final String concepts_db_name = "concept" ;
+	final String patients_db_name = "patient" ;
+	final String readings_db_name = "reading" ;
+	final String sensor_view = "sensor_view" ;
+	final String pending_reading_view = "pending_reading" ;
+	
+//	String[] dbs = {"sensor","concept","patient","reading"};
 	
 	couch_api(Manager manager){
 		this.setManager(manager);
+		this.UpdateorCreateViews();
 	}
 	
 	public Manager getManager() {
@@ -74,7 +90,6 @@ public class couch_api{
 			this.manager = manager;
 		}
 	}
-	
 	public Database getDatabase(String dbname) {
 //		setDatabase(dbname);
 		if (!Manager.isValidDatabaseName(dbname)) {
@@ -89,7 +104,6 @@ public class couch_api{
 		}
 		return null;
 	}
-	
 	public void createDocument(String dbname,Map<String, Object> docContent){
 		Log.d(TAG, "Writing in database="+dbname+" docContent=" + String.valueOf(docContent));
 		Database database = getDatabase(dbname);
@@ -109,7 +123,6 @@ public class couch_api{
 		// display the retrieved document
 		Log.d(TAG, "Checking if written by retrieving , retrievedDocument:\n" + String.valueOf(retrievedDocument.getProperties()));              
 	}
-	
 	public QueryEnumerator getAllDocument(String dbname){
 		Database database = getDatabase(dbname);
 		Query query = database.createAllDocumentsQuery();
@@ -126,9 +139,21 @@ public class couch_api{
 		}
 		return result;
 	}
-	
+	public void clearAllDatabases(){
+		String[] dbs = {sensors_db_name,patients_db_name,readings_db_name};//,"concept"
+		for (String dbname : dbs){
+			Log.d(TAG, TAG + " Clearing DB="+ dbname);
+			Database database = getDatabase(dbname);
+			try {
+				database.delete();
+			} catch (CouchbaseLiteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 	public void getAllDocument(){
-		String[] dbs = {"sensor","concept","patient","reading"};
+		String[] dbs = {sensors_db_name,concepts_db_name,patients_db_name,readings_db_name};
 		for (String dbname : dbs){
 			Log.d(TAG, TAG + " Data for DB="+ dbname);
 			Database database = getDatabase(dbname);
@@ -142,11 +167,11 @@ public class couch_api{
 			Log.d(TAG, TAG + " Iterating ");
 			for (Iterator<QueryRow> it = result; it.hasNext(); ) {
 			    QueryRow row = it.next();
+			    
 			    Log.d(TAG, TAG + " row = "+row);
 			}
 		}
 	}
-	
 	//Concept Document = {id:5090 , uuid:asda-asdasd ,name:”asdaSD” }
 	public Map<String, Object> makeConceptMap(Integer concept_id,String concept_uuid,String concept_name){
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -155,40 +180,45 @@ public class couch_api{
 		map.put("concept_name", concept_name);		
 		return map;
 	}
-	
-	//Sensor Document = {id:12 , name:”BPReader” concepts:[uuid,uuid] }
-	public Map<String, Object> makeSensorMap(Integer sensor_id,String sensor_name,HashMap<String,String> sensor_concepts){
+	//Sensor Document = {id:12 , name:”BPReader” concepts:{name:uuid ..} }
+	public Map<String, Object> makeSensorMap(String sensor_id,String sensor_name,HashMap<String,String> sensor_concepts){
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("sensor_id", sensor_id);
 		map.put("sensor_name", sensor_name);
 		map.put("sensor_concepts", sensor_concepts);		
 		return map;
 	}
-	
 	//Patient Document = {id = 123, name = “asd”}
-	public Map<String, Object> makePatientMap(Integer patient_id,String patient_name){
+	public Map<String, Object> makePatientMap(String patient_id,String patient_name){
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("patient_id", patient_id);
 		map.put("patient_name", patient_name);		
 		return map;
 	}
-	
 	//Reading Document = {patient = “1” sensor = 12 readings : {5090 = 12, 567 = 134}};
-	public Map<String, Object> makeReadingMap(Integer patient_id,Integer sensor_id,HashMap<String, Object> readings){
+	public Map<String, Object> makeReadingMap(String patient_id,String sensor_id,HashMap<String, Object> readings){
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("patient", patient_id);
 		map.put("sensor", sensor_id);	
 		map.put("readings", readings);			
+		map.put("status", "pending");
 		return map;
 	}
-	
-	public void syncSensors(String username, String password, String url){
+	public Map<String, Object> makeReadingMap(String patient_id,String sensor_id,HashMap<String, Object> readings,String status){
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("patient", patient_id);
+		map.put("sensor", sensor_id);	
+		map.put("readings", readings);			
+		map.put("status", status);
+		return map;
+	}
+	public Integer syncSensors(String username, String password, String url){
 //		TODO:Remove This
 //		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 //		StrictMode.setThreadPolicy(policy);
 		
 		//Flush
-		Database database = getDatabase("sensor");
+		Database database = getDatabase(sensors_db_name);
 		System.out.println("Flushing Documents = "+database.getDocumentCount());
 		try {
 			database.delete();
@@ -196,7 +226,7 @@ public class couch_api{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		database = getDatabase("sensor");
+		database = getDatabase(sensors_db_name);
 		System.out.println("Document Count = "+database.getDocumentCount());
 		//
 		
@@ -240,8 +270,8 @@ public class couch_api{
 			for (int it = 0 ; it < ja.length(); it++) {
 				//System.out.println(ja.get(it));
 				JSONObject scm = (JSONObject) ja.get(it);
-				Integer sensor_id =  (Integer) ((JSONObject) scm.get("sensor")).get("sensor_id") ;
-				String sensor_name = (String) ((JSONObject) scm.get("sensor")).get("sensor_name");
+				String sensor_id =  ((JSONObject) scm.get("sensor")).get("sensor_id").toString() ;
+				String sensor_name = ((JSONObject) scm.get("sensor")).get("sensor_name").toString();
 				JSONArray concepts_array = (JSONArray) scm.get("concepts");
 				HashMap<String,String> concepts = new HashMap<String,String>();
 				for (int i_ca = 0 ; i_ca < concepts_array.length(); i_ca++) {
@@ -256,28 +286,46 @@ public class couch_api{
 		catch(Exception e){
 			
 		}
+		return database.getDocumentCount();
 	}
 	public void UpdateorCreateViews(){
-		Database database = getDatabase("sensor");
-		com.couchbase.lite.View sntoi = database.getView("sensor_name_to_id");
-		sntoi.setMap(
+		Database database = getDatabase(sensors_db_name);
+		com.couchbase.lite.View sv = database.getView(sensor_view);
+		sv.setMap(
 			new Mapper() {
 		    @Override
 		    public void map(Map<String, Object> document, Emitter emitter) {
-		    	String sn =(String) document.get("sensor_name");
-		    	Integer si =(Integer) document.get("sensor_id");
-				Log.d(TAG, TAG+" sn : "+ sn +" si : "+ si);
-				emitter.emit(sn, si);						
+		    	String sn =document.get("sensor_name").toString();
+		    	String si =document.get("sensor_id").toString();
+//				Log.d(TAG, TAG+" sn : "+ sn +" si : "+ si);
+				emitter.emit(si, document);						
 		    }
 
-		}, "1");		
+		}, "2");
+		
+		Database reading_db = getDatabase(readings_db_name);
+		com.couchbase.lite.View pending_reading = reading_db.getView(pending_reading_view);
+		pending_reading.setMap(
+			new Mapper() {
+		    @Override
+		    public void map(Map<String, Object> document, Emitter emitter) {
+		    	if(document.get("status").equals("pending")){
+		    		System.out.println("Pending Reading of Sensor: "+document.get("sensor"));
+		    		System.out.println("Emitting "+document.get("sensor")+document);
+		    		emitter.emit(document.get("sensor"), document);		
+		    	}		    					
+		    }
+		}, "2");		
+		
 	}
 	// return Map<String,Object> ? 
-	public Document getSensor(String sensor_name){
-		Database database = getDatabase("sensor");
-		Query query_sr = database.getView("sensor_name_to_id").createQuery();
+	public Document getSensor(String sensor_id){
+		System.out.println(sensor_id);
+		Database database = getDatabase(sensors_db_name);
+		Query query_sr = database.getView(sensor_view).createQuery();
 //		query_sr.setLimit(20);
-		query_sr.setStartKey(sensor_name);
+		query_sr.setStartKey(sensor_id);
+		query_sr.setEndKey(sensor_id);
 //		query_sr.setEndKey("13");
 		
 		QueryEnumerator result_sr = null;
@@ -288,12 +336,93 @@ public class couch_api{
 		}
 		Iterator<QueryRow> it = result_sr;
 		QueryRow row = it.next();
-		Log.d(TAG, TAG + " row = "+row);
+//		Log.d(TAG, TAG + " row = "+row);
 		System.out.println(row);
 		Document d = database.getDocument(row.getDocumentId());
-		System.out.println("Retrieved Document "+ String.valueOf(d.getProperties()));
+		System.out.println("Search Result Document "+ String.valueOf(d.getProperties()));
 		return d; 
 		// use d using "d.getProperty(key)"
+	}
+	public Integer push_readings(String username,String password,String uri){
+		Integer pushed = new Integer(0);
+		Database database = getDatabase(readings_db_name);
+		com.couchbase.lite.View v = database.getView("pending_reading");
+		try {
+			v.createQuery().run();// refreshes view 
+		} catch (CouchbaseLiteException e1) {
+			e1.printStackTrace();
+		}  
+	    System.out.println(v.dump());
+		List<Map<String,Object>> dumpResult = v.dump();
+		for(Map<String,Object> map : dumpResult){
+			try {
+				JSONObject json_being_pushed = new JSONObject(map.get("value").toString());
+				Document document_being_pushed = database.getDocument(json_being_pushed.get("_id").toString());
+				json_being_pushed.remove("_id");
+				json_being_pushed.remove("_rev");
+				json_being_pushed.remove("status");
+				
+				System.out.println(" Pusing Reading : "+json_being_pushed);
+				Map<String, Object> updateProperties = new HashMap<String, Object>();
+				updateProperties.putAll(document_being_pushed.getProperties());
+				
+				System.out.println(http_reading_post_request(username,password,uri,json_being_pushed));
+				
+				updateProperties.put("status", "pushed");
+				document_being_pushed.putProperties(updateProperties);
+			    Log.d(TAG, "updated retrievedDocument=" + String.valueOf(document_being_pushed.getProperties()));
+			    pushed += 1;
+			} catch (JSONException e) {
+				System.out.println("Couldn't Create JSON Object for Pending Reading");
+				e.printStackTrace();
+			}		
+			catch (CouchbaseLiteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return pushed;
+	}
+	
+	public String get_view_data(String dbname,String view_name){
+		Database database = getDatabase(dbname);
+		com.couchbase.lite.View v = database.getView(view_name);
+		try {
+			v.createQuery().run();// refreshes view 
+		} catch (CouchbaseLiteException e1) {
+			e1.printStackTrace();
+		}  
+		
+		// 
+		getSensor("2");
+		//
+	    return v.dump().toString();		 
+	}
+	
+	
+	public String http_reading_post_request(String username,String password,String uri,JSONObject obj){
+		//uri = uri+ "/module/sensorreading/sr.form";
+		System.out.println(uri);
+		obj.remove("status");
+		System.out.println(obj);
+		HttpClient httpClient = new DefaultHttpClient();
+		ResponseHandler<String> resonseHandler = new BasicResponseHandler();
+		HttpPost postMethod = new HttpPost(uri+"/module/sensorreading/sr.form");    
+		try {
+			postMethod.setEntity(new StringEntity(obj.toString()));
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
+		postMethod.setHeader( "Content-Type", "application/json");
+		postMethod.addHeader(BasicScheme.authenticate(new UsernamePasswordCredentials(username,password),"UTF-8", false));
+		String response = null;
+		try{
+			 response = httpClient.execute(postMethod,resonseHandler);
+		}catch(Exception e){
+			System.out.println("caught exception");
+			e.printStackTrace();
+		}
+		return response;
 	}
 	//Log.d(TAG, "Begin Hello World App");	
 }

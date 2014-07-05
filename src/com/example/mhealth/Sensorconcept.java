@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import android.support.v7.app.ActionBarActivity;
@@ -25,9 +26,14 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.couchbase.lite.Manager;
+import com.couchbase.lite.android.AndroidContext;
 
 import android.os.Bundle;
 import android.content.pm.ActivityInfo;
@@ -57,7 +63,8 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
 	TextView S, S1;
 	HashMap<String, String> scm_name_to_id;
 	String[] sensor_name_hinting_array;
-
+	static couch_api ca; //magus
+	
 	public String get_scm() throws ClientProtocolException, IOException{
 		HttpClient httpClient = new DefaultHttpClient();
 		ResponseHandler<String> resonseHandler = new BasicResponseHandler();
@@ -126,7 +133,23 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
   	 username= extras.getString("uname");
 	 password = extras.getString("pword");	
 	 url=extras.getString("url");
-     S=new TextView(this);
+     
+	 //Magus
+		Manager manager = null;
+		try {
+			manager = new Manager(new AndroidContext(this), Manager.DEFAULT_OPTIONS);
+			System.out.println("Manager Created!");
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+     this.ca = new couch_api(manager);
+     if(ca == null){
+     	System.out.println("Failed to Set CouchApi");
+     }
+     
+		//
+     
+	 S=new TextView(this);
       S.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));     
       S.setText("Enter sensor Id");
       main1.addView(S);
@@ -146,8 +169,6 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
       b1.setOnClickListener(this);
       main1.addView(b1);
       setContentView(main1);
-		
-		
 		
 	
 }
@@ -199,6 +220,16 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
 		}
 		obj.put("readings", nestedObject);
 		System.out.println(obj);
+		//
+			System.out.println("Running CouchBase Code");
+			HashMap<String,Object> readings = new HashMap<String,Object>();
+			for(int i=0;i<siz;i++)
+			{
+				readings.put(uua[i], daa[i]);
+			}
+			ca.createDocument("reading", ca.makeReadingMap(pat, sens, readings));
+			ca.getAllDocument("reading");
+		//
 		HttpClient httpClient = new DefaultHttpClient();
 		ResponseHandler<String> resonseHandler = new BasicResponseHandler();
 		HttpPost postMethod = new HttpPost(uri+"/module/sensorreading/sr.form");    
@@ -412,14 +443,13 @@ private  class MyAsyncTask extends AsyncTask<String, String, String>{
 		 
 	
 
-@Override
-public void onClick(View v) {
-	
-	
-		query=sensor.getText().toString();	
-	  new MyAsyncTask().execute(username,password,url,query);
-	
-	
-}
-	
+	@Override
+	public void onClick(View v) {
+		
+		
+			query=sensor.getText().toString();	
+		  new MyAsyncTask().execute(username,password,url,query);
+		
+		
+	}		
 }

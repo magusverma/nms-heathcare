@@ -1,0 +1,1 @@
+07-05 01:36:57.620: I/System.out(9785): Emitting 12{sensor=12, status=pending, readings={5092=100, 5090=100}, patient=3, _rev=1-92cb26e0b32a05a0e176358dd03433bc, _id=c5884bbd-70df-48c0-aa8d-867f91da2757}

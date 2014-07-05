@@ -54,14 +54,15 @@ public class Login extends ActionBarActivity implements View.OnClickListener{
         //btn.setOnClickListener((android.view.View.OnClickListener) this);;  
         
         // CouchBase Wrangling
-//      Manager manager = null;
-//		try {
-//			manager = new Manager(new AndroidContext(this), Manager.DEFAULT_OPTIONS);
-//			System.out.println("Manager Created!");
-//		} catch (IOException e1) {
-//			e1.printStackTrace();
-//		}
-//        couch_api a = new couch_api(manager);
+      Manager manager = null;
+		try {
+			manager = new Manager(new AndroidContext(this), Manager.DEFAULT_OPTIONS);
+			System.out.println("Manager Created!");
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+        couch_api a = new couch_api(manager);
+       
 //        
 //        a.createDocument("concept", a.makeConceptMap(2, "uuid-of00concept2", "Weight or Something"));
 //        a.createDocument("patient",a.makePatientMap(2, "Mahesh"));
@@ -70,11 +71,15 @@ public class Login extends ActionBarActivity implements View.OnClickListener{
 //        concepts.add("First Concept uuid");
 //        concepts.add("Second Concept uuid");
 //        a.createDocument("sensor", a.makeSensorMap(1, "My Sensor", concepts));
-//        
+//    
+        
+//        a.clearAllDatabases();
 //        HashMap<String, Object> readings = new HashMap<String, Object>();
-//    	readings.put("5090", "100");
-//    	readings.put("5092", "100");
-//	    a.createDocument("reading",a.makeReadingMap(1, 1,readings ));        
+//    	readings.put("576b65fc-ddf8-11e3-b4c4-a0b3cc71229c", "100");
+//    	readings.put("576b68b0-ddf8-11e3-b4c4-a0b3cc71229c", "100");
+//	    a.createDocument("reading",a.makeReadingMap("3", "2",readings ));   
+	    
+	    
 //        
 //        a.getAllDocument();
         //End CouchBase Wrangling

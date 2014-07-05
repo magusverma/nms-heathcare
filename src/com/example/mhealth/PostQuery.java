@@ -181,7 +181,7 @@ public class PostQuery extends ActionBarActivity implements View.OnClickListener
 	
 	}
 	
-		private  class DoAsyncTask extends AsyncTask<String, String, String>{
+		public  class DoAsyncTask extends AsyncTask<String, String, String>{
 				
 				String res;
 				  @Override

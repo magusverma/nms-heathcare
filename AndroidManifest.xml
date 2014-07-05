@@ -82,6 +82,30 @@
             android:name="com.example.mhealth.Create_Activity"
             android:label="@string/title_activity_create_" >
         </activity>
+        <activity
+            android:name="com.example.mhealth.ItemListActivity"
+            android:label="@string/title_item_list" >
+        </activity>
+        <activity
+            android:name="com.example.mhealth.ItemDetailActivity"
+            android:label="@string/title_item_detail"
+            android:parentActivityName="com.example.mhealth.ItemListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.mhealth.ItemListActivity" />
+        </activity>
+        <activity
+            android:name="com.example.mhealth.SyncActivity"
+            android:label="@string/title_activity_sync" >
+        </activity>
+        <activity
+            android:name="com.example.mhealth.ShowDbData"
+            android:label="@string/title_activity_show_db_data"
+            android:parentActivityName="com.example.mhealth.SyncActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.mhealth.SyncActivity" />
+        </activity>
     </application>
 
 </manifest>
