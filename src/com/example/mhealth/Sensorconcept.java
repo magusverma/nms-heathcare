@@ -33,6 +33,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Document;
 import com.couchbase.lite.Manager;
 import com.couchbase.lite.android.AndroidContext;
@@ -352,7 +353,8 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
 					String pat = patient.getText().toString();
 					String sens = sensor.getText().toString();
 					ca.createDocument("reading", ca.makeReadingMap(pat, sens, readings));
-				//					
+				//
+				ca.push_readings(username, password, url);
 			}
 			
 			else{
@@ -384,7 +386,20 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
 		}
 		
 		 protected void onPostExecute(String params){
-			 Toast.makeText(getApplicationContext(),"Successful", Toast.LENGTH_LONG).show();
+			 try {
+				ca.getDatabase(ca.readings_db_name).getView(ca.pending_reading_view).createQuery().run();
+			} catch (CouchbaseLiteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} //refresh view
+			 Integer rows_left = ca.getDatabase(ca.readings_db_name).getView(ca.pending_reading_view).dump().size();
+			 System.out.println("Rows Left = "+rows_left);
+			 if (rows_left>0){
+				 Toast.makeText(getApplicationContext(),"Queued , Will be Sent when Network Available", Toast.LENGTH_LONG).show();
+			 }
+			 else{
+				 Toast.makeText(getApplicationContext(),"Successful", Toast.LENGTH_LONG).show();
+			 }
 		 }
 		
 		
