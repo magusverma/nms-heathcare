@@ -389,7 +389,10 @@ public class couch_api{
 				document_being_pushed.putProperties(updateProperties);
 			    Log.d(TAG, "updated retrievedDocument=" + String.valueOf(document_being_pushed.getProperties()));
 			    pushed += 1;
-			} catch (JSONException e) {
+			} catch (NullPointerException e){
+				e.printStackTrace();
+			}
+			catch (JSONException e) {
 				System.out.println("Couldn't Create JSON Object for Pending Reading");
 				e.printStackTrace();
 			}		

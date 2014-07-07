@@ -35,6 +35,26 @@ public class SyncActivity extends ActionBarActivity {
 	String password;
 	String url;
 	
+	public void init_ca(){
+		if(ca==null){
+			Manager manager = null;
+			try {
+				manager = new Manager(new AndroidContext(this), Manager.DEFAULT_OPTIONS);
+				System.out.println("Manager Created!");
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		    this.ca = new couch_api(manager);
+		    if(ca == null){
+		    	System.out.println("Failed to Set CouchApi");
+		    }      
+		    System.out.println("Initialized ca in Sync Activity");
+		}
+		else{
+			System.out.println("ca variable already initialized");
+		}
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -48,19 +68,7 @@ public class SyncActivity extends ActionBarActivity {
 		password = sharedPref.getString(getString(R.string.password), "");
 		url = sharedPref.getString(getString(R.string.url), "");
 		
-		//Couch Initialize
-			Manager manager = null;
-			try {
-				manager = new Manager(new AndroidContext(this), Manager.DEFAULT_OPTIONS);
-				System.out.println("Manager Created!");
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-	        this.ca = new couch_api(manager);
-	        if(ca == null){
-	        	System.out.println("Failed to Set CouchApi");
-	        }        
-		//
+		init_ca();
 
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
