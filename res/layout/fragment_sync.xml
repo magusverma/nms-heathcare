@@ -49,25 +49,4 @@
         android:onClick="viewReadings"
         android:text="Visualize Pending Readings" />
 
-    <Button
-        android:id="@+id/button2"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/Button04"
-        android:layout_alignRight="@+id/Button04"
-        android:layout_below="@+id/Button04"
-        android:onClick="syncConcepts"
-        android:text="Sync Concepts" />
-
-    <Button
-        android:id="@+id/button3"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/button2"
-        android:layout_centerHorizontal="true"
-        android:onClick="viewConcepts"
-        android:text="View Concepts" />
-
 </RelativeLayout>

@@ -194,10 +194,10 @@ public class GetQuery extends ActionBarActivity implements View.OnClickListener 
 		// Couch Wrangling
 			//This does httpget and adds entries to sensor database
 			
-			ca.clearAllDatabases();
-			ca.syncSensors(username, password, url);
-			ca.UpdateorCreateViews();
-			ca.getSensor("jamun");
+//			ca.clearAllDatabases();
+//			ca.syncSensors(username, password, url);
+//			ca.UpdateorCreateViews();
+//			ca.getSensor("jamun");
 		// Couch Wrangling Ends here
 		
 		return (str);            	

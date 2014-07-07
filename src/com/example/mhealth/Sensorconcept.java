@@ -334,6 +334,13 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
 			Document retrievedDocument = ca.getSensor(params[3]);
 			if(retrievedDocument != null){
 				System.out.println("Using Sensor Found in Database");
+			}
+			else{
+				System.out.println("Looking up Sensors online");
+				new SyncActivity().syncSensors(params[0],params[1], params[2]);
+				retrievedDocument = ca.getSensor(params[3]);
+			}
+			if(retrievedDocument != null){
 				HashMap<String,Object> sensor_concepts = (HashMap<String, Object>) ((Map) retrievedDocument.getProperty("sensor_concepts"));
 				res2 = new String("");
 				for (String key: sensor_concepts.keySet()){
@@ -356,31 +363,35 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
 				//
 				ca.push_readings(username, password, url);
 			}
-			
 			else{
-				try {
-					res1 = (Httpget(params[0],params[1], params[2],params[3]));
-				} catch (ClientProtocolException e1) {
-					e1.printStackTrace();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-				   try {
-					res2=JsonParse2(res1);
-					System.out.println("res2:"+res2);
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-				   try {
-					res3=Httppost(params[0],params[1],params[2],res2,params[4],sensor.getText().toString(),patient.getText().toString());
-				} catch (ClientProtocolException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
+				System.out.println("Couldn't Find the Sensor Online");
 			}
+
+			// Online Looking fallback
+//			else{
+//				try {
+//					res1 = (Httpget(params[0],params[1], params[2],params[3]));
+//				} catch (ClientProtocolException e1) {
+//					e1.printStackTrace();
+//				} catch (IOException e1) {
+//					e1.printStackTrace();
+//				}
+//				   try {
+//					res2=JsonParse2(res1);
+//					System.out.println("res2:"+res2);
+//				} catch (JSONException e) {
+//					e.printStackTrace();
+//				}
+//				   try {
+//					res3=Httppost(params[0],params[1],params[2],res2,params[4],sensor.getText().toString(),patient.getText().toString());
+//				} catch (ClientProtocolException e) {
+//					e.printStackTrace();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				} catch (JSONException e) {
+//					e.printStackTrace();
+//				}
+//			}
 			return res3;
 			
 		}

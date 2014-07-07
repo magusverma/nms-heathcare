@@ -6,8 +6,21 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.couchbase.lite.CouchbaseLiteException;
+import com.couchbase.lite.Database;
 import com.couchbase.lite.Manager;
 import com.couchbase.lite.android.AndroidContext;
 
@@ -94,7 +107,8 @@ public class SyncActivity extends ActionBarActivity {
 		@Override
 		protected String doInBackground(String... arg0) {
 			System.out.println("Doing AsyncSensors");
-			Integer synced_count = ca.syncSensors(username, password, url);
+//			Integer synced_count = ca.syncSensors(username, password, url);
+			Integer synced_count = syncSensors(username, password, url);
 			return synced_count.toString();
 		}
 		protected void onPostExecute(String synced_count){
@@ -171,7 +185,6 @@ public class SyncActivity extends ActionBarActivity {
 	/** Called when the user clicks the syncConcepts button */
 	public void syncConcepts(View view) {
 		System.out.println("Syncing Concepts");
-		String csvFile = "/media/clone/adt-bundle-linux-x86-20140321/ws/Login/res/conceptDictionary1714_1323.csv";
 		BufferedReader br = null;
 		String line = "";
 		String cvsSplitBy = ",";
@@ -223,5 +236,129 @@ public class SyncActivity extends ActionBarActivity {
 		startActivity(intent);
 	}
 	
+	public Integer syncSensors(String username, String password, String url){
+//		TODO:Remove This
+//		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+//		StrictMode.setThreadPolicy(policy);
+		
+		//Flush
+		Database database = ca.getDatabase(ca.sensors_db_name);
+		System.out.println("Flushing Documents = "+database.getDocumentCount());
+		try {
+			database.delete();
+		} catch (CouchbaseLiteException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		database = ca.getDatabase(ca.sensors_db_name);
+		System.out.println("Document Count = "+database.getDocumentCount());
+		//
+		
+		System.out.println("Username="+username);
+		System.out.println("Password="+password);
+		System.out.println("URL="+url);
+		
+		
+		HttpClient httpClient = new DefaultHttpClient();
+		HttpGet httpGet = new HttpGet(url+"/ws/rest/v1/sensor/scm");
+		httpGet.addHeader(BasicScheme.authenticate(
+		 new UsernamePasswordCredentials(username, password),
+		 "UTF-8", false));
+
+		HttpResponse httpResponse = null;
+		try {
+			httpResponse = httpClient.execute(httpGet);
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String str = null;
+		try {
+			HttpEntity responseEntity = httpResponse.getEntity();
+			str = GetQuery.inputStreamToString(responseEntity.getContent()).toString();
+			httpClient.getConnectionManager().shutdown();
+//			System.out.println(str);
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try{
+			JSONObject j = new JSONObject(str);
+			JSONArray ja = (JSONArray) j.get("results");
+			for (int it = 0 ; it < ja.length(); it++) {
+				System.out.println(ja.get(it));
+				JSONObject scm = (JSONObject) ja.get(it);
+				String sensor_id =  ((JSONObject) scm.get("sensor")).get("sensor_id").toString() ;
+				String sensor_name = ((JSONObject) scm.get("sensor")).get("sensor_name").toString();
+				JSONArray concepts_array = (JSONArray) scm.get("concepts");
+				HashMap<String,String> concepts = new HashMap<String,String>();
+				for (int i_ca = 0 ; i_ca < concepts_array.length(); i_ca++) {
+					//display":"BANDS","uuid":"576829b5-ddf8-11e3-b4c4-a0b3cc71229c"}]}
+					JSONObject concept = (JSONObject) concepts_array.get(i_ca);
+					String concept_id = getConceptId(concept.get("display").toString());
+					System.out.println("concept_id: " +concept_id );
+					// Old UUID Implementation
+//					 concepts.put((String)concept.get("display"),(String) concept.get("uuid"));
+					// New ID Approach
+					concepts.put((String)concept.get("display"),concept_id);
+				}
+				System.out.println("Adding following SCM to LocalStore"+ sensor_id+sensor_name+concepts);
+				ca.createDocument("sensor", ca.makeSensorMap(sensor_id,sensor_name,concepts));
+			}
+		}
+		catch(Exception e){
+			
+		}
+		return database.getDocumentCount();
+	}
+
+	/*
+	 * Returns concept id for a concept name by looking it up from a csv
+	 */
+	public String getConceptId(String concept_name_to_search_for) {
+		System.out.println(concept_name_to_search_for);
+		BufferedReader br = null;
+		String line = "";
+		String cvsSplitBy = ",";
+		concept_name_to_search_for = concept_name_to_search_for.replaceAll(",","");
+		try {
+			InputStream is = getResources().openRawResource(R.raw.cd);
+			br = new BufferedReader(new InputStreamReader(is));
+			while ((line = br.readLine()) != null) {
+				String[] concept_line = line.split(cvsSplitBy);
+				String concept_id = "", concept_name = "";
+				for (int i = 0; i < concept_line.length; i++) {
+					if (i==0) concept_id = concept_line[0];
+					else{
+						concept_name = concept_name + concept_line[i];
+					}
+				}
+				concept_name = concept_name.replaceAll("\"", "");
+				if(concept_name.equals(concept_name_to_search_for))
+					return concept_id;
+				System.out.println(concept_id+" : "+concept_name);
+			}
+	 
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return "-1";
+	}
 	
 }

@@ -1,0 +1,3 @@
+07-08 02:48:50.371: I/System.out(8461): ANEMIA, BLOOD LOSS
+07-08 02:48:50.373: I/System.out(8461): Concept Id : Name
+07-08 02:48:50.373: I/System.out(8461): 1 : ANEMIA BLOOD LOSS

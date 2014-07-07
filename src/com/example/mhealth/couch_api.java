@@ -8,7 +8,11 @@ package com.example.mhealth;
  *
  */
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,6 +38,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
+import android.view.View;
+import android.widget.Toast;
 
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Database;
@@ -212,82 +218,87 @@ public class couch_api{
 		map.put("status", status);
 		return map;
 	}
-	public Integer syncSensors(String username, String password, String url){
-//		TODO:Remove This
-//		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-//		StrictMode.setThreadPolicy(policy);
-		
-		//Flush
-		Database database = getDatabase(sensors_db_name);
-		System.out.println("Flushing Documents = "+database.getDocumentCount());
-		try {
-			database.delete();
-		} catch (CouchbaseLiteException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		database = getDatabase(sensors_db_name);
-		System.out.println("Document Count = "+database.getDocumentCount());
-		//
-		
-		System.out.println("Username="+username);
-		System.out.println("Password="+password);
-		System.out.println("URL="+url);
-		
-		
-		HttpClient httpClient = new DefaultHttpClient();
-		HttpGet httpGet = new HttpGet(url+"/ws/rest/v1/sensor/scm");
-		httpGet.addHeader(BasicScheme.authenticate(
-		 new UsernamePasswordCredentials(username, password),
-		 "UTF-8", false));
-
-		HttpResponse httpResponse = null;
-		try {
-			httpResponse = httpClient.execute(httpGet);
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		String str = null;
-		try {
-			HttpEntity responseEntity = httpResponse.getEntity();
-			str = GetQuery.inputStreamToString(responseEntity.getContent()).toString();
-			httpClient.getConnectionManager().shutdown();
-//			System.out.println(str);
-		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try{
-			JSONObject j = new JSONObject(str);
-			JSONArray ja = (JSONArray) j.get("results");
-			for (int it = 0 ; it < ja.length(); it++) {
-				//System.out.println(ja.get(it));
-				JSONObject scm = (JSONObject) ja.get(it);
-				String sensor_id =  ((JSONObject) scm.get("sensor")).get("sensor_id").toString() ;
-				String sensor_name = ((JSONObject) scm.get("sensor")).get("sensor_name").toString();
-				JSONArray concepts_array = (JSONArray) scm.get("concepts");
-				HashMap<String,String> concepts = new HashMap<String,String>();
-				for (int i_ca = 0 ; i_ca < concepts_array.length(); i_ca++) {
-					//display":"BANDS","uuid":"576829b5-ddf8-11e3-b4c4-a0b3cc71229c"}]}
-					JSONObject concept = (JSONObject) concepts_array.get(i_ca);
-					concepts.put((String)concept.get("display"),(String) concept.get("uuid"));
-				}
-				System.out.println("Adding following SCM to LocalStore"+ sensor_id+sensor_name+concepts);
-				this.createDocument("sensor", this.makeSensorMap(sensor_id,sensor_name,concepts));
-			}
-		}
-		catch(Exception e){
-			
-		}
-		return database.getDocumentCount();
-	}
+//	public Integer syncSensors(String username, String password, String url){
+////		TODO:Remove This
+////		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+////		StrictMode.setThreadPolicy(policy);
+//		
+//		//Flush
+//		Database database = getDatabase(sensors_db_name);
+//		System.out.println("Flushing Documents = "+database.getDocumentCount());
+//		try {
+//			database.delete();
+//		} catch (CouchbaseLiteException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+//		database = getDatabase(sensors_db_name);
+//		System.out.println("Document Count = "+database.getDocumentCount());
+//		//
+//		
+//		System.out.println("Username="+username);
+//		System.out.println("Password="+password);
+//		System.out.println("URL="+url);
+//		
+//		
+//		HttpClient httpClient = new DefaultHttpClient();
+//		HttpGet httpGet = new HttpGet(url+"/ws/rest/v1/sensor/scm");
+//		httpGet.addHeader(BasicScheme.authenticate(
+//		 new UsernamePasswordCredentials(username, password),
+//		 "UTF-8", false));
+//
+//		HttpResponse httpResponse = null;
+//		try {
+//			httpResponse = httpClient.execute(httpGet);
+//		} catch (ClientProtocolException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		String str = null;
+//		try {
+//			HttpEntity responseEntity = httpResponse.getEntity();
+//			str = GetQuery.inputStreamToString(responseEntity.getContent()).toString();
+//			httpClient.getConnectionManager().shutdown();
+////			System.out.println(str);
+//		} catch (IllegalStateException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		try{
+//			JSONObject j = new JSONObject(str);
+//			JSONArray ja = (JSONArray) j.get("results");
+//			for (int it = 0 ; it < ja.length(); it++) {
+//				System.out.println(ja.get(it));
+//				JSONObject scm = (JSONObject) ja.get(it);
+//				String sensor_id =  ((JSONObject) scm.get("sensor")).get("sensor_id").toString() ;
+//				String sensor_name = ((JSONObject) scm.get("sensor")).get("sensor_name").toString();
+//				JSONArray concepts_array = (JSONArray) scm.get("concepts");
+//				HashMap<String,String> concepts = new HashMap<String,String>();
+//				for (int i_ca = 0 ; i_ca < concepts_array.length(); i_ca++) {
+//					//display":"BANDS","uuid":"576829b5-ddf8-11e3-b4c4-a0b3cc71229c"}]}
+//					JSONObject concept = (JSONObject) concepts_array.get(i_ca);
+////					String concept_id = new SyncActivity().getConceptId(concept.get("display").toString());
+////					System.out.println("concept_id: " +concept_id );
+//					// Old UUID Implementation
+//					 concepts.put((String)concept.get("display"),(String) concept.get("uuid"));
+//					// New ID Approach
+////					concepts.put((String)concept.get("display"),concept_id);
+//				}
+//				System.out.println("Adding following SCM to LocalStore"+ sensor_id+sensor_name+concepts);
+//				this.createDocument("sensor", this.makeSensorMap(sensor_id,sensor_name,concepts));
+//			}
+//		}
+//		catch(Exception e){
+//			
+//		}
+//		return database.getDocumentCount();
+//	}
 	public void UpdateorCreateViews(){
 		Database database = getDatabase(sensors_db_name);
 		com.couchbase.lite.View sv = database.getView(sensor_view);
@@ -448,5 +459,6 @@ public class couch_api{
 		}
 		return response;
 	}
+	
 	//Log.d(TAG, "Begin Hello World App");	
 }
