@@ -19,5 +19,7 @@
     <string name="title_activity_sync">SyncActivity</string>
     <string name="sync_button">Sync Data</string>
     <string name="title_activity_show_db_data">ShowDbData</string>
-
+	<string name="username">username</string>
+	<string name="password">password</string>
+	<string name="url">url</string>
 </resources>

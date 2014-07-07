@@ -23,6 +23,8 @@ import com.couchbase.lite.android.AndroidContext;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -77,9 +79,15 @@ public class GetQuery extends ActionBarActivity implements View.OnClickListener 
 		gender=(TextView)findViewById(R.id.textView15);
 		birthdate=(TextView)findViewById(R.id.textView17);
 		Bundle extras = getIntent().getExtras();
-		username= extras.getString("uname");
+		/*username= extras.getString("uname");
 		password = extras.getString("pword");
 		url=extras.getString("url");
+		*/
+		SharedPreferences sharedPref = getSharedPreferences("mhealth", Context.MODE_PRIVATE);
+        username = sharedPref.getString(getString(R.string.username), "");
+		password = sharedPref.getString(getString(R.string.password), "");
+		url = sharedPref.getString(getString(R.string.url), "");
+		System.out.println(username+" "+password+" "+url+" GetQuery");
 		get.setOnClickListener(this);
 		
 		//

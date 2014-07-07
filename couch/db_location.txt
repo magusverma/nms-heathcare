@@ -1,0 +1,1 @@
+07-06 20:39:52.024: I/System.out(21805): com.couchbase.lite.Database[/data/data/com.example.mhealth/files/concept.cblite]

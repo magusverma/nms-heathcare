@@ -1,0 +1,13 @@
+database name:concept 
+Documents = {id:5090 , uuid:asda-asdasd ,name:”asdaSD” }
+	Query 1 Basic where name=? or id=? get Document
+
+database name:sensor 
+Documents = {id:12 , name:”BPReader” concepts:[5090,5092] }
+			Get Array of Concepts of for name=?
+
+database name : patient
+		Documents = {id = 123, name = “asd”}
+
+payload table:
+		{patient id = “1” sensor id = 12 readings : {5090 = 12, 567 = 134}};

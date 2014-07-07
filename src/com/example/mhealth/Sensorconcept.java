@@ -38,6 +38,8 @@ import com.couchbase.lite.Manager;
 import com.couchbase.lite.android.AndroidContext;
 
 import android.os.Bundle;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -132,10 +134,14 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
        main1.setOrientation(LinearLayout.VERTICAL);
   	 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
   	 Bundle extras = getIntent().getExtras(); 
-  	 username= extras.getString("uname");
+/*  	 username= extras.getString("uname");
 	 password = extras.getString("pword");	
 	 url=extras.getString("url");
-     
+*/  
+  	SharedPreferences sharedPref = getSharedPreferences("mhealth", Context.MODE_PRIVATE);
+    username = sharedPref.getString(getString(R.string.username), "");
+	password = sharedPref.getString(getString(R.string.password), "");
+	url = sharedPref.getString(getString(R.string.url), "");
 	 //Magus
 		Manager manager = null;
 		try {

@@ -60,6 +60,7 @@ public class couch_api{
 	final String readings_db_name = "reading" ;
 	final String sensor_view = "sensor_view" ;
 	final String pending_reading_view = "pending_reading" ;
+	final String concepts_view = "concepts_view" ;
 	
 //	String[] dbs = {"sensor","concept","patient","reading"};
 	
@@ -105,23 +106,23 @@ public class couch_api{
 		return null;
 	}
 	public void createDocument(String dbname,Map<String, Object> docContent){
-		Log.d(TAG, "Writing in database="+dbname+" docContent=" + String.valueOf(docContent));
+		//Log.d(TAG, "Writing in database="+dbname+" docContent=" + String.valueOf(docContent));
 		Database database = getDatabase(dbname);
-		System.out.println(database);
+		//System.out.println(database);
 		Document document = database.createDocument();
 		// add content to document and write the document to the database
 		try {
 		    document.putProperties(docContent);
-		    Log.d (TAG, "Document written to database named " + dbname + " with ID = " + document.getId());
+		  //  Log.d (TAG, "Document written to database named " + dbname + " with ID = " + document.getId());
 		} catch (CouchbaseLiteException e) {
 		    Log.e(TAG, "Cannot write document to database", e);
 		}
 		// save the ID of the new document
-		String docID = document.getId();
+		//String docID = document.getId();
 		// retrieve the document from the database
-		Document retrievedDocument = database.getDocument(docID);
+		//Document retrievedDocument = database.getDocument(docID);
 		// display the retrieved document
-		Log.d(TAG, "Checking if written by retrieving , retrievedDocument:\n" + String.valueOf(retrievedDocument.getProperties()));              
+		//Log.d(TAG, "Checking if written by retrieving , retrievedDocument:\n" + String.valueOf(retrievedDocument.getProperties()));              
 	}
 	public QueryEnumerator getAllDocument(String dbname){
 		Database database = getDatabase(dbname);
@@ -173,10 +174,9 @@ public class couch_api{
 		}
 	}
 	//Concept Document = {id:5090 , uuid:asda-asdasd ,name:”asdaSD” }
-	public Map<String, Object> makeConceptMap(Integer concept_id,String concept_uuid,String concept_name){
+	public Map<String, Object> makeConceptMap(String concept_id,String concept_name){
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("concept_id", concept_id);
-		map.put("concept_uuid", concept_uuid);
 		map.put("concept_name", concept_name);		
 		return map;
 	}
@@ -315,7 +315,17 @@ public class couch_api{
 		    		emitter.emit(document.get("sensor"), document);		
 		    	}		    					
 		    }
-		}, "2");		
+		}, "2");	
+		
+		Database concept_db = getDatabase(concepts_db_name);
+		com.couchbase.lite.View concepts = concept_db.getView(concepts_view);
+		concepts.setMap(
+			new Mapper() {
+		    @Override
+		    public void map(Map<String, Object> document, Emitter emitter) {
+		    	emitter.emit(document.get("concept_id"), document.get("concept_name"));	
+		    }
+		}, "1");	
 		
 	}
 	// return Map<String,Object> ? 
@@ -392,6 +402,7 @@ public class couch_api{
 	}
 	
 	public String get_view_data(String dbname,String view_name){
+		UpdateorCreateViews();
 		Database database = getDatabase(dbname);
 		com.couchbase.lite.View v = database.getView(view_name);
 		try {
@@ -401,7 +412,10 @@ public class couch_api{
 		}  
 		
 		// 
-		getSensor("2");
+		//getSensor("2");
+		//
+		//
+			
 		//
 	    return v.dump().toString();		 
 	}

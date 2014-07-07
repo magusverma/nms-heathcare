@@ -23,6 +23,8 @@ import org.json.JSONObject;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -60,10 +62,14 @@ public class Create_Activity extends ActionBarActivity implements View.OnClickLi
 	       main1.setOrientation(LinearLayout.VERTICAL);
 	  	 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 	  	 Bundle extras = getIntent().getExtras(); 
-	  	 username= extras.getString("uname");
+	  	 /*username= extras.getString("uname");
 		 password = extras.getString("pword");	
-		 url=extras.getString("url");
-	     S=new TextView(this);
+		 url=extras.getString("url");*/
+	  	SharedPreferences sharedPref = getSharedPreferences("mhealth", Context.MODE_PRIVATE);
+        username = sharedPref.getString(getString(R.string.username), "");
+		password = sharedPref.getString(getString(R.string.password), "");
+		url = sharedPref.getString(getString(R.string.url), "");
+		S=new TextView(this);
 	      S.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));     
 	      S.setText("Enter sensor Name");
 	      main1.addView(S);

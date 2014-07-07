@@ -8,7 +8,9 @@ import com.couchbase.lite.android.AndroidContext;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,9 +40,15 @@ public class Options extends ActionBarActivity implements View.OnClickListener{
 		b4=(Button)findViewById(R.id.button5);
 		b5=(Button)findViewById(R.id.button6);
 		Bundle extras = getIntent().getExtras();
-		username= extras.getString("uname");
-		password = extras.getString("pword");
-		url = extras.getString("url");
+		
+//		username= extras.getString("uname");
+//		password = extras.getString("pword");
+//		url = extras.getString("url");
+		SharedPreferences sharedPref = getSharedPreferences("mhealth", Context.MODE_PRIVATE);
+        username = sharedPref.getString(getString(R.string.username), "");
+		password = sharedPref.getString(getString(R.string.password), "");
+		url = sharedPref.getString(getString(R.string.url), "");
+        
 		//Toast.makeText(this, username+password, Toast.LENGTH_LONG).show();
 		b1.setOnClickListener(this);
 		b2.setOnClickListener(this);
@@ -56,9 +64,9 @@ public class Options extends ActionBarActivity implements View.OnClickListener{
 		//Toast.makeText(this, username+"   "+password, Toast.LENGTH_LONG).show();
 		//Toast.makeText(this, "entered", Toast.LENGTH_LONG).show();
 		Intent intent = new Intent(this, GetQuery.class);
-		intent.putExtra("uname",username );
-		intent.putExtra("pword",password);
-		intent.putExtra("url", url);
+//		intent.putExtra("uname",username );
+//		intent.putExtra("pword",password);
+//		intent.putExtra("url", url);
 		startActivity(intent);
 		
 	}
@@ -66,9 +74,9 @@ public class Options extends ActionBarActivity implements View.OnClickListener{
 	public void buttonClick2()
 	{
 		Intent intent1 = new Intent(this, PostQuery.class);
-		intent1.putExtra("uname",username );
-		intent1.putExtra("pword",password);
-		intent1.putExtra("url", url);
+//		intent1.putExtra("uname",username );
+//		intent1.putExtra("pword",password);
+//		intent1.putExtra("url", url);
 		startActivity(intent1);
 	}
 	public void buttonClick3()
@@ -82,17 +90,17 @@ public class Options extends ActionBarActivity implements View.OnClickListener{
 	public void buttonClick4()
 	{
 		Intent intent1 = new Intent(this,Sensorconcept.class);
-		intent1.putExtra("uname",username );
-		intent1.putExtra("pword",password);
-		intent1.putExtra("url", url);
+//		intent1.putExtra("uname",username );
+//		intent1.putExtra("pword",password);
+//		intent1.putExtra("url", url);
 		startActivity(intent1);
 	}
 	public void buttonClick5()
 	{
 		Intent intent1 = new Intent(this,Create_Activity.class);
-		intent1.putExtra("uname",username );
-		intent1.putExtra("pword",password);
-		intent1.putExtra("url", url);
+//		intent1.putExtra("uname",username );
+//		intent1.putExtra("pword",password);
+//		intent1.putExtra("url", url);
 		startActivity(intent1);
 	}
 	
@@ -100,13 +108,21 @@ public class Options extends ActionBarActivity implements View.OnClickListener{
 	public void startSyncActivity(View view) {
 	    System.out.println("Clicked Sync Button");
 		Intent intent1 = new Intent(this,SyncActivity.class);
-		intent1.putExtra("uname",username );
-		intent1.putExtra("pword",password);
-		intent1.putExtra("url", url);
+//		intent1.putExtra("uname",username );
+//		intent1.putExtra("pword",password);
+//		intent1.putExtra("url", url);
 		startActivity(intent1);
 	}
 	
-
+	/** Called when the user clicks the Settings button */
+	public void SettingsActivity(View view) {
+	    System.out.println("Clicked Sync Button");
+		Intent intent1 = new Intent(this,Login.class);
+//		intent1.putExtra("uname",username );
+//		intent1.putExtra("pword",password);
+//		intent1.putExtra("url", url);
+		startActivity(intent1);
+	}
 	public void onClick(View v) {
 		
 			switch (v.getId())

@@ -3,6 +3,8 @@ package com.example.mhealth;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -61,9 +63,14 @@ public class PostQuery extends ActionBarActivity implements View.OnClickListener
 		age=(EditText)findViewById(R.id.editText7);
 		bt=(Button)findViewById(R.id.button5);
 		Bundle extras = getIntent().getExtras();
-		username= extras.getString("uname");
+		/*username= extras.getString("uname");
 		password = extras.getString("pword");
 		url=extras.getString("url");
+		*/
+		SharedPreferences sharedPref = getSharedPreferences("mhealth", Context.MODE_PRIVATE);
+        username = sharedPref.getString(getString(R.string.username), "");
+		password = sharedPref.getString(getString(R.string.password), "");
+		url = sharedPref.getString(getString(R.string.url), "");
 		bt.setOnClickListener(this);
 
 

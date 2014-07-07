@@ -21,7 +21,9 @@ import org.json.JSONObject;
 import com.couchbase.lite.Manager;
 import com.couchbase.lite.android.AndroidContext;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -29,6 +31,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.mhealth.R;
 
 import com.couchbase.lite.Manager;
 
@@ -49,19 +53,29 @@ public class Login extends ActionBarActivity implements View.OnClickListener{
 		user=(EditText)findViewById(R.id.editText1);
          pwd=(EditText)findViewById(R.id.editText2);
          add=(EditText)findViewById(R.id.editText4);
+         
+         SharedPreferences sharedPref = getSharedPreferences("mhealth", Context.MODE_PRIVATE);
+         String use = sharedPref.getString(getString(R.string.username), "");
+         String pass = sharedPref.getString(getString(R.string.password), "");
+         String uri = sharedPref.getString(getString(R.string.url), "");
+         
+         user.setText(use);
+         pwd.setText(pass);
+         add.setText(uri);         
+
        btn=(Button)findViewById(R.id.button1);
         btn.setOnClickListener(this);
         //btn.setOnClickListener((android.view.View.OnClickListener) this);;  
         
         // CouchBase Wrangling
-      Manager manager = null;
-		try {
-			manager = new Manager(new AndroidContext(this), Manager.DEFAULT_OPTIONS);
-			System.out.println("Manager Created!");
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-        couch_api a = new couch_api(manager);
+//      Manager manager = null;
+//		try {
+//			manager = new Manager(new AndroidContext(this), Manager.DEFAULT_OPTIONS);
+//			System.out.println("Manager Created!");
+//		} catch (IOException e1) {
+//			e1.printStackTrace();
+//		}
+//        couch_api a = new couch_api(manager);
        
 //        
 //        a.createDocument("concept", a.makeConceptMap(2, "uuid-of00concept2", "Weight or Something"));
@@ -73,7 +87,7 @@ public class Login extends ActionBarActivity implements View.OnClickListener{
 //        a.createDocument("sensor", a.makeSensorMap(1, "My Sensor", concepts));
 //    
         
-        a.clearAllDatabases();
+//        a.clearAllDatabases();
 //        HashMap<String, Object> readings = new HashMap<String, Object>();
 //    	readings.put("576b65fc-ddf8-11e3-b4c4-a0b3cc71229c", "100");
 //    	readings.put("576b68b0-ddf8-11e3-b4c4-a0b3cc71229c", "100");
@@ -87,15 +101,43 @@ public class Login extends ActionBarActivity implements View.OnClickListener{
 
 	public void buttonClick()
 	{
-		username = (user.getText().toString());
+		 username = (user.getText().toString());
 		 password= (pwd.getText().toString());
 		 url=(add.getText().toString());
 		//Toast.makeText(this, username+"  " + password, Toast.LENGTH_LONG).show();
-		Intent intent = new Intent(this, Options.class);
-		intent.putExtra("uname",username);
+//		Intent intent = new Intent(this, Options.class);
+		
+		//Previous Implementation
+/*		intent.putExtra("uname",username);
 		intent.putExtra("pword",password);
 		intent.putExtra("url", url);
-		startActivity(intent);
+*/		
+		//New Implementation
+		SharedPreferences sharedPref = getSharedPreferences("mhealth", Context.MODE_PRIVATE);
+        
+		SharedPreferences.Editor editor = sharedPref.edit();
+		editor.putString(getString(R.string.username), username);
+        editor.putString(getString(R.string.password), password);
+        editor.putString(getString(R.string.url), url);
+//        editor.putString("username", username);
+        editor.commit();
+        //http://192.168.1.7:8080/openmr
+//        String user = getResources().getString(R.string.username);
+//        String pass = getResources().getString(R.string.password);
+//        String uri = getResources().getString(R.string.url);
+        String user = sharedPref.getString(getString(R.string.username), "");
+        String pass = sharedPref.getString(getString(R.string.password), "");
+        String uri = sharedPref.getString(getString(R.string.url), "");
+        System.out.println(user+" "+pass+" "+uri);
+        Toast.makeText(this, "Settings Saved!", Toast.LENGTH_LONG).show();
+//      intent.putExtra("uname",user);
+//		intent.putExtra("pword",pass);
+//		intent.putExtra("url", uri);
+	}
+	
+	public void SwitchIntent(){
+		Intent intent = new Intent(this, Options.class);
+		startActivity(intent);		
 	}
 	
 	public static int Httpget (String username, String password, String url) throws ClientProtocolException, IOException, HttpHostConnectException
@@ -110,8 +152,6 @@ public class Login extends ActionBarActivity implements View.OnClickListener{
 		HttpResponse httpResponse = httpClient.execute(httpGet);
 		int status = httpResponse.getStatusLine().getStatusCode();
 		return status;
-		          	
-
 		
 	}
 	
@@ -148,6 +188,7 @@ private  class MyAsyncTask extends AsyncTask<String, String, String>{
 		  
 		  protected void onPostExecute(String params){
 			  //Toast.makeText(getApplicationContext(), "Invalid credentials", Toast.LENGTH_LONG).show();
+			  buttonClick();
 			 if(params.equals("cred"))
 			 {
 				 Toast.makeText(getApplicationContext(), "Invalid credentials", Toast.LENGTH_LONG).show();
@@ -162,7 +203,8 @@ private  class MyAsyncTask extends AsyncTask<String, String, String>{
 			 }
 			 else if (params.equals("successful"))
 			 {
-				 buttonClick();
+				 Toast.makeText(getApplicationContext(), "Settings Verified", Toast.LENGTH_LONG).show();
+//				 buttonClick();
 			 }
 		  }
 		  
@@ -193,14 +235,6 @@ private  class MyAsyncTask extends AsyncTask<String, String, String>{
 					break;
 					
 			}
-			
-		
 		}
-				
-			}
-
-
-
-	
-
+	}
 }
