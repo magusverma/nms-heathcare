@@ -91,6 +91,7 @@ public class GetQuery extends ActionBarActivity implements View.OnClickListener 
 		get.setOnClickListener(this);
 		
 		//
+		System.out.println("before manager");
 		Manager manager = null;
 		try {
 			manager = new Manager(new AndroidContext(this), Manager.DEFAULT_OPTIONS);
