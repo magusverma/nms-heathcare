@@ -362,4 +362,47 @@ public class SyncActivity extends ActionBarActivity {
 		return "-1";
 	}
 	
+	/*
+	 * Returns concept name for a concept id by looking it up from a csv
+	 */
+	public String getConceptName(String concept_id_to_search_for) {
+		System.out.println(concept_id_to_search_for);
+		BufferedReader br = null;
+		String line = "";
+		String cvsSplitBy = ",";
+		//concept_name_to_search_for = concept_name_to_search_for.replaceAll(",","");
+		try {
+			InputStream is = getResources().openRawResource(R.raw.cd);
+			br = new BufferedReader(new InputStreamReader(is));
+			while ((line = br.readLine()) != null) {
+				String[] concept_line = line.split(cvsSplitBy);
+				String concept_id = "", concept_name = "";
+				for (int i = 0; i < concept_line.length; i++) {
+					if (i==0) concept_id = concept_line[0];
+					else{
+						concept_name = concept_name + concept_line[i];
+					}
+				}
+				concept_name = concept_name.replaceAll("\"", "");
+				if(concept_id.equals(concept_id_to_search_for))
+					return concept_name;
+				System.out.println(concept_id+" : "+concept_name);
+			}
+	 
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return "-1";
+	}
+	
 }

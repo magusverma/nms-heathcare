@@ -94,6 +94,10 @@
             android:name="com.example.mhealth.Create_Activity"
             android:label="@string/title_activity_create_" >
         </activity>
+        <activity
+            android:name="com.example.mhealth.SensorConceptAuto"
+            android:label="@string/title_activity_sensor_concept_auto" >
+        </activity>
     </application>
 
 </manifest>

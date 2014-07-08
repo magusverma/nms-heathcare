@@ -20,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -42,7 +43,7 @@ public class Create_Sensor extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create__sensor);
 		bundle = getIntent().getExtras();
-		SharedPreferences prefs = getApplicationContext().getSharedPreferences(CRED,getApplicationContext().MODE_PRIVATE);
+		SharedPreferences prefs = getSharedPreferences("mhealth", Context.MODE_PRIVATE);
 	    new MyAsync().execute(prefs.getString("username", "admin"),prefs.getString("password", "Admin123"),prefs.getString("url",""));
 		
 	
