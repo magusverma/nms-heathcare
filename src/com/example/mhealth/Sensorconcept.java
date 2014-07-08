@@ -337,7 +337,8 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
 			}
 			else{
 				System.out.println("Looking up Sensors online");
-				new SyncActivity().syncSensors(params[0],params[1], params[2]);
+				//TODO
+//				new SyncActivity().syncSensors(params[0],params[1], params[2]);
 				retrievedDocument = ca.getSensor(params[3]);
 			}
 			if(retrievedDocument != null){

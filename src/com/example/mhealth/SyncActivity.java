@@ -71,6 +71,7 @@ public class SyncActivity extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		System.out.println("In Oncreate");
 		setContentView(R.layout.activity_sync);
 		Bundle extras = getIntent().getExtras();
 //		username= extras.getString("uname");
@@ -80,7 +81,7 @@ public class SyncActivity extends ActionBarActivity {
         username = sharedPref.getString(getString(R.string.username), "");
 		password = sharedPref.getString(getString(R.string.password), "");
 		url = sharedPref.getString(getString(R.string.url), "");
-		
+		System.out.println(username + " "+password+" "+url);
 		init_ca();
 
 		if (savedInstanceState == null) {

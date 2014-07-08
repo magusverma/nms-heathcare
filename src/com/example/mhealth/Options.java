@@ -108,7 +108,7 @@ public class Options extends ActionBarActivity implements View.OnClickListener{
 	public void startSyncActivity(View view) {
 	    System.out.println("Clicked Sync Button");
 		Intent intent1 = new Intent(this,SyncActivity.class);
-//		intent1.putExtra("uname",username );
+		intent1.putExtra("uname",username );
 //		intent1.putExtra("pword",password);
 //		intent1.putExtra("url", url);
 		startActivity(intent1);
