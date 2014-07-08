@@ -1,41 +1,29 @@
 package com.example.mhealth;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.widget.Toast;
 import android.widget.EditText;
-import android.content.*;
-import android.content.SharedPreferences.Editor;
-import android.graphics.AvoidXfermode.Mode;
-
+import android.widget.Toast;
 @SuppressLint("NewApi")
-public class MyBroadcastReceiver extends BroadcastReceiver {
-
+public class MyBroadcastReceiver2 extends BroadcastReceiver{
 	 Integer array[]=new Integer[5];
-	String a2[]=new String[5];
-	int n1=3;
-	
-	@Override
-	 public void onReceive(Context context, Intent intent) {
-		final String HIGH_SCORES = "HighScores";
-		SharedPreferences prefs = context.getSharedPreferences(HIGH_SCORES, context.MODE_PRIVATE);
+		String a2[]=new String[5];
+		int n1=3;
+		@Override
+		
+	public void onReceive(Context context, Intent intent) {
+		final String NEWAPP = "newApp";
+		SharedPreferences prefs = context.getSharedPreferences(NEWAPP, context.MODE_PRIVATE);
 				SharedPreferences.Editor editor = prefs.edit();
-	    	 Sensorconcept s=new Sensorconcept();
-	    	//Toast.makeText(context," in broadcast", Toast.LENGTH_SHORT).show();
-	    	List<EditText> e;
-	    	EditText e2;
-	    	 //s.allEds.get(1)
-	    		 int j=0;
-	    		
-	    		
-	    		// editor.putInt("array_size",2);
-	    		 int m=0;
+	    	int m=0;
+	    	Toast.makeText(context, "in cast 2", Toast.LENGTH_SHORT);
 	    		 Bundle bundle = intent.getExtras();
 	    		 if(bundle!=null)
 	    		 { Set<String> keys=bundle.keySet();
@@ -60,4 +48,9 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 	    		    	Toast.makeText(context,"values r null broadcast", Toast.LENGTH_LONG).show();   		    	
 	    		    }
 	}
-	}
+	
+	
+	
+	
+	
+}

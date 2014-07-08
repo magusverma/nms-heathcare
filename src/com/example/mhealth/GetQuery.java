@@ -110,7 +110,7 @@ public class GetQuery extends ActionBarActivity implements View.OnClickListener 
 	public String jsonParse(String str) throws JSONException
 	{
 		String info;
-		Integer Id;
+		String Id;
 		String name;
 		String uuid;
 		JSONObject obj = new JSONObject(str);
@@ -122,16 +122,19 @@ public class GetQuery extends ActionBarActivity implements View.OnClickListener 
 	
 	else
 	{
+		System.out.println(str);
 		JSONObject j1= (JSONObject)ja.get(0);
 		info = (String) j1.get("display");
 		uuid=(String)j1.get("uuid");
 		patient.setIdentifier(uuid);
-		String stri[] = info.split("-");
-		String temp = stri[0].trim();
-		Id=Integer.parseInt(temp);
+		String stri[] = info.split(" - ");
+		String temp = stri[0];
+		Id=temp;
 		patient.setPatientId(Id);
-		name=stri[1].substring(1);	
+		name=stri[1];
+		System.out.println(name);
 		String[] st= name.split("\\s+");
+		
 		if (st.length==1)
 		{
 			patient.setGivenName(st[0]);
@@ -306,8 +309,12 @@ public class GetQuery extends ActionBarActivity implements View.OnClickListener 
 		switch (v.getId())
 				{
 			case R.id.button4:
-				
-		  new MyAsyncTask().execute(username,password,url,query);
+				if(query.equalsIgnoreCase("u"))
+				{
+					Toast.makeText(getApplicationContext(),"Invalid Argument", Toast.LENGTH_LONG).show();
+				}
+				else
+					{new MyAsyncTask().execute(username,password,url,query);}
 		  //Toast.makeText(getApplicationContext(), number+" "+full_name+" "+Uuid, Toast.LENGTH_LONG).show();
 		  break;
 					
