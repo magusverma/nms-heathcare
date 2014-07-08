@@ -20,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -36,15 +37,21 @@ public class Create_Sensor extends Activity {
 	int conc_num;
 	public Bundle bundle;
 	final String CRED = "Credentials";
+	private String username,password,url;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create__sensor);
 		bundle = getIntent().getExtras();
-		SharedPreferences prefs = getApplicationContext().getSharedPreferences(CRED,getApplicationContext().MODE_PRIVATE);
-	    new MyAsync().execute(prefs.getString("username", "admin"),prefs.getString("password", "Admin123"),prefs.getString("url",""));
-		
+//		SharedPreferences prefs = getApplicationContext().getSharedPreferences(CRED,getApplicationContext().MODE_PRIVATE);
+//	    new MyAsync().execute(prefs.getString("username", "admin"),prefs.getString("password", "Admin123"),prefs.getString("url",""));
+		SharedPreferences sharedPref = getSharedPreferences("mhealth", Context.MODE_PRIVATE);
+        username = sharedPref.getString(getString(R.string.username), "");
+		password = sharedPref.getString(getString(R.string.password), "");
+		url = sharedPref.getString(getString(R.string.url), "");
+		System.out.println(username + " "+password+" "+url);
+		new MyAsync().execute(username,password,url);
 	
 	}
 	

@@ -22,4 +22,7 @@
 	<string name="username">username</string>
 	<string name="password">password</string>
 	<string name="url">url</string>
+	
+	<string name="title_activity_sensor_reading">SensorReading</string>
+	
 </resources>
