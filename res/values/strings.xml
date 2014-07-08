@@ -13,5 +13,6 @@
     <string name="title_activity_create_sensor">CreateSensor</string>
     <string name="title_activity_create__sensor">Create_Sensor</string>
     <string name="title_activity_create_">Create_Activity</string>
+    <string name="title_activity_sensor_reading">SensorReading</string>
 
 </resources>

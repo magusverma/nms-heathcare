@@ -61,7 +61,13 @@
                 </action>
             </intent-filter>
         </receiver>
-         <receiver android:name="com.example.mhealth.MyBroadcastReceiver2" >
+        <receiver android:name="com.example.mhealth.RegisterBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="RegisterBroadcast" >
+                </action>
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.example.mhealth.MyBroadcastReceiver2" >
             <intent-filter>
                 <action android:name="MyBroadcast2" >
                 </action>
@@ -87,6 +93,10 @@
         <activity
             android:name="com.example.mhealth.Create_Activity"
             android:label="@string/title_activity_create_" >
+        </activity>
+        <activity
+            android:name="com.example.mhealth.SensorReading"
+            android:label="@string/title_activity_sensor_reading" >
         </activity>
     </application>
 

@@ -12,7 +12,7 @@ public class Options extends ActionBarActivity implements View.OnClickListener{
 	Button b1;
 	Button b2;
 	Button b3;
-	Button b4,b5;
+	Button b4;
 	String password;
 	String username;
 	String url;
@@ -24,7 +24,7 @@ public class Options extends ActionBarActivity implements View.OnClickListener{
 		b2=(Button)findViewById(R.id.button3);
 		b3=(Button)findViewById(R.id.button4);
 		b4=(Button)findViewById(R.id.button5);
-		b5=(Button)findViewById(R.id.button6);
+	//	b5=(Button)findViewById(R.id.button6);
 		Bundle extras = getIntent().getExtras();
 		username= extras.getString("uname");
 		password = extras.getString("pword");
@@ -34,7 +34,7 @@ public class Options extends ActionBarActivity implements View.OnClickListener{
 		b2.setOnClickListener(this);
 		b3.setOnClickListener(this);
 		b4.setOnClickListener(this);
-		b5.setOnClickListener(this);
+		//b5.setOnClickListener(this);
 	}
 	
 	public void buttonClick1()
@@ -67,20 +67,13 @@ public class Options extends ActionBarActivity implements View.OnClickListener{
 	}
 	public void buttonClick4()
 	{
-		Intent intent1 = new Intent(this,Sensorconcept.class);
+		Intent intent1 = new Intent(this,SensorReading.class);
 		intent1.putExtra("uname",username );
 		intent1.putExtra("pword",password);
 		intent1.putExtra("url", url);
 		startActivity(intent1);
 	}
-	public void buttonClick5()
-	{
-		Intent intent1 = new Intent(this,Create_Activity.class);
-		intent1.putExtra("uname",username );
-		intent1.putExtra("pword",password);
-		intent1.putExtra("url", url);
-		startActivity(intent1);
-	}
+	
 	
 
 	public void onClick(View v) {
@@ -100,12 +93,8 @@ public class Options extends ActionBarActivity implements View.OnClickListener{
 			case R.id.button4:
 				buttonClick3();
 				break;
-			case R.id.button5:
-				buttonClick4();
-				break;
-			case R.id.button6:
-				buttonClick5();
-				break;		
+			
+				
 			
 			
 		

@@ -12,9 +12,9 @@ import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
+
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -70,6 +70,15 @@ public class Login extends ActionBarActivity implements View.OnClickListener{
 		username = (user.getText().toString());
 		 password= (pwd.getText().toString());
 		 url=(add.getText().toString());
+		 final String CRED = "Credentials";
+			
+			SharedPreferences prefs = getApplicationContext().getSharedPreferences(CRED,getApplicationContext().MODE_PRIVATE);
+		    SharedPreferences.Editor editor = prefs.edit();
+		    editor.putString("username", username);
+		    editor.putString("password",password);
+		    editor.putString("url", url);
+		    editor.commit();
+		    
 		//Toast.makeText(this, username+"  " + password, Toast.LENGTH_LONG).show();
 		Intent intent = new Intent(this, Options.class);
 		intent.putExtra("uname",username);
