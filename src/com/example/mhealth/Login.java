@@ -18,6 +18,7 @@ import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
@@ -47,8 +48,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.os.Build;
 import android.content.Context;
-import com.example.mhealth.R;
 
+import com.example.mhealth.R;
 import com.couchbase.lite.Manager;
 
 public class Login extends ActionBarActivity implements View.OnClickListener{
@@ -83,7 +84,7 @@ public class Login extends ActionBarActivity implements View.OnClickListener{
         btn.setOnClickListener(this);
         //btn.setOnClickListener((android.view.View.OnClickListener) this);;  
         
-        // CouchBase Wrangling
+//        // CouchBase Wrangling
 //      Manager manager = null;
 //		try {
 //			manager = new Manager(new AndroidContext(this), Manager.DEFAULT_OPTIONS);
