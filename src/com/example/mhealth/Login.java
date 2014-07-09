@@ -49,7 +49,7 @@ import android.widget.Toast;
 import android.os.Build;
 import android.content.Context;
 
-import com.example.mhealth.R;
+//import com.example.mhealth.R;
 import com.couchbase.lite.Manager;
 
 public class Login extends ActionBarActivity implements View.OnClickListener{

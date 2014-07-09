@@ -17,13 +17,13 @@ import android.graphics.AvoidXfermode.Mode;
 @SuppressLint("NewApi")
 public class MyBroadcastReceiver extends BroadcastReceiver {
 
-	 Integer array[]=new Integer[5];
-	String a2[]=new String[5];
+	 Integer array[]=new Integer[10];
+	String a2[]=new String[10];
 	int n1=3;
 	
 	@Override
 	 public void onReceive(Context context, Intent intent) {
-		final String HIGH_SCORES = "HighScores";
+		final String HIGH_SCORES = "Readings";
 		SharedPreferences prefs = context.getSharedPreferences(HIGH_SCORES, context.MODE_PRIVATE);
 				SharedPreferences.Editor editor = prefs.edit();
 	    	 Sensorconcept s=new Sensorconcept();
@@ -31,11 +31,11 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 	    	List<EditText> e;
 	    	EditText e2;
 	    	 //s.allEds.get(1)
-	    		 int j=0;
+	    		 int j=1;
 	    		
 	    		
 	    		// editor.putInt("array_size",2);
-	    		 int m=0;
+	    		 Integer m=0;
 	    		 Bundle bundle = intent.getExtras();
 	    		 if(bundle!=null)
 	    		 { Set<String> keys=bundle.keySet();
@@ -43,17 +43,19 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 	    				a2[m]=s1;
 	    		 array[m]=bundle.getInt(a2[m]);
 
-	  	    		  
-	  	    		   editor.putInt("Value"+m, array[m]);
-	  	    		 	editor.commit();	
+	  	    		  	editor.putString(String.valueOf(m), a2[m]);
+	  	    		   editor.putInt(a2[m], array[m]);
+	  	    		 		
 	    			//	 e2=s.sensor;
 	  	    		 //	Toast.makeText(context,"value in broadcast:"+array[m], Toast.LENGTH_SHORT).show(); 		
 	    				// e2.setText(array[m]);
 	    				 m++;
-	    				 				 
+	    				 j++;
+	    				 			 
 	   			 
 	    		 }
-	    
+	    			 editor.putInt("array_size",m);
+	    			 editor.commit();
 	 }
 	    		 else
 	    		    {

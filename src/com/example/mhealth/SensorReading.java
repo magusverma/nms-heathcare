@@ -76,7 +76,7 @@ public class SensorReading extends ListActivity {
 	 
 	//STEP 9:Text to be displayed in toast message, here it is set as name of the item clicked
 	Toast.makeText(this,"You selected the sensor - " + sensors[position],Toast.LENGTH_SHORT).show();
-	Intent intent1 = new Intent(this,Sensorconcept.class);
+	Intent intent1 = new Intent(this,SensorConceptAuto.class);
 	intent1.putExtra("sensor", sensors[position] );
 	startActivity(intent1);
 	
