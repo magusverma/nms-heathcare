@@ -226,7 +226,7 @@ public class SensorConceptAuto extends ActionBarActivity implements View.OnClick
 				concept_name = concept_name.replaceAll("\"", "");
 				if(concept_id.equals(concept_id_to_search_for))
 					return concept_name;
-				System.out.println(concept_id+" : "+concept_name);
+				//System.out.println(concept_id+" : "+concept_name);
 			}
 	 
 		} catch (FileNotFoundException e) {
@@ -552,7 +552,7 @@ public class SensorConceptAuto extends ActionBarActivity implements View.OnClick
 	     
 	     final int size=arrayString.length;
          // Toast.makeText(getApplicationContext(),size +"  ", Toast.LENGTH_LONG).show();
-          System.out.println("array string length"+size);
+          System.out.println("array string length&&&&&&&&&&& "+size);
 
           b3=new Button(SensorConceptAuto.this);
           b3.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));   
@@ -594,7 +594,8 @@ public class SensorConceptAuto extends ActionBarActivity implements View.OnClick
  	    	 public void onClick(View v){
  	    		final String HIGH_SCORES = "Readings";
  	   		SharedPreferences prefs = getApplicationContext().getSharedPreferences(HIGH_SCORES, MODE_PRIVATE);
- 	    		   String a[]=new String[size]; 
+ 	    		   
+ 	   			String a[]=new String[size]; 
  	    	       Integer a2[]=new Integer[size];
  	    	       
 
@@ -646,12 +647,13 @@ public class SensorConceptAuto extends ActionBarActivity implements View.OnClick
     	    	 for(int i=0; i < allEds.size(); i++){
     	    	     strings[i] = allEds.get(i).getText().toString();
     	    	     fin=fin+strings[i]+"*";
-    	    	     ids=ids+(prefs.getString(String.valueOf(i), "0"));
+    	    	     ids=ids+(prefs.getString(String.valueOf(i), "0"))+"*";
+    	    	     System.out.println("printing string......."+ids);
     	    	     
     	    	 }
     	    	 final String send = fin.substring(0,fin.length()-1);
 
-    	    	 final String send_id = ids.substring(0,fin.length()-1);
+    	    	 final String send_id = ids.substring(0,ids.length()-1);
 
     				final String REGISTERING = "Registering";			
     				SharedPreferences pref = getApplicationContext().getSharedPreferences(REGISTERING,getApplicationContext().MODE_PRIVATE);

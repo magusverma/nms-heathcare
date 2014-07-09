@@ -37,7 +37,7 @@ import com.google.gson.GsonBuilder;
 
 
 
-public class Create_Sensor extends Activity implements View.OnClickListener{
+public class Create_Sensor extends Activity {
 	String Sensor_name;
 	String Pack_name;
 	int conc_num;
@@ -65,7 +65,7 @@ public class Create_Sensor extends Activity implements View.OnClickListener{
 		System.out.println(username + " "+password+" "+url);
 	 List<EditText> allEds = new ArrayList<EditText>();
 	 	System.out.println("fsjhjshfkjd8787&*&&&"+bundle.getInt("Concept_num"));
-		for(int j=0;j<bundle.getInt("Concept_num");j++) 
+		for(int j=0;j<2;j++) 
  		{      
 
 			
@@ -81,7 +81,7 @@ public class Create_Sensor extends Activity implements View.OnClickListener{
  		    main1.addView(ed);	
  		    
  		    
- 		    ed.setText(bundle.getString("Concept"+(j+1)));
+ 		    ed.setText(bundle.getString("Concept_"+(j+1)));
 
 
 
@@ -93,8 +93,19 @@ public class Create_Sensor extends Activity implements View.OnClickListener{
 	        b.setText("Create");
 	        b.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 	        b.setId(9);
-	        b.setOnClickListener(this);
-	        main1.addView(b);
+	        main1.addView(b);	      
+	        b.setOnClickListener(new View.OnClickListener(){
+		    	
+		    	
+		    	 @Override
+		    	 public void onClick(View v){
+		    		 
+		    		 new MyAsync().execute(username,password,url);
+		    	
+		    	    		
+		    	}	 }  ); 
+
+	     
 		
 		
 	
@@ -122,8 +133,8 @@ public class Create_Sensor extends Activity implements View.OnClickListener{
 		System.out.println("in http post "+ jo);
 		HttpClient httpClient = new DefaultHttpClient();
 		ResponseHandler<String> resonseHandler = new BasicResponseHandler();
-		String u =url+"/module/sensorreading/scm.form";
-		HttpPost postMethod = new HttpPost(u);    
+		
+		HttpPost postMethod = new HttpPost(url+"/module/sensorreading/scm.form");    
 		System.out.println("URL  "+url);
 		postMethod.setEntity(new StringEntity(jo.toString()));
 		postMethod.setHeader( "Content-Type", "application/json");
@@ -295,24 +306,7 @@ public class Create_Sensor extends Activity implements View.OnClickListener{
 		
 	}
 
-	@Override
-	public void onClick(View v) {
-		switch (v.getId())
-		{
-		case R.id.button2:
-			//Toast.makeText(this, "get_selected", Toast.LENGTH_LONG).show();
-				buttonClick1();
-				break;
-		
-	}
-
-		
-	}
-
-	private void buttonClick1() {
-		
-		new MyAsync().execute(username,password,url);
-	}
+	
 	}
 
 	

@@ -29,7 +29,8 @@ public class RegisterBroadcastReceiver extends BroadcastReceiver {
 	     i.setClassName("com.example.mhealth", "com.example.mhealth.Create_Sensor");
 	     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	    
-	     i.putExtra("Concept_num",  bundle.getInt("Concept_num"));
+	     i.putExtra("Concept_num",  bundle.getString("Concept_num"));
+	     System.out.println("concept_num  "+bundle.getString("Concept_num"));
 	     i.putExtra("Sensor", bundle.getString("Sensor"));
 	     System.out.println("Sensor "+ bundle.getString("Sensor"));
 		 i.putExtra("Package_Name",bundle.getString("Package_Name"));
