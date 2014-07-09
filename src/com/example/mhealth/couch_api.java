@@ -33,6 +33,9 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -357,7 +360,13 @@ public class couch_api{
 		}
 		Iterator<QueryRow> it = result_sr;
 		if(it.hasNext()){
-			QueryRow row = it.next();
+			QueryRow row = it.next();//n = 10000;
+//			HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
+//			int timeoutSocket = 1000;
+//			HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
+//	
+//			DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
+		//
 	//		Log.d(TAG, TAG + " row = "+row);
 			System.out.println(row);
 			
@@ -394,6 +403,7 @@ public class couch_api{
 				Map<String, Object> updateProperties = new HashMap<String, Object>();
 				updateProperties.putAll(document_being_pushed.getProperties());
 				
+								
 				System.out.println(http_reading_post_request(username,password,uri,json_being_pushed));
 				
 				updateProperties.put("status", "pushed");
@@ -436,6 +446,16 @@ public class couch_api{
 	
 	
 	public String http_reading_post_request(String username,String password,String uri,JSONObject obj){
+		//
+//			HttpParams httpParameters = new BasicHttpParams();
+//			int timeoutConnection = 10000;
+//			HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
+//			int timeoutSocket = 1000;
+//			HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
+//	
+//			DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
+		//
+
 		//uri = uri+ "/module/sensorreading/sr.form";
 		System.out.println(uri);
 		obj.remove("status");

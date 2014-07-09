@@ -61,6 +61,18 @@
                 </action>
             </intent-filter>
         </receiver>
+        <receiver android:name="com.example.mhealth.RegisterBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="RegisterBroadcast" >
+                </action>
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.example.mhealth.MyBroadcastReceiver2" >
+            <intent-filter>
+                <action android:name="MyBroadcast2" >
+                </action>
+            </intent-filter>
+        </receiver>
         <receiver
             android:name="com.example.mhealth.NetworkChangeReceiver"
             android:label="NetworkChangeReceiver" >
@@ -107,18 +119,7 @@
                 android:value="com.example.mhealth.SyncActivity" />
         </activity>
 
-        <receiver android:name="com.example.mhealth.RegisterBroadcastReceiver" >
-            <intent-filter>
-                <action android:name="RegisterBroadcast" >
-                </action>
-            </intent-filter>
-        </receiver>
-        <receiver android:name="com.example.mhealth.MyBroadcastReceiver2" >
-            <intent-filter>
-                <action android:name="MyBroadcast2" >
-                </action>
-            </intent-filter>
-        </receiver>
+
 
         <activity
             android:name="com.example.mhealth.SensorReading"
