@@ -27,7 +27,7 @@ public class Options extends ActionBarActivity implements View.OnClickListener{
 	Button b2;
 	Button b3;
 	Button b4,b5;
-	Button b_view_sensors;
+	Button b_post;
 	String password;
 	String username;
 	String url;
@@ -67,7 +67,7 @@ public class Options extends ActionBarActivity implements View.OnClickListener{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.option_layout);
 		init_ca();
-		b_view_sensors = (Button)findViewById(R.id.button7);
+		b_post = (Button)findViewById(R.id.button7);
 		b1=(Button)findViewById(R.id.button2);
 		b2=(Button)findViewById(R.id.button3);
 		b3=(Button)findViewById(R.id.button4);
@@ -75,12 +75,12 @@ public class Options extends ActionBarActivity implements View.OnClickListener{
 		b5=(Button)findViewById(R.id.button6);
 		Bundle extras = getIntent().getExtras();
 		
-		b_view_sensors.setOnClickListener(new Button.OnClickListener() {  
+		b_post.setOnClickListener(new Button.OnClickListener() {  
 			public void onClick(View v)
             {
 //				ShowDbData.class
 //				Intent i = new Intent(YourActivity.this, NewPlotActivity.class);
-				Intent intent = new Intent(Options.this,ShowDbData.class);
+				Intent intent = new Intent(Options.this,SensorReading.class);
 				intent.putExtra("db", ca.sensors_db_name);
 				intent.putExtra("view", ca.sensor_view);
 				System.out.println("kya ho gaya!");

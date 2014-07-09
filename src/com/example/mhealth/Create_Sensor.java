@@ -24,6 +24,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -31,13 +37,16 @@ import com.google.gson.GsonBuilder;
 
 
 
-public class Create_Sensor extends Activity {
+public class Create_Sensor extends Activity implements View.OnClickListener{
 	String Sensor_name;
 	String Pack_name;
 	int conc_num;
 	public Bundle bundle;
 	final String CRED = "Credentials";
 	private String username,password,url;
+	Button b1;
+	EditText e1;
+	LinearLayout main1;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,12 +55,48 @@ public class Create_Sensor extends Activity {
 		bundle = getIntent().getExtras();
 //		SharedPreferences prefs = getApplicationContext().getSharedPreferences(CRED,getApplicationContext().MODE_PRIVATE);
 //	    new MyAsync().execute(prefs.getString("username", "admin"),prefs.getString("password", "Admin123"),prefs.getString("url",""));
+		main1=(LinearLayout) findViewById(R.id.lay1);
+		e1=(EditText) findViewById(R.id.editText1);
+		e1.setText(bundle.getString("Sensor"));
 		SharedPreferences sharedPref = getSharedPreferences("mhealth", Context.MODE_PRIVATE);
         username = sharedPref.getString(getString(R.string.username), "");
 		password = sharedPref.getString(getString(R.string.password), "");
 		url = sharedPref.getString(getString(R.string.url), "");
 		System.out.println(username + " "+password+" "+url);
-		new MyAsync().execute(username,password,url);
+	 List<EditText> allEds = new ArrayList<EditText>();
+	 	System.out.println("fsjhjshfkjd8787&*&&&"+bundle.getInt("Concept_num"));
+		for(int j=0;j<bundle.getInt("Concept_num");j++) 
+ 		{      
+
+			
+
+				EditText ed;
+ 			
+ 			TextView rowTextView = new TextView(Create_Sensor.this);
+ 			 rowTextView.setText("Concept"+(j+1));
+ 			 main1.addView(rowTextView);
+ 		    ed = new EditText(Create_Sensor.this);
+ 		    allEds.add(ed);
+ 	     ed.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT));
+ 		    main1.addView(ed);	
+ 		    
+ 		    
+ 		    ed.setText(bundle.getString("Concept"+(j+1)));
+
+
+
+
+		
+
+ 		}
+		 Button b = new Button(this);
+	        b.setText("Create");
+	        b.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+	        b.setId(9);
+	        b.setOnClickListener(this);
+	        main1.addView(b);
+		
+		
 	
 	}
 	
@@ -59,6 +104,7 @@ public class Create_Sensor extends Activity {
 	{
 		HttpClient httpClient = new DefaultHttpClient();
 		ResponseHandler<String> resonseHandler = new BasicResponseHandler();
+		System.out.println("in n URL  "+url);
 		HttpPost postMethod = new HttpPost(url+"/ws/rest/v1/sensor/sm");    
 		postMethod.setEntity(new StringEntity(jo.toString()));
 		postMethod.setHeader( "Content-Type", "application/json");
@@ -73,16 +119,21 @@ public class Create_Sensor extends Activity {
 	
 	public static String Httppost(String username, String password ,String url, JSONObject jo) throws ClientProtocolException, IOException
 	{
+		System.out.println("in http post "+ jo);
 		HttpClient httpClient = new DefaultHttpClient();
 		ResponseHandler<String> resonseHandler = new BasicResponseHandler();
-		HttpPost postMethod = new HttpPost(url+"/module/sensorreading/scm.form");    
+		String u =url+"/module/sensorreading/scm.form";
+		HttpPost postMethod = new HttpPost(u);    
+		System.out.println("URL  "+url);
 		postMethod.setEntity(new StringEntity(jo.toString()));
 		postMethod.setHeader( "Content-Type", "application/json");
 		//String authorizationString = "Basic " + Base64.encodeToString(("admin" + ":" + "Admin123").getBytes(), Base64.DEFAULT); //this line is diffe
 		//authorizationString.replace("\n", "");
 		//postMethod.setHeader("Authorization", authorizationString);
 		postMethod.addHeader(BasicScheme.authenticate(new UsernamePasswordCredentials(username,password),"UTF-8", false));
+		System.out.println("respose^^^^^^^");
 		String response = httpClient.execute(postMethod,resonseHandler);
+		System.out.println("respose%%%%%%");
 		return response;
 		
 	}
@@ -164,8 +215,10 @@ public class Create_Sensor extends Activity {
 		protected String doInBackground(String... params) {
 			try {
 				JSONObject nm = new JSONObject();
+				
 				nm.put("sensor_id", 1);
 				nm.put("sensor_name",bundle.getString("Sensor"));
+				System.out.println("sensor_name "+bundle.getString("Sensor"));
 				res1 = NormalHttppost(params[0],params[1],params[2],nm);
 				rs=idJsonParse(res1);
 			} catch (ClientProtocolException e1) {
@@ -181,8 +234,13 @@ public class Create_Sensor extends Activity {
 		
 		 protected void onPostExecute(String params){
 		 Toast.makeText(getApplicationContext(),"Successful sensor created with ID "+params, Toast.LENGTH_LONG).show();
-		 SharedPreferences prefs = getApplicationContext().getSharedPreferences(CRED,getApplicationContext().MODE_PRIVATE);
-		 new MyAsync2().execute(prefs.getString("username", "admin"),prefs.getString("password", "Admin123"),prefs.getString("url",""),params);
+		 SharedPreferences sharedPref = getSharedPreferences("mhealth", Context.MODE_PRIVATE);
+	        username = sharedPref.getString(getString(R.string.username), "");
+			password = sharedPref.getString(getString(R.string.password), "");
+			url = sharedPref.getString(getString(R.string.url), "");
+			System.out.println(username + " "+password+" "+url);
+			//new MyAsync().execute(username,password,url);
+		 new MyAsync2().execute(sharedPref.getString(getString(R.string.username), ""),sharedPref.getString(getString(R.string.password), ""),sharedPref.getString(getString(R.string.url), ""),params);
 			
 			 
 		  
@@ -198,15 +256,20 @@ public class Create_Sensor extends Activity {
 		protected String doInBackground(String... params) {
 			try {
 				JSONObject nm = new JSONObject();
+				System.out.println("URL>>>>"+params[2]);
+				System.out.println("id os sensor" + params[3]);
 				nm.put("sensor", params[3]);
 				JSONArray ja = new JSONArray();
-				for(int i=0;i<bundle.getInt("Conc_num");i++)
+				System.out.println("............. in myasync2");
+				for(int i=1;i<3;i++)
 				{
-					ja.put(bundle.getString("Concept_"+(i+1)));
+					System.out.println("Concept_"+(i)+" "+bundle.getString("Concept_"+(i)));
+					ja.put(bundle.getString("Concept_"+(i)));
 				}
 				
 				nm.put("concepts",ja);
-				res1 = NormalHttppost(params[0],params[1],params[2],nm);
+				res1 = Httppost(params[0],params[1],params[2],nm);
+				System.out.println("returned...   "+res1);
 				
 			} catch (ClientProtocolException e1) {
 				// TODO Auto-generated catch block
@@ -232,7 +295,24 @@ public class Create_Sensor extends Activity {
 		
 	}
 
+	@Override
+	public void onClick(View v) {
+		switch (v.getId())
+		{
+		case R.id.button2:
+			//Toast.makeText(this, "get_selected", Toast.LENGTH_LONG).show();
+				buttonClick1();
+				break;
 		
+	}
+
+		
+	}
+
+	private void buttonClick1() {
+		
+		new MyAsync().execute(username,password,url);
+	}
 	}
 
 	

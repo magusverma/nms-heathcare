@@ -32,14 +32,12 @@ public class SensorReading extends ListActivity {
 	String sensors[];
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_sensor_reading);
+		super.onCreate(savedInstanceState);         
 		final String REGISTERING = "Registering";
 		getApplicationContext();
 		SharedPreferences pref = getApplicationContext().getSharedPreferences(REGISTERING,Context.MODE_PRIVATE);
 	    String list = pref.getString("sensor_pack_map", "");
 		Iterator<String> keys ;
-		ListView lv= getListView();
 		JSONObject jo ;
 		try {
 			jo= new JSONObject(list);
@@ -59,17 +57,25 @@ public class SensorReading extends ListActivity {
 		        }
 
 			}
-		    lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-			lv.setTextFilterEnabled(true);
-			setListAdapter ((ListAdapter) new ArrayAdapter<String>(this,android.R.layout.simple_list_item_checked,sensors));
+		    
+			//setListAdapter ((ListAdapter) new ArrayAdapter<String>(this,android.R.layout.simple_list_item_checked,sensors));
 		}
 		 catch(Exception e){
 	            
 	        }
+        ListView lv = getListView(); 
+        lv.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_checked,sensors));
+        lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+		lv.setTextFilterEnabled(true);
+        
+ }
+        
+
 		
 		
 		
-}
+		
+
 	protected void onListItemClick(ListView l, View v, int position, long id)
 	{
 	// TODO Auto-generated method stub
