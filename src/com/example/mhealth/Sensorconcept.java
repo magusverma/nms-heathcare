@@ -327,46 +327,11 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
 	
 	private class MyAsyncTask2 extends AsyncTask<String, String, String> //Marker
 	{
-		String res1,res2,res3;
+		String res1,res2,res3="";
 		@Override
 		protected String doInBackground(String... params) {
 			
-			Document retrievedDocument = ca.getSensor(params[3]);
-			if(retrievedDocument != null){
-				System.out.println("Using Sensor Found in Database");
-			}
-			else{
-				System.out.println("Looking up Sensors online");
-				//TODO
-//				new SyncActivity().syncSensors(params[0],params[1], params[2]);
-				retrievedDocument = ca.getSensor(params[3]);
-			}
-			if(retrievedDocument != null){
-				HashMap<String,Object> sensor_concepts = (HashMap<String, Object>) ((Map) retrievedDocument.getProperty("sensor_concepts"));
-				res2 = new String("");
-				for (String key: sensor_concepts.keySet()){
-					System.out.println(key);
-					res2 = res2 + sensor_concepts.get(key) + "*"; 
-				}
-				//2=uu, 3=dat
-				String uua[] = res2.split("\\*");
-				String daa[] = params[4].split("\\*");
-				//
-					System.out.println("Running CouchBase Code");
-					HashMap<String,Object> readings = new HashMap<String,Object>();
-					for(int i=0;i<uua.length;i++)
-					{
-						readings.put(uua[i], daa[i]);
-					}
-					String pat = patient.getText().toString();
-					String sens = sensor.getText().toString();
-					ca.createDocument("reading", ca.makeReadingMap(pat, sens, readings));
-				//
 				ca.push_readings(username, password, url);
-			}
-			else{
-				System.out.println("Couldn't Find the Sensor Online");
-			}
 
 			// Online Looking fallback
 //			else{
@@ -401,16 +366,16 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
 			 try {
 				ca.getDatabase(ca.readings_db_name).getView(ca.pending_reading_view).createQuery().run();
 			} catch (CouchbaseLiteException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} //refresh view
 			 Integer rows_left = ca.getDatabase(ca.readings_db_name).getView(ca.pending_reading_view).dump().size();
+			 System.out.println("Done");
 			 System.out.println("Rows Left = "+rows_left);
-			 if (rows_left>0){
-				 Toast.makeText(getApplicationContext(),"Queued , Will be Sent when Network Available", Toast.LENGTH_LONG).show();
+			 if (rows_left.equals(0)){
+				 Toast.makeText(getApplicationContext(),"Successfully Pushed", Toast.LENGTH_LONG).show();
 			 }
 			 else{
-				 Toast.makeText(getApplicationContext(),"Successful", Toast.LENGTH_LONG).show();
+				 System.out.println("que not empty yet");
 			 }
 		 }
 		
@@ -541,6 +506,9 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
     	    	 final String send = fin.substring(0,fin.length()-1);
     	    	 
     	    	query=sensor.getText().toString();
+    	    	que(query,send);
+    	   	 Toast.makeText(getApplicationContext(),"Queued Successfully!", Toast.LENGTH_LONG).show();
+ 			
     	    	 new MyAsyncTask2().execute(username,password,url,query,send);
     	    }
     	});
@@ -557,7 +525,41 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
 		  }
 		 
 	
-
+	public void que(String params3,String params4){
+		String res2;
+		Document retrievedDocument = ca.getSensor(params3);
+		if(retrievedDocument != null){
+			System.out.println("Using Sensor Found in Database");
+		}
+		else{
+			System.out.println("Looking up Sensors online");
+			//TODO
+//			new SyncActivity().syncSensors(params[0],params[1], params[2]);
+			retrievedDocument = ca.getSensor(params3);
+		}
+		if(retrievedDocument != null){
+			HashMap<String,Object> sensor_concepts = (HashMap<String, Object>) ((Map) retrievedDocument.getProperty("sensor_concepts"));
+			res2 = new String("");
+			for (String key: sensor_concepts.keySet()){
+				System.out.println(key);
+				res2 = res2 + sensor_concepts.get(key) + "*"; 
+			}
+			//2=uu, 3=dat
+			String uua[] = res2.split("\\*");
+			String daa[] = params4.split("\\*");
+			//
+				System.out.println("Running CouchBase Code");
+				HashMap<String,Object> readings = new HashMap<String,Object>();
+				for(int i=0;i<uua.length;i++)
+				{
+					readings.put(uua[i], daa[i]);
+				}
+				String pat = patient.getText().toString();
+				String sens = sensor.getText().toString();
+				ca.createDocument("reading", ca.makeReadingMap(pat, sens, readings));
+			//
+		}
+	}
 	@Override
 	public void onClick(View v) {
 		

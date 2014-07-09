@@ -41,8 +41,10 @@ import com.couchbase.lite.android.AndroidContext;
 
 import android.os.Bundle;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -60,7 +62,7 @@ import android.widget.Toast;
 public class SensorConceptAuto extends ActionBarActivity implements View.OnClickListener {
 
 	EditText sensor,patient;
-	Button b1,b2,b3;
+	Button b1,b2,b3,b4;
 	String query;
 	LinearLayout main1;
 	String username;
@@ -386,15 +388,15 @@ public class SensorConceptAuto extends ActionBarActivity implements View.OnClick
 //				new SyncActivity().syncSensors(params[0],params[1], params[2]);
 				retrievedDocument = ca.getSensor(params[3]);
 			}
-			if(retrievedDocument != null){
+			/*if(retrievedDocument != null){
 				HashMap<String,Object> sensor_concepts = (HashMap<String, Object>) ((Map) retrievedDocument.getProperty("sensor_concepts"));
 				res2 = new String("");
 				for (String key: sensor_concepts.keySet()){
 					System.out.println(key);
 					res2 = res2 + sensor_concepts.get(key) + "*"; 
-				}
+				}*/
 				//2=uu, 3=dat
-				String uua[] = res2.split("\\*");
+				String uua[] = params[5].split("\\*");
 				String daa[] = params[4].split("\\*");
 				//
 					System.out.println("Running CouchBase Code");
@@ -404,14 +406,12 @@ public class SensorConceptAuto extends ActionBarActivity implements View.OnClick
 						readings.put(uua[i], daa[i]);
 					}
 					String pat = patient.getText().toString();
-					String sens = sensor.getText().toString();
-					ca.createDocument("reading", ca.makeReadingMap(pat, sens, readings));
+					
+					ca.createDocument("reading", ca.makeReadingMap(pat, params[3], readings));
 				//
 				ca.push_readings(username, password, url);
-			}
-			else{
-				System.out.println("Couldn't Find the Sensor Online");
-			}
+			
+			
 
 			// Online Looking fallback
 //			else{
@@ -554,22 +554,80 @@ public class SensorConceptAuto extends ActionBarActivity implements View.OnClick
          // Toast.makeText(getApplicationContext(),size +"  ", Toast.LENGTH_LONG).show();
           System.out.println("array string length"+size);
 
+          b3=new Button(SensorConceptAuto.this);
+          b3.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));   
+          b3.setText("Go to app");
+          main1.addView(b3);
+          b3.setOnClickListener(new View.OnClickListener(){
+         	 @Override
+         	 public void onClick(View v)
+         	 { Intent i1 = new Intent();
+         	 	String pack;
+         	    Intent i=null;
+         	    final String REGISTERING = "Registering";
+         	    PackageManager manager = getPackageManager();
+         		SharedPreferences pref = getApplicationContext().getSharedPreferences(REGISTERING,getApplicationContext().MODE_PRIVATE);
+         		try {
+         			JSONObject jo = new JSONObject(pref.getString("sensor_pack_map", ""));
+         			String sensor = extras.getString("sensor");
+         			pack=jo.getString(sensor);
+         			i = manager.getLaunchIntentForPackage(pack);
+        	         	if (i == null)
+        	             throw new PackageManager.NameNotFoundException();
+        	         i.addCategory(Intent.CATEGORY_LAUNCHER);
+        	         startActivityForResult(i,0);
+         		} catch (JSONException e) {
+         			// TODO Auto-generated catch block
+         			e.printStackTrace();
+         		 } catch (PackageManager.NameNotFoundException e) {
+         	    	 Toast.makeText(getApplicationContext(),"Package not found exception", Toast.LENGTH_LONG).show(); 
+         	     }
+         	 }
+          });
+           
+          b4=new Button(SensorConceptAuto.this);
+ 	     b4.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));   
+ 	     b4.setText("Get the readings");
+ 	     main1.addView(b4);
+ 	     b4.setOnClickListener(new View.OnClickListener(){
+ 	    	 @Override
+ 	    	 public void onClick(View v){
+ 	    		final String HIGH_SCORES = "Readings";
+ 	   		SharedPreferences prefs = getApplicationContext().getSharedPreferences(HIGH_SCORES, MODE_PRIVATE);
+ 	    		   String a[]=new String[size]; 
+ 	    	       Integer a2[]=new Integer[size];
+ 	    	       
+
+ 	    	    		int s1=prefs.getInt("array_size",0);
+ 	    	    	    for(int j=0;j<size;j++) 
+ 	    	    		{      
+
+ 	    	   			
+
+ 	    	   				EditText ed;
+ 	    	    			
+ 	    	    			TextView rowTextView = new TextView(SensorConceptAuto.this);
+ 	    	    			 rowTextView.setText(getConceptName(prefs.getString(String.valueOf(j), "0")));
+ 	    	    			 main1.addView(rowTextView);
+ 	    	    		    ed = new EditText(SensorConceptAuto.this);
+ 	    	    		    allEds.add(ed);
+ 	    	    	     ed.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT));
+ 	    	    		    main1.addView(ed);	
+ 	    	    		    
+ 	    	    		    int val = (prefs.getInt(prefs.getString(String.valueOf(j), "0"), 0));
+ 	    	    		    ed.setText(String.valueOf(val));
+
+
+
+
+ 	    	   		
+  	    	
+ 	    	    		}
+
+
+ 	    	 }	 }); 
 	 
-	 
-	 for(int i=0;i<size;i++)
-	 {
-		// Toast.makeText(getApplicationContext(),i+"  ", Toast.LENGTH_LONG).show();
-		 TextView rowTextView = new TextView(SensorConceptAuto.this);
-		 rowTextView.setText(arrayString[i]);
-		 main1.addView(rowTextView);
-	    ed = new EditText(SensorConceptAuto.this);
-	    allEds.add(ed);
-     ed.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT));
-	    main1.addView(ed);	 
-		
-		 
-	 }
-	 
+	 	 
 	
 	 b2=new Button(SensorConceptAuto.this);
      b2.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));   
@@ -580,16 +638,36 @@ public class SensorConceptAuto extends ActionBarActivity implements View.OnClick
      b2.setOnClickListener(new View.OnClickListener() {
     	    @Override
     	    public void onClick(View v) {
+    	    	final String HIGH_SCORES = "Readings";
+     	   		SharedPreferences prefs = getApplicationContext().getSharedPreferences(HIGH_SCORES, MODE_PRIVATE);
+    	    	String ids="";
     	    	 String[] strings = new String[size];
     	    	 String fin = "" ;
     	    	 for(int i=0; i < allEds.size(); i++){
     	    	     strings[i] = allEds.get(i).getText().toString();
     	    	     fin=fin+strings[i]+"*";
+    	    	     ids=ids+(prefs.getString(String.valueOf(i), "0"));
+    	    	     
     	    	 }
     	    	 final String send = fin.substring(0,fin.length()-1);
-    	    	 
-    	    	query=sensor.getText().toString();
-    	    	 new MyAsyncTask2().execute(username,password,url,query,send);
+
+    	    	 final String send_id = ids.substring(0,fin.length()-1);
+
+    				final String REGISTERING = "Registering";			
+    				SharedPreferences pref = getApplicationContext().getSharedPreferences(REGISTERING,getApplicationContext().MODE_PRIVATE);
+    				String js = pref.getString("sensor_id_map", "");
+    				JSONObject jo;
+    				
+    					try {
+							jo = new JSONObject(js);
+							String sid = jo.getString(extras.getString("sensor"));
+			    	    	
+			    	    	 new MyAsyncTask2().execute(username,password,url,sid,send,send_id);
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+    					
     	    }
     	});
 	 

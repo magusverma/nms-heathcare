@@ -2,6 +2,7 @@ package com.example.mhealth;
 
 import java.io.IOException;
 
+import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Manager;
 import com.couchbase.lite.android.AndroidContext;
 
@@ -56,10 +57,18 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
 		this.context = context;
+		init_ca(context);
+		Integer rows_left = ca.getDatabase(ca.readings_db_name).getView(ca.pending_reading_view).dump().size();
+		if(rows_left>0){
+			try {
+		    Thread.sleep(5000);
+		} catch(InterruptedException ex) {
+		    Thread.currentThread().interrupt();
+		}
+
 		String status = NetworkUtil.getConnectivityStatusString(context);
 		//System.out.println("Status: "+ status);
 		SyncActivity sync_act = new SyncActivity();
-		init_ca(context);
 		SharedPreferences sharedPref = context.getSharedPreferences("mhealth", Context.MODE_PRIVATE);
 		username = sharedPref.getString("username", "");
 		password = sharedPref.getString("password", "");
@@ -69,7 +78,27 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
 		new AsyncpushReadings().execute(username,password,url);
 		//ca.push_readings(username, password, url);
 		//sync_act.pushReadings(null);
-		Toast.makeText(context, status, Toast.LENGTH_LONG).show();
+//		Toast.makeText(context, status, Toast.LENGTH_LONG).show();
+		try {
+			ca.getDatabase(ca.readings_db_name).getView(ca.pending_reading_view).createQuery().run();
+		} catch (CouchbaseLiteException e) {
+			e.printStackTrace();
+		} //refresh view
+		 
+			rows_left = ca.getDatabase(ca.readings_db_name).getView(ca.pending_reading_view).dump().size();
+			 System.out.println("Done");
+			 System.out.println("Rows Left = "+rows_left);
+			 if (rows_left.equals(0)){
+				 Toast.makeText(context,"Successfully Pushed", Toast.LENGTH_LONG).show();
+			 }
+			 else{
+				 System.out.println("que not empty yet");
+			 }
+	    
+		}
+		else{
+			System.out.println("Everything Already Synced");
+		}
 	}
 	
 	private  class AsyncpushReadings extends AsyncTask<String, String, String>{
@@ -77,6 +106,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
 		protected String doInBackground(String... arg0) {
 			System.out.println("Doing AsyncpushReadings");
 			Integer pushed_count = ca.push_readings(username, password, url);
+			
 			return pushed_count.toString();
 		}
 		protected void onPostExecute(String pushed_count){
