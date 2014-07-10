@@ -343,7 +343,7 @@ public class SyncActivity extends ActionBarActivity {
 				concept_name = concept_name.replaceAll("\"", "");
 				if(concept_name.equals(concept_name_to_search_for))
 					return concept_id;
-				System.out.println(concept_id+" : "+concept_name);
+				//System.out.println(concept_id+" : "+concept_name);
 			}
 	 
 		} catch (FileNotFoundException e) {

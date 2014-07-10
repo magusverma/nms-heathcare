@@ -24,7 +24,7 @@ public class RegisterBroadcastReceiver extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) {
 		// TODO Auto-generated method stub
 		Bundle bundle = intent.getExtras();
-		Toast.makeText(context, "in registerbroadcast", Toast.LENGTH_SHORT).show();
+		//Toast.makeText(context, "in registerbroadcast", Toast.LENGTH_SHORT).show();
 		 Intent i = new Intent();
 	     i.setClassName("com.example.mhealth", "com.example.mhealth.Create_Sensor");
 	     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

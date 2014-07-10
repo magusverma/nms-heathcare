@@ -74,7 +74,7 @@ public class GetQuery extends ActionBarActivity implements View.OnClickListener 
 		
 		num=(TextView)findViewById(R.id.textView7);
 		name=(TextView)findViewById(R.id.textView9);
-		uuid=(TextView)findViewById(R.id.textView11);
+		//uuid=(TextView)findViewById(R.id.textView11);
 		age=(TextView)findViewById(R.id.textView13);
 		gender=(TextView)findViewById(R.id.textView15);
 		birthdate=(TextView)findViewById(R.id.textView17);
@@ -285,7 +285,7 @@ public class GetQuery extends ActionBarActivity implements View.OnClickListener 
 			  //Toast.makeText(getApplicationContext(),params, Toast.LENGTH_LONG).show();
 				// System.out.println(((String) j1.get("display")).substring(0, 3)); 
 				num.setText(arrayString[0]);
-				uuid.setText(arrayString[2]);
+				//uuid.setText(arrayString[2]);
 				name.setText(arrayString[1]);
 				age.setText(arrayString[3]);
 				gender.setText(arrayString[4]);

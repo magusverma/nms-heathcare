@@ -48,7 +48,7 @@ public class SensorReading extends ListActivity {
 		        String key = keys.next();
 		        String val = null;
 		        try{
-		        	Toast.makeText(this,"Listing  - " + key,Toast.LENGTH_SHORT).show();
+		        	//Toast.makeText(this,"Listing  - " + key,Toast.LENGTH_SHORT).show();
 		             sensors[i++]=key;
 		             
 		           }

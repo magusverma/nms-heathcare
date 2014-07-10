@@ -5,14 +5,14 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/textView1"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="15dp"
-        android:layout_weight="1.33"
+        android:layout_height="40dp"
+        android:layout_weight="0.74"
         android:gravity="center"
-        android:text="NMS HealthCare"
-        android:textSize="20dp" />
+        android:textSize="20sp"
+        android:textColor="#0000A0"
+        android:text="Med Assist" />
 
     <Button
         android:id="@+id/button2"
@@ -28,13 +28,6 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:text="Create a Patient" />
-
-    <Button
-        android:id="@+id/button4"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="Get Values" />
 
     <Button
         android:id="@+id/button6"

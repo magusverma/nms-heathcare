@@ -70,7 +70,7 @@ public class Options extends ActionBarActivity implements View.OnClickListener{
 		b_post = (Button)findViewById(R.id.button7);
 		b1=(Button)findViewById(R.id.button2);
 		b2=(Button)findViewById(R.id.button3);
-		b3=(Button)findViewById(R.id.button4);
+		//b3=(Button)findViewById(R.id.button4);
 		b4=(Button)findViewById(R.id.button5);
 		b5=(Button)findViewById(R.id.button6);
 		Bundle extras = getIntent().getExtras();
@@ -99,7 +99,7 @@ public class Options extends ActionBarActivity implements View.OnClickListener{
 		//Toast.makeText(this, username+password, Toast.LENGTH_LONG).show();
 		b1.setOnClickListener(this);
 		b2.setOnClickListener(this);
-		b3.setOnClickListener(this);
+		//b3.setOnClickListener(this);
 		b4.setOnClickListener(this);
 		b5.setOnClickListener(this);
 		
