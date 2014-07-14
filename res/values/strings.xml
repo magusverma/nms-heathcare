@@ -24,5 +24,7 @@
     <string name="url">url</string>
     <string name="title_activity_sensor_reading">Sensor List</string>
     <string name="title_activity_sensor_concept_auto">Sensor Readings</string>
+    <string name="title_activity_create__activity2">Create Sensor</string>
+    <string name="title_activity_sensorconcept2">Sensor Reading</string>
 
 </resources>

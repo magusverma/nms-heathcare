@@ -279,7 +279,7 @@ public class SyncActivity extends ActionBarActivity {
 		String str = null;
 		try {
 			HttpEntity responseEntity = httpResponse.getEntity();
-			str = GetQuery.inputStreamToString(responseEntity.getContent()).toString();
+			str = Get_Patient_information.inputStreamToString(responseEntity.getContent()).toString();
 			httpClient.getConnectionManager().shutdown();
 //			System.out.println(str);
 		} catch (IllegalStateException e) {

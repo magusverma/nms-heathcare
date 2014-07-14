@@ -28,17 +28,17 @@ public class RegisterBroadcastReceiver extends BroadcastReceiver {
 		 Intent i = new Intent();
 	     i.setClassName("com.example.mhealth", "com.example.mhealth.Create_Sensor");
 	     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	    
-	     i.putExtra("Concept_num",  bundle.getString("Concept_num"));
-	     System.out.println("concept_num  "+bundle.getString("Concept_num"));
 	     i.putExtra("Sensor", bundle.getString("Sensor"));
 	     System.out.println("Sensor "+ bundle.getString("Sensor"));
 		 i.putExtra("Package_Name",bundle.getString("Package_Name"));
 	     System.out.println("Package_Name "+bundle.getString("Package_Name"));
-		 for(int count=1;count<3;count++)
+	     i.putExtra("Concepts", bundle.getStringArray("Concepts"));//concept string array
+	     System.out.println("length of @@******"+bundle.getStringArray("Concepts").length);
+	     String [] arr = bundle.getStringArray("Concepts");
+		 for(int count=0;count<bundle.getStringArray("Concepts").length;count++)
 		 {
-			 i.putExtra("Concept_"+count,bundle.getString("Concept_"+count));
-			 System.out.println("Concept_"+count+"  "+bundle.getString("Concept_"+count));
+			 
+			 System.out.println("*********Concept_"+count+"  "+arr[count]);
 		 }
 		context.startActivity(i);
 				

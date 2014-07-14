@@ -1,6 +1,7 @@
 package com.example.mhealth;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -40,8 +41,10 @@ import com.couchbase.lite.android.AndroidContext;
 
 import android.os.Bundle;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -52,20 +55,22 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class Sensorconcept extends ActionBarActivity implements View.OnClickListener {
+public class Sensor_Reading_Automatically extends ActionBarActivity implements View.OnClickListener {
 
 	EditText sensor,patient;
-	Button b1,b2;;
+	Button b1,b2,b3,b4;
 	String query;
 	LinearLayout main1;
 	String username;
 	String password;
 	String url;
 	TextView S, S1;
+	Bundle extras;
 	HashMap<String, String> scm_name_to_id;
 	String[] sensor_name_hinting_array;
 	static couch_api ca; //magus
@@ -130,11 +135,11 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
 		*/
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-	
+	ScrollView sv = new ScrollView(this);
 		main1=new LinearLayout(this);
        main1.setOrientation(LinearLayout.VERTICAL);
   	 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-  	 Bundle extras = getIntent().getExtras(); 
+  	 extras = getIntent().getExtras(); 
 /*  	 username= extras.getString("uname");
 	 password = extras.getString("pword");	
 	 url=extras.getString("url");
@@ -158,13 +163,13 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
      
 		//
      
-	 S=new TextView(this);
+	/* S=new TextView(this);
       S.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));     
       S.setText("Enter sensor Id");
       main1.addView(S);
   	 sensor =new EditText(this);
   	 sensor.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT));     
-      main1.addView(sensor);
+      main1.addView(sensor);*/
       S1=new TextView(this);
       S1.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));     
       S1.setText("Enter Patient Id");
@@ -177,7 +182,8 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
       b1.setText("Get Concepts");
       b1.setOnClickListener(this);
       main1.addView(b1);
-      setContentView(main1);
+      sv.addView(main1);
+      setContentView(sv);
 		
 	
 }
@@ -198,6 +204,49 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
 		return total;
 		}
 	
+	/*
+	 * Returns concept name for a concept id by looking it up from a csv
+	 */
+	public String getConceptName(String concept_id_to_search_for) {
+		System.out.println(concept_id_to_search_for);
+		BufferedReader br = null;
+		String line = "";
+		String cvsSplitBy = ",";
+		//concept_name_to_search_for = concept_name_to_search_for.replaceAll(",","");
+		try {
+			InputStream is = getResources().openRawResource(R.raw.cd);
+			br = new BufferedReader(new InputStreamReader(is));
+			while ((line = br.readLine()) != null) {
+				String[] concept_line = line.split(cvsSplitBy);
+				String concept_id = "", concept_name = "";
+				for (int i = 0; i < concept_line.length; i++) {
+					if (i==0) concept_id = concept_line[0];
+					else{
+						concept_name = concept_name + concept_line[i];
+					}
+				}
+				concept_name = concept_name.replaceAll("\"", "");
+				if(concept_id.equals(concept_id_to_search_for))
+					return concept_name;
+				//System.out.println(concept_id+" : "+concept_name);
+			}
+	 
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return "-1";
+	}
+
 	
 	public static String Httpget (String username, String password, String uri,String query) throws ClientProtocolException, IOException
 	{
@@ -327,11 +376,44 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
 	
 	private class MyAsyncTask2 extends AsyncTask<String, String, String> //Marker
 	{
-		String res1,res2,res3="";
+		String res1,res2,res3;
 		@Override
 		protected String doInBackground(String... params) {
 			
+			Document retrievedDocument = ca.getSensor(params[3]);
+			if(retrievedDocument != null){
+				System.out.println("Using Sensor Found in Database");
+			}
+			else{
+				System.out.println("Looking up Sensors online");
+				//TODO
+//				new SyncActivity().syncSensors(params[0],params[1], params[2]);
+				retrievedDocument = ca.getSensor(params[3]);
+			}
+			/*if(retrievedDocument != null){
+				HashMap<String,Object> sensor_concepts = (HashMap<String, Object>) ((Map) retrievedDocument.getProperty("sensor_concepts"));
+				res2 = new String("");
+				for (String key: sensor_concepts.keySet()){
+					System.out.println(key);
+					res2 = res2 + sensor_concepts.get(key) + "*"; 
+				}*/
+				//2=uu, 3=dat
+				String uua[] = params[5].split("\\*");
+				String daa[] = params[4].split("\\*");
+				//
+					System.out.println("Running CouchBase Code");
+					HashMap<String,Object> readings = new HashMap<String,Object>();
+					for(int i=0;i<uua.length;i++)
+					{
+						readings.put(uua[i], daa[i]);
+					}
+					String pat = patient.getText().toString();
+					
+					ca.createDocument("reading", ca.makeReadingMap(pat, params[3], readings));
+				//
 				ca.push_readings(username, password, url);
+			
+			
 
 			// Online Looking fallback
 //			else{
@@ -366,17 +448,20 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
 			 try {
 				ca.getDatabase(ca.readings_db_name).getView(ca.pending_reading_view).createQuery().run();
 			} catch (CouchbaseLiteException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} //refresh view
 			 Integer rows_left = ca.getDatabase(ca.readings_db_name).getView(ca.pending_reading_view).dump().size();
-			 System.out.println("Done");
 			 System.out.println("Rows Left = "+rows_left);
-			 if (rows_left.equals(0)){
-				 Toast.makeText(getApplicationContext(),"Successfully Pushed", Toast.LENGTH_LONG).show();
+			 if (rows_left>0){
+				 Toast.makeText(getApplicationContext(),"Queued , Will be Sent when Network Available", Toast.LENGTH_LONG).show();
 			 }
 			 else{
-				 System.out.println("que not empty yet");
+				 Toast.makeText(getApplicationContext(),"Successful", Toast.LENGTH_LONG).show();
 			 }
+			 final String HIGH_SCORES = "Readings";
+	 	   	SharedPreferences prefs = getApplicationContext().getSharedPreferences(HIGH_SCORES, MODE_PRIVATE);
+	 	   	prefs.edit().clear().commit();
 		 }
 		
 		
@@ -451,6 +536,9 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
 		  
 		  protected void onPostExecute(String params){
 			  
+			  
+			 			    
+			  
 			  String arrayString[];
 			  //Toast.makeText(getApplicationContext(),params, Toast.LENGTH_LONG).show();
 			 // Toast.makeText(getApplicationContext(),"PostExecute.", Toast.LENGTH_LONG).show();
@@ -469,47 +557,124 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
 	     
 	     final int size=arrayString.length;
          // Toast.makeText(getApplicationContext(),size +"  ", Toast.LENGTH_LONG).show();
-          System.out.println("array string length"+size);
+          System.out.println("array string length&&&&&&&&&&& "+size);
 
+          b3=new Button(Sensor_Reading_Automatically.this);
+          b3.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));   
+          b3.setText("Go to app");
+          main1.addView(b3);
+          b3.setOnClickListener(new View.OnClickListener(){
+         	 @Override
+         	 public void onClick(View v)
+         	 { Intent i1 = new Intent();
+         	 	String pack;
+         	    Intent i=null;
+         	    final String REGISTERING = "Registering";
+         	    PackageManager manager = getPackageManager();
+         		SharedPreferences pref = getApplicationContext().getSharedPreferences(REGISTERING,getApplicationContext().MODE_PRIVATE);
+         		try {
+         			JSONObject jo = new JSONObject(pref.getString("sensor_pack_map", ""));
+         			String sensor = extras.getString("sensor");
+         			pack=jo.getString(sensor);
+         			i = manager.getLaunchIntentForPackage(pack);
+        	         	if (i == null)
+        	             throw new PackageManager.NameNotFoundException();
+        	         i.addCategory(Intent.CATEGORY_LAUNCHER);
+        	         startActivityForResult(i,0);
+         		} catch (JSONException e) {
+         			// TODO Auto-generated catch block
+         			e.printStackTrace();
+         		 } catch (PackageManager.NameNotFoundException e) {
+         	    	 Toast.makeText(getApplicationContext(),"Package not found exception", Toast.LENGTH_LONG).show(); 
+         	     }
+         	 }
+          });
+           
+          b4=new Button(Sensor_Reading_Automatically.this);
+ 	     b4.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));   
+ 	     b4.setText("Get the readings");
+ 	     main1.addView(b4);
+ 	     b4.setOnClickListener(new View.OnClickListener(){
+ 	    	 @Override
+ 	    	 public void onClick(View v){
+ 	    		final String HIGH_SCORES = "Readings";
+ 	   		SharedPreferences prefs = getApplicationContext().getSharedPreferences(HIGH_SCORES, MODE_PRIVATE);
+ 	    		   
+ 	   			String a[]=new String[size]; 
+ 	    	       Integer a2[]=new Integer[size];
+ 	    	       
+
+ 	    	    		int s1=prefs.getInt("array_size",0);
+ 	    	    	    for(int j=0;j<size;j++) 
+ 	    	    		{      
+
+ 	    	   			
+
+ 	    	   				EditText ed;
+ 	    	    			
+ 	    	    			TextView rowTextView = new TextView(Sensor_Reading_Automatically.this);
+ 	    	    			 rowTextView.setText(getConceptName(prefs.getString(String.valueOf(j), "0")));
+ 	    	    			 main1.addView(rowTextView);
+ 	    	    		    ed = new EditText(Sensor_Reading_Automatically.this);
+ 	    	    		    allEds.add(ed);
+ 	    	    	     ed.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT));
+ 	    	    		    main1.addView(ed);	
+ 	    	    		    
+ 	    	    		    int val = (prefs.getInt(prefs.getString(String.valueOf(j), "0"), 0));
+ 	    	    		    ed.setText(String.valueOf(val));
+
+
+
+
+ 	    	   		
+  	    	
+ 	    	    		}
+
+
+ 	    	 }	 }); 
 	 
-	 
-	 for(int i=0;i<size;i++)
-	 {
-		// Toast.makeText(getApplicationContext(),i+"  ", Toast.LENGTH_LONG).show();
-		 TextView rowTextView = new TextView(Sensorconcept.this);
-		 rowTextView.setText(arrayString[i]);
-		 main1.addView(rowTextView);
-	    ed = new EditText(Sensorconcept.this);
-	    allEds.add(ed);
-     ed.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT));
-	    main1.addView(ed);	 
-		
-		 
-	 }
-	 
+	 	 
 	
-	 b2=new Button(Sensorconcept.this);
+	 b2=new Button(Sensor_Reading_Automatically.this);
      b2.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));   
      b2.setText("Post Readings");
-     b2.setOnClickListener(Sensorconcept.this);
+     b2.setOnClickListener(Sensor_Reading_Automatically.this);
      main1.addView(b2);
     
      b2.setOnClickListener(new View.OnClickListener() {
     	    @Override
     	    public void onClick(View v) {
+    	    	final String HIGH_SCORES = "Readings";
+     	   		SharedPreferences prefs = getApplicationContext().getSharedPreferences(HIGH_SCORES, MODE_PRIVATE);
+    	    	String ids="";
     	    	 String[] strings = new String[size];
     	    	 String fin = "" ;
     	    	 for(int i=0; i < allEds.size(); i++){
     	    	     strings[i] = allEds.get(i).getText().toString();
     	    	     fin=fin+strings[i]+"*";
+    	    	     ids=ids+(prefs.getString(String.valueOf(i), "0"))+"*";
+    	    	     System.out.println("printing string......."+ids);
+    	    	     
     	    	 }
     	    	 final String send = fin.substring(0,fin.length()-1);
-    	    	 
-    	    	query=sensor.getText().toString();
-    	    	que(query,send);
-    	   	 Toast.makeText(getApplicationContext(),"Queued Successfully!", Toast.LENGTH_LONG).show();
- 			
-    	    	 new MyAsyncTask2().execute(username,password,url,query,send);
+
+    	    	 final String send_id = ids.substring(0,ids.length()-1);
+
+    				final String REGISTERING = "Registering";			
+    				SharedPreferences pref = getApplicationContext().getSharedPreferences(REGISTERING,getApplicationContext().MODE_PRIVATE);
+    				String js = pref.getString("sensor_id_map", "");
+    				JSONObject jo;
+    				
+    					try {
+							jo = new JSONObject(js);
+							String sid = jo.getString(extras.getString("sensor"));
+			    	    	
+			    	    	 new MyAsyncTask2().execute(username,password,url,sid,send,send_id);
+						} catch (JSONException e) {
+							System.out.println("JSON Exception caught");
+							e.printStackTrace();
+						}
+    					
     	    }
     	});
 	 
@@ -525,54 +690,29 @@ public class Sensorconcept extends ActionBarActivity implements View.OnClickList
 		  }
 		 
 	
-	public void que(String params3,String params4){
-		String res2;
-		Document retrievedDocument = ca.getSensor(params3);
-		if(retrievedDocument != null){
-			System.out.println("Using Sensor Found in Database");
-		}
-		else{
-			System.out.println("Looking up Sensors online");
-			//TODO
-//			new SyncActivity().syncSensors(params[0],params[1], params[2]);
-			retrievedDocument = ca.getSensor(params3);
-		}
-		if(retrievedDocument != null){
-			HashMap<String,Object> sensor_concepts = (HashMap<String, Object>) ((Map) retrievedDocument.getProperty("sensor_concepts"));
-			res2 = new String("");
-			for (String key: sensor_concepts.keySet()){
-				System.out.println(key);
-				res2 = res2 + sensor_concepts.get(key) + "*"; 
-			}
-			//2=uu, 3=dat
-			String uua[] = res2.split("\\*");
-			String daa[] = params4.split("\\*");
-			//
-				System.out.println("Running CouchBase Code");
-				HashMap<String,Object> readings = new HashMap<String,Object>();
-				for(int i=0;i<uua.length;i++)
-				{
-					readings.put(uua[i], daa[i]);
-				}
-				String pat = patient.getText().toString();
-				String sens = sensor.getText().toString();
-				ca.createDocument("reading", ca.makeReadingMap(pat, sens, readings));
-			//
-		}
-	}
+
 	@Override
 	public void onClick(View v) {
 		
 		
-			query=sensor.getText().toString();
-//			Set<String> fields= new HashSet<String>();
-//			fields.add("First");
-//			fields.add("Second");
-//			fields.add("Third");
-//			fields.add("Fourth");
-//			fields.add("Fifth");		
-//			create_extra_form_fields(fields);
-		  new MyAsyncTask().execute(username,password,url,query);
+		if(patient.getText().toString().length()<1)
+    	{
+    		Toast.makeText(getApplicationContext(), "Enter Complete Details", Toast.LENGTH_LONG).show();
+    	}
+		else{
+			final String REGISTERING = "Registering";			
+			SharedPreferences pref = getApplicationContext().getSharedPreferences(REGISTERING,getApplicationContext().MODE_PRIVATE);
+			String js = pref.getString("sensor_id_map", "");
+			JSONObject jo;
+			try {
+				jo = new JSONObject(js);
+				String sid = jo.getString(extras.getString("sensor"));
+				new MyAsyncTask().execute(username,password,url,sid);
+			} catch (JSONException e) {
+				System.out.println("Failed to create json from string");
+			}
+			
+		}		  
 		
 		
 	}		

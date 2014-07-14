@@ -49,6 +49,7 @@ import android.widget.Toast;
 import android.os.Build;
 import android.content.Context;
 
+
 //import com.example.mhealth.R;
 import com.couchbase.lite.Manager;
 
@@ -194,13 +195,14 @@ private  class MyAsyncTask extends AsyncTask<String, String, String>{
 				   return "refused";
 			   }   catch (IllegalStateException e) {
 					   return "no"; 
-			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} 
+			   } catch (ClientProtocolException e) {
+					System.out.println("Client Protocol exception caught.");
+					e.printStackTrace();
+				} catch (IOException e) {
+					System.out.println("IO exception caught.");
+					e.printStackTrace();
+				} 
+				
 		       
 				return "quit";
 		  }

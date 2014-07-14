@@ -6,20 +6,12 @@ import com.couchbase.lite.Manager;
 import com.couchbase.lite.android.AndroidContext;
 
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
-import android.os.Build;
 
 public class Options extends ActionBarActivity implements View.OnClickListener{
 
@@ -80,7 +72,7 @@ public class Options extends ActionBarActivity implements View.OnClickListener{
             {
 //				ShowDbData.class
 //				Intent i = new Intent(YourActivity.this, NewPlotActivity.class);
-				Intent intent = new Intent(Options.this,SensorReading.class);
+				Intent intent = new Intent(Options.this,Sensor_Listing.class);
 				intent.putExtra("db", ca.sensors_db_name);
 				intent.putExtra("view", ca.sensor_view);
 				System.out.println("kya ho gaya!");
@@ -110,7 +102,7 @@ public class Options extends ActionBarActivity implements View.OnClickListener{
 	{
 		//Toast.makeText(this, username+"   "+password, Toast.LENGTH_LONG).show();
 		//Toast.makeText(this, "entered", Toast.LENGTH_LONG).show();
-		Intent intent = new Intent(this, GetQuery.class);
+		Intent intent = new Intent(this, Get_Patient_information.class);
 //		intent.putExtra("uname",username );
 //		intent.putExtra("pword",password);
 //		intent.putExtra("url", url);
@@ -120,23 +112,23 @@ public class Options extends ActionBarActivity implements View.OnClickListener{
 	
 	public void buttonClick2()
 	{
-		Intent intent1 = new Intent(this, PostQuery.class);
+		Intent intent1 = new Intent(this, Create_Patient.class);
 //		intent1.putExtra("uname",username );
 //		intent1.putExtra("pword",password);
 //		intent1.putExtra("url", url);
 		startActivity(intent1);
 	}
-	public void buttonClick3()
+	/*public void buttonClick3()
 	{
 		Intent intent1 = new Intent(this, GetInput.class);
 	//	intent1.putExtra("uname",username );
 		//intent1.putExtra("pword",password);
 		//intent1.putExtra("url", url);
 		startActivity(intent1);
-	}
+	}*/
 	public void buttonClick4()
 	{
-		Intent intent1 = new Intent(this,Sensorconcept.class);
+		Intent intent1 = new Intent(this,Sensor_Reading_Manually.class);
 //		intent1.putExtra("uname",username );
 //		intent1.putExtra("pword",password);
 //		intent1.putExtra("url", url);
@@ -144,7 +136,7 @@ public class Options extends ActionBarActivity implements View.OnClickListener{
 	}
 	public void buttonClick5()
 	{
-		Intent intent1 = new Intent(this,Create_Activity.class);
+		Intent intent1 = new Intent(this,Create_Sensor_Manually.class);
 //		intent1.putExtra("uname",username );
 //		intent1.putExtra("pword",password);
 //		intent1.putExtra("url", url);
@@ -184,9 +176,7 @@ public class Options extends ActionBarActivity implements View.OnClickListener{
 				buttonClick2();
 				break;
 					
-			case R.id.button4:
-				buttonClick3();
-				break;
+			
 			case R.id.button5:
 				buttonClick4();
 				break;

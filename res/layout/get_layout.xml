@@ -20,10 +20,10 @@
     </AutoCompleteTextView>
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="GET" />
+        android:text="Find Patient" />
 
     <TextView
         android:id="@+id/textView6"

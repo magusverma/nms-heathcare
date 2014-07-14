@@ -19,29 +19,22 @@ import org.json.JSONArray;
 
 import com.couchbase.lite.Manager;
 import com.couchbase.lite.android.AndroidContext;
+//import com.example.mhealth.Login.MyAsyncTask;
 
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.os.Build;
 
-public class GetQuery extends ActionBarActivity implements View.OnClickListener {
+public class Get_Patient_information extends ActionBarActivity implements View.OnClickListener {
 	
 	Button get ;
 	AutoCompleteTextView q; //magus
@@ -62,7 +55,7 @@ public class GetQuery extends ActionBarActivity implements View.OnClickListener 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.get_layout);
-		get=(Button)findViewById(R.id.button4);
+		get=(Button)findViewById(R.id.button1);
 		q=(AutoCompleteTextView)findViewById(R.id.editText2);//magus
 		countries = new String[3];
 		countries[0]="talha";
@@ -193,17 +186,7 @@ public class GetQuery extends ActionBarActivity implements View.OnClickListener 
 		HttpEntity responseEntity = httpResponse.getEntity();
 		String str = inputStreamToString(responseEntity.getContent()).toString();
 		httpClient.getConnectionManager().shutdown();  
-		
-		//magus
-		// Couch Wrangling
-			//This does httpget and adds entries to sensor database
-			
-//			ca.clearAllDatabases();
-//			ca.syncSensors(username, password, url);
-//			ca.UpdateorCreateViews();
-//			ca.getSensor("jamun");
-		// Couch Wrangling Ends here
-		
+		System.out.println("in http get @@@@ "+str);
 		return (str);            	
 
 		
@@ -214,12 +197,21 @@ public class GetQuery extends ActionBarActivity implements View.OnClickListener 
 		HttpClient httpClient = new DefaultHttpClient();
 		HttpGet httpGet = new HttpGet(url+"/ws/rest/v1/patient/"+uuid+"?v=custom:(gender,age,birthdate)");
 		httpGet.addHeader(BasicScheme.authenticate(new UsernamePasswordCredentials(username, password),"UTF-8", false));
-		HttpResponse httpResponse = httpClient.execute(httpGet);
-		HttpEntity responseEntity = httpResponse.getEntity();
-		String str = inputStreamToString(responseEntity.getContent()).toString();
-		httpClient.getConnectionManager().shutdown();
-		return str;  
-		       
+		
+		try{
+			HttpResponse httpResponse = httpClient.execute(httpGet);
+			HttpEntity responseEntity = httpResponse.getEntity();
+			String str = inputStreamToString(responseEntity.getContent()).toString();
+			httpClient.getConnectionManager().shutdown();
+			System.out.println("in details http get ^^^^  "+str);
+			return str;
+		}
+		catch (Exception e)
+		{
+			System.out.println("exception caught");
+		}
+		  
+		    return "Exception";   
         
     	} 
 	
@@ -257,17 +249,21 @@ public class GetQuery extends ActionBarActivity implements View.OnClickListener 
 				   String arrayString[] = res1.split("\\*");
 				   res2=DetailsjsonParse(DetailsHttpget(params[0],params[1], params[2],arrayString[2]));}
 				   
-				   
-			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			   } catch (ClientProtocolException e) {
+					System.out.println("Client Protocol exception caught.");
+					e.printStackTrace();
+				} catch (IOException e) {
+					System.out.println("IO exception caught.");
+					e.printStackTrace();
+					return "boo";
+				} catch (ArrayIndexOutOfBoundsException e){
+					System.out.println("ArrayIndexOutOfBoundsException");
+					e.printStackTrace();
+					return "too";
+				}catch (JSONException e) {
+					System.out.println("JSON exception caught.");
+					e.printStackTrace();
+				}
 		       
 				return res1 +"*"+ res2;
 		  }
@@ -279,7 +275,14 @@ public class GetQuery extends ActionBarActivity implements View.OnClickListener 
 			  {
 				  Toast.makeText(getApplicationContext(),"No patients found.", Toast.LENGTH_LONG).show();
 			  }
-			  
+			  else if (params.equals("boo"))
+			  {
+				  Toast.makeText(getApplicationContext(),"Kindly check your Internet Connection, Settings and Server.", Toast.LENGTH_LONG).show();
+			  }
+			  else if (params.equals("too"))
+			  {
+				  Toast.makeText(getApplicationContext(),"Please enter correct and full name.", Toast.LENGTH_LONG).show();
+			  }
 			  else{
 			  String arrayString[] = params.split("\\*");
 			  //Toast.makeText(getApplicationContext(),params, Toast.LENGTH_LONG).show();
@@ -309,11 +312,18 @@ public class GetQuery extends ActionBarActivity implements View.OnClickListener 
 		
 		switch (v.getId())
 				{
-			case R.id.button4:
+			case R.id.button1:
 				if(query.equalsIgnoreCase("u"))
 				{
 					Toast.makeText(getApplicationContext(),"Invalid Argument", Toast.LENGTH_LONG).show();
 				}
+				else if(q.getText().toString().length()<1 ){
+					
+					// out of range
+					Toast.makeText(this, "Please enter complete details", Toast.LENGTH_LONG).show();
+				}
+		
+	
 				else
 					{new MyAsyncTask().execute(username,password,url,query);}
 		  //Toast.makeText(getApplicationContext(), number+" "+full_name+" "+Uuid, Toast.LENGTH_LONG).show();
