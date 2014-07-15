@@ -70,7 +70,7 @@ public class couch_api{
 	final String sensor_view = "sensor_view" ;
 	final String pending_reading_view = "pending_reading" ;
 	final String concepts_view = "concepts_view" ;
-	
+	final String patients_view = "patients_view" ;
 //	String[] dbs = {"sensor","concept","patient","reading"};
 	
 	couch_api(Manager manager){
@@ -341,6 +341,45 @@ public class couch_api{
 		    }
 		}, "1");	
 		
+		Database patient_db = getDatabase(patients_db_name);
+		com.couchbase.lite.View patients = patient_db.getView(patients_view);
+		patients.setMap(
+			new Mapper() {
+		    @Override
+		    public void map(Map<String, Object> document, Emitter emitter) {
+		    	emitter.emit(document.get("patient_name"), document.get("patient_id"));	
+		    }
+		}, "1");	
+		
+	}
+	
+	public String getPatientId(String patient_name){
+		String patient_id = null;
+		Database database = getDatabase(patients_db_name);
+		Query query_sr = database.getView(patients_view).createQuery();
+		query_sr.setStartKey(patient_name);
+		query_sr.setEndKey(patient_name);
+		
+		QueryEnumerator result_sr = null;
+		try {
+			result_sr = query_sr.run();
+		} catch (CouchbaseLiteException e) {
+			e.printStackTrace();
+		}
+		Iterator<QueryRow> it = result_sr;
+		if(it.hasNext()){
+			QueryRow row = it.next();//n = 10000;
+			System.out.println(row);
+			
+			Document d = database.getDocument(row.getDocumentId());
+			System.out.println("Search Result Document "+ String.valueOf(d.getProperties()));
+			System.out.println("Returning:"+d.getProperty("patient_id")+" for "+patient_name);
+			return (String) d.getProperty("patient_id");
+		}
+		else {
+			System.out.println("No Document Found");
+			return null;
+		}
 	}
 	// return Map<String,Object> ? 
 	public Document getSensor(String sensor_id){

@@ -146,7 +146,7 @@ public class Login extends ActionBarActivity implements View.OnClickListener{
         String pass = sharedPref.getString(getString(R.string.password), "");
         String uri = sharedPref.getString(getString(R.string.url), "");
         System.out.println(user+" "+pass+" "+uri);
-        Toast.makeText(this, "Settings Saved!", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Settings Saved , trying to validate!", Toast.LENGTH_LONG).show();
 //      intent.putExtra("uname",user);
 //		intent.putExtra("pword",pass);
 //		intent.putExtra("url", uri);
@@ -208,7 +208,7 @@ private  class MyAsyncTask extends AsyncTask<String, String, String>{
 		  
 		  protected void onPostExecute(String params){
 			  //Toast.makeText(getApplicationContext(), "Invalid credentials", Toast.LENGTH_LONG).show();
-			  buttonClick();
+			  //buttonClick();
 			 if(params.equals("cred"))
 			 {
 				 Toast.makeText(getApplicationContext(), "Invalid credentials", Toast.LENGTH_LONG).show();
@@ -219,12 +219,16 @@ private  class MyAsyncTask extends AsyncTask<String, String, String>{
 			 }
 			 else if(params.equals("refused"))
 			 {
+				 // TODO : reduce timeout of http , currently below message gets shown after two minutes when offline
 				 Toast.makeText(getApplicationContext(), "Connection refused: Wrong URL or server  connection error", Toast.LENGTH_LONG).show();
 			 }
 			 else if (params.equals("successful"))
 			 {
 				 Toast.makeText(getApplicationContext(), "Settings Verified", Toast.LENGTH_LONG).show();
 //				 buttonClick();
+			 }
+			 else{
+				 Toast.makeText(getApplicationContext(), "Unable to Connect , Please Reverify when network comes!", Toast.LENGTH_LONG).show();
 			 }
 		  }
 		  
@@ -245,7 +249,7 @@ private  class MyAsyncTask extends AsyncTask<String, String, String>{
 			switch (v.getId())
 			{
 			case R.id.button1:
-				//buttonClick();
+				buttonClick();
 
 				username = (user.getText().toString());
 				 password= (pwd.getText().toString());

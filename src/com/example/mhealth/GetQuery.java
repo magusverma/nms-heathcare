@@ -290,6 +290,18 @@ public class GetQuery extends ActionBarActivity implements View.OnClickListener 
 				age.setText(arrayString[3]);
 				gender.setText(arrayString[4]);
 				birthdate.setText(arrayString[5]);
+				
+				
+				//TODO Move this to some place appropriate as well
+				String patient_id = arrayString[2];
+				String patient_name = arrayString[1];
+				
+				if(ca.getPatientId(patient_name)==null){
+					ca.createDocument(ca.patients_db_name, ca.makePatientMap(patient_id, patient_name));
+					Toast.makeText(getApplicationContext(),"Reading for this patient can now be taken", Toast.LENGTH_LONG).show();
+				}else{
+					Toast.makeText(getApplicationContext(),"This patient is already added to list with id = "+ca.getPatientId(patient_name), Toast.LENGTH_LONG).show();			
+				}
 			  }
 		  }
 		  
