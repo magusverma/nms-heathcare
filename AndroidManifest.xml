@@ -55,13 +55,13 @@
             android:label="@string/title_activity_sensor_concept" >
         </activity>
 
-        <receiver android:name="com.example.mhealth.MyBroadcastReceiver" >
+        <receiver android:name="com.example.mhealth.Sensor_Readings_Receiver" >
             <intent-filter>
                 <action android:name="MyBroadcast" >
                 </action>
             </intent-filter>
         </receiver>
-        <receiver android:name="com.example.mhealth.RegisterBroadcastReceiver" >
+        <receiver android:name="com.example.mhealth.RegisterSensorBroadcastReceiver" >
             <intent-filter>
                 <action android:name="RegisterBroadcast" >
                 </action>

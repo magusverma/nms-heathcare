@@ -1,13 +1,6 @@
 package com.example.mhealth;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
@@ -16,53 +9,27 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-
-import com.couchbase.lite.Manager;
-import com.couchbase.lite.android.AndroidContext;
-
 import android.content.Context;
-
-
-//import android.support.v7.app.ActionBar;
-//import android.support.v4.app.Fragment;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.os.Build;
-import android.content.Context;
-
-
-//import com.example.mhealth.R;
-import com.couchbase.lite.Manager;
 
 public class Login extends ActionBarActivity implements View.OnClickListener{
 	
 	EditText user;
 	EditText pwd;
-	EditText add;
-	Button btn;
+	EditText address;
+	Button button;
 	public String username;
 	public String password;
 	public String url;
-	public String abc;
+	
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -70,7 +37,7 @@ public class Login extends ActionBarActivity implements View.OnClickListener{
 		setContentView(R.layout.first_act);
 		user=(EditText)findViewById(R.id.editText1);
          pwd=(EditText)findViewById(R.id.editText2);
-         add=(EditText)findViewById(R.id.editText4);
+         address=(EditText)findViewById(R.id.editText4);
          
          SharedPreferences sharedPref = getSharedPreferences("mhealth", Context.MODE_PRIVATE);
          String use = sharedPref.getString(getString(R.string.username), "");
@@ -79,78 +46,27 @@ public class Login extends ActionBarActivity implements View.OnClickListener{
          
          user.setText(use);
          pwd.setText(pass);
-         add.setText(uri);         
+         address.setText(uri);         
 
-       btn=(Button)findViewById(R.id.button1);
-        btn.setOnClickListener(this);
-        //btn.setOnClickListener((android.view.View.OnClickListener) this);;  
+         button=(Button)findViewById(R.id.button1);
+         button.setOnClickListener(this);
         
-//        // CouchBase Wrangling
-//      Manager manager = null;
-//		try {
-//			manager = new Manager(new AndroidContext(this), Manager.DEFAULT_OPTIONS);
-//			System.out.println("Manager Created!");
-//		} catch (IOException e1) {
-//			e1.printStackTrace();
-//		}
-//        couch_api a = new couch_api(manager);
-       
-//        
-//        a.createDocument("concept", a.makeConceptMap(2, "uuid-of00concept2", "Weight or Something"));
-//        a.createDocument("patient",a.makePatientMap(2, "Mahesh"));
-//        
-//        Set<String> concepts = new HashSet<String>() ;
-//        concepts.add("First Concept uuid");
-//        concepts.add("Second Concept uuid");
-//        a.createDocument("sensor", a.makeSensorMap(1, "My Sensor", concepts));
-//    
-        
-//        a.clearAllDatabases();
-//        HashMap<String, Object> readings = new HashMap<String, Object>();
-//    	readings.put("576b65fc-ddf8-11e3-b4c4-a0b3cc71229c", "100");
-//    	readings.put("576b68b0-ddf8-11e3-b4c4-a0b3cc71229c", "100");
-//	    a.createDocument("reading",a.makeReadingMap("3", "2",readings ));   
-	    
-	    
-//        
-//        a.getAllDocument();
-        //End CouchBase Wrangling
+
 	}
 
 	public void buttonClick()
 	{
 		 username = (user.getText().toString());
 		 password= (pwd.getText().toString());
-		 url=(add.getText().toString());
-		//Toast.makeText(this, username+"  " + password, Toast.LENGTH_LONG).show();
-//		Intent intent = new Intent(this, Options.class);
-		
-		//Previous Implementation
-/*		intent.putExtra("uname",username);
-//		intent.putExtra("pword",password);
-	//	intent.putExtra("url", url);
-*/		
-		//New Implementation
-		SharedPreferences sharedPref = getSharedPreferences("mhealth", Context.MODE_PRIVATE);
-        
-		SharedPreferences.Editor editor = sharedPref.edit();
-		editor.putString(getString(R.string.username), username);
-        editor.putString(getString(R.string.password), password);
-        editor.putString(getString(R.string.url), url);
-//        editor.putString("username", username);
-        editor.commit();
-        //http://192.168.1.7:8080/openmr
-//        String user = getResources().getString(R.string.username);
-//        String pass = getResources().getString(R.string.password);
-//        String uri = getResources().getString(R.string.url);
-        String user = sharedPref.getString(getString(R.string.username), "");
-        String pass = sharedPref.getString(getString(R.string.password), "");
-        String uri = sharedPref.getString(getString(R.string.url), "");
-        System.out.println(user+" "+pass+" "+uri);
-        Toast.makeText(this, "Settings Saved!", Toast.LENGTH_LONG).show();
-//      intent.putExtra("uname",user);
-//		intent.putExtra("pword",pass);
-//		intent.putExtra("url", uri);
+		 url=(address.getText().toString());
+		 SharedPreferences sharedPref = getSharedPreferences("mhealth", Context.MODE_PRIVATE);        
+		 SharedPreferences.Editor editor = sharedPref.edit();
+		 editor.putString(getString(R.string.username), username);
+		 editor.putString(getString(R.string.password), password);
+		 editor.putString(getString(R.string.url), url);
+		 editor.commit();
+         Toast.makeText(this, "Settings Saved!", Toast.LENGTH_LONG).show();
+
 	}
 	
 	public void SwitchIntent(){
@@ -158,15 +74,11 @@ public class Login extends ActionBarActivity implements View.OnClickListener{
 		startActivity(intent);
 	}
 	
-	public static int Httpget (String username, String password, String url) throws ClientProtocolException, IOException, HttpHostConnectException
+	public static int Check_Credentials_Httpget (String username, String password, String url) throws ClientProtocolException, IOException, HttpHostConnectException
 	{
-		HttpClient httpClient = new DefaultHttpClient();
-		
+		HttpClient httpClient = new DefaultHttpClient();		
 		HttpGet httpGet = new HttpGet(url+"/ws/rest/v1/patientidentifiertype");
-		httpGet.addHeader(BasicScheme.authenticate(
-		 new UsernamePasswordCredentials(username, password),
-		 "UTF-8", false));
-
+		httpGet.addHeader(BasicScheme.authenticate(new UsernamePasswordCredentials(username, password),"UTF-8", false));
 		HttpResponse httpResponse = httpClient.execute(httpGet);
 		int status = httpResponse.getStatusLine().getStatusCode();
 		return status;
@@ -175,26 +87,30 @@ public class Login extends ActionBarActivity implements View.OnClickListener{
 		
 	}
 	
-private  class MyAsyncTask extends AsyncTask<String, String, String>{
+	private  class Check_Credentials_AsyncTask extends AsyncTask<String, String, String>{
 		
-		int res;
+		int status_code;
 		  @Override
 		  protected String doInBackground(String... params) {
 			  
 			   try {
 				   
-				   res = (Httpget(params[0],params[1], params[2]));
-				   if(res==401)
+				  status_code = (Check_Credentials_Httpget(params[0],params[1], params[2]));
+				   if(status_code==401)
 					   return "cred";
-				   else if (res==404)
+				   else if (status_code==404)
 					   return "invalid";
-				   else if (res == 200)
+				   else if (status_code == 200)
 					   return "successful";
 				   
 			   } catch (HttpHostConnectException e) {
+				   System.out.println("HTTP Host Connect exception caught.");
+					e.printStackTrace();
 				   return "refused";
 			   }   catch (IllegalStateException e) {
-					   return "no"; 
+				   System.out.println("Illegal State exception caught.");
+					e.printStackTrace();
+					return "no"; 
 			   } catch (ClientProtocolException e) {
 					System.out.println("Client Protocol exception caught.");
 					e.printStackTrace();
@@ -209,7 +125,7 @@ private  class MyAsyncTask extends AsyncTask<String, String, String>{
 		  
 		  
 		  protected void onPostExecute(String params){
-			  //Toast.makeText(getApplicationContext(), "Invalid credentials", Toast.LENGTH_LONG).show();
+			 
 			  buttonClick();
 			 if(params.equals("cred"))
 			 {
@@ -226,7 +142,7 @@ private  class MyAsyncTask extends AsyncTask<String, String, String>{
 			 else if (params.equals("successful"))
 			 {
 				 Toast.makeText(getApplicationContext(), "Settings Verified", Toast.LENGTH_LONG).show();
-//				 buttonClick();
+
 			 }
 		  }
 		  
@@ -236,7 +152,7 @@ private  class MyAsyncTask extends AsyncTask<String, String, String>{
 		  }
 
 	public void onClick(View v) {
-		if(user.getText().toString().length()<1 || pwd.getText().toString().length()<1 || add.getText().toString().length()<1 ){
+		if(user.getText().toString().length()<1 || pwd.getText().toString().length()<1 || address.getText().toString().length()<1 ){
 					
 					// out of range
 					Toast.makeText(this, "please enter complete details", Toast.LENGTH_LONG).show();
@@ -251,9 +167,9 @@ private  class MyAsyncTask extends AsyncTask<String, String, String>{
 
 				username = (user.getText().toString());
 				 password= (pwd.getText().toString());
-				 url=(add.getText().toString());
+				 url=(address.getText().toString());
 				 
-				new MyAsyncTask().execute(username,password, url);
+				new Check_Credentials_AsyncTask().execute(username,password, url);
 					break;
 					
 			}
