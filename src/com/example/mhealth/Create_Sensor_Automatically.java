@@ -33,7 +33,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,80 +43,62 @@ import com.google.gson.GsonBuilder;
 
 public class Create_Sensor_Automatically extends Activity {
 	String Sensor_name;
-	String Pack_name;
-	int conc_num;
+	String Package_name;
 	public Bundle bundle;
-	final String CRED = "Credentials";
 	private String username,password,url;
 	Button b1;
-	EditText e1;
-	LinearLayout main1;
+	EditText Sensor;
+	LinearLayout LLayout1;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create__sensor);
 		bundle = getIntent().getExtras();
-//		SharedPreferences prefs = getApplicationContext().getSharedPreferences(CRED,getApplicationContext().MODE_PRIVATE);
-//	    new MyAsync().execute(prefs.getString("username", "admin"),prefs.getString("password", "Admin123"),prefs.getString("url",""));
-		//ScrollView sv = new ScrollView(this);
-		main1=(LinearLayout) findViewById(R.id.lay1);
-		e1=(EditText) findViewById(R.id.editText1);
-		e1.setText(bundle.getString("Sensor"));
+		LLayout1=(LinearLayout) findViewById(R.id.lay1);
+		Sensor=(EditText) findViewById(R.id.editText1);
+		Sensor.setText(bundle.getString("Sensor"));
 		SharedPreferences sharedPref = getSharedPreferences("mhealth", Context.MODE_PRIVATE);
         username = sharedPref.getString(getString(R.string.username), "");
 		password = sharedPref.getString(getString(R.string.password), "");
 		url = sharedPref.getString(getString(R.string.url), "");
 		System.out.println(username + " "+password+" "+url);
-	 List<EditText> allEds = new ArrayList<EditText>();
+		List<EditText> allEds = new ArrayList<EditText>();
 	 	String [] concepts = bundle.getStringArray("Concepts");
-	 	System.out.println("fsjhjshfkjd8787&*&&&"+bundle.getStringArray("Concepts").length);
-		for(int j=0;j<concepts.length;j++) 
- 		{      	
+	 	for(int j=0;j<concepts.length;j++) 
+ 			{      	
 
-				EditText ed;
- 			
- 			TextView rowTextView = new TextView(Create_Sensor_Automatically.this);
- 			 rowTextView.setText("Concept"+(j+1));
- 			 main1.addView(rowTextView);
- 		    ed = new EditText(Create_Sensor_Automatically.this);
- 		    allEds.add(ed);
- 	     ed.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT));
- 		    main1.addView(ed);	
- 		    
- 		    
- 		    ed.setText(getConceptName(concepts[j]));
-
-
-
+				EditText ed; 			
+				TextView rowTextView = new TextView(Create_Sensor_Automatically.this);
+				rowTextView.setText("Concept"+(j+1));
+				LLayout1.addView(rowTextView);
+				ed = new EditText(Create_Sensor_Automatically.this);
+				allEds.add(ed);
+				ed.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT));
+				LLayout1.addView(ed); 		    
+				ed.setText(getConceptName(concepts[j]));
+			}
+	    Button create = new Button(this);
+        create.setText("Create");
+        create.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        create.setId(9);
+        LLayout1.addView(create);	      
+        create.setOnClickListener(new View.OnClickListener(){
+        	  	
+	    	 @Override
+	    	 public void onClick(View v){
+	    		 
+	    		 new Sensor_Create_AsynTask().execute(username,password,url);
+	    	
+	    	    		
+	    	 							}	 
+	    	 												}  		
+        							); 
 
 		
-
- 		}
-		 Button b = new Button(this);
-	        b.setText("Create");
-	        b.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-	        b.setId(9);
-	        main1.addView(b);	      
-	        b.setOnClickListener(new View.OnClickListener(){
-		    	
-		    	
-		    	 @Override
-		    	 public void onClick(View v){
-		    		 
-		    		 new MyAsync().execute(username,password,url);
-		    	
-		    	    		
-		    	}	 }  ); 
-
-	     
-		//sv.addView(main1);
-		//setContentView(sv);
-		
-	
 	}
 	
-	public static String NormalHttppost(String username, String password ,String url, JSONObject jo) throws ClientProtocolException, IOException
+	public static String Sensor_Create_Httppost(String username, String password ,String url, JSONObject jo) throws ClientProtocolException, IOException
 	{
 		HttpClient httpClient = new DefaultHttpClient();
 		ResponseHandler<String> resonseHandler = new BasicResponseHandler();
@@ -125,9 +106,6 @@ public class Create_Sensor_Automatically extends Activity {
 		HttpPost postMethod = new HttpPost(url+"/ws/rest/v1/sensor/sm");    
 		postMethod.setEntity(new StringEntity(jo.toString()));
 		postMethod.setHeader( "Content-Type", "application/json");
-		//String authorizationString = "Basic " + Base64.encodeToString(("admin" + ":" + "Admin123").getBytes(), Base64.DEFAULT); //this line is diffe
-		//authorizationString.replace("\n", "");
-		//postMethod.setHeader("Authorization", authorizationString);
 		postMethod.addHeader(BasicScheme.authenticate(new UsernamePasswordCredentials(username,password),"UTF-8", false));
 		String response = httpClient.execute(postMethod,resonseHandler);
 		return response;
@@ -178,23 +156,15 @@ public class Create_Sensor_Automatically extends Activity {
 	}
 
 	
-	public static String Httppost(String username, String password ,String url, JSONObject jo) throws ClientProtocolException, IOException
+	public static String Sensor_Concept_Mapping_Httppost(String username, String password ,String url, JSONObject jo) throws ClientProtocolException, IOException
 	{
-		System.out.println("in http post "+ jo);
 		HttpClient httpClient = new DefaultHttpClient();
-		ResponseHandler<String> resonseHandler = new BasicResponseHandler();
-		
+		ResponseHandler<String> responseHandler = new BasicResponseHandler();		
 		HttpPost postMethod = new HttpPost(url+"/module/sensorreading/scm.form");    
-		System.out.println("URL  "+url);
 		postMethod.setEntity(new StringEntity(jo.toString()));
 		postMethod.setHeader( "Content-Type", "application/json");
-		//String authorizationString = "Basic " + Base64.encodeToString(("admin" + ":" + "Admin123").getBytes(), Base64.DEFAULT); //this line is diffe
-		//authorizationString.replace("\n", "");
-		//postMethod.setHeader("Authorization", authorizationString);
 		postMethod.addHeader(BasicScheme.authenticate(new UsernamePasswordCredentials(username,password),"UTF-8", false));
-		System.out.println("respose^^^^^^^");
-		String response = httpClient.execute(postMethod,resonseHandler);
-		System.out.println("respose%%%%%%");
+		String response = httpClient.execute(postMethod,responseHandler);
 		return response;
 		
 	}
@@ -212,53 +182,50 @@ public class Create_Sensor_Automatically extends Activity {
 	
 	public  String  saveInPreference(String sens_id)
 	{
-			final String REGISTERING = "Registering";
-		
-		
-		SharedPreferences pref = getApplicationContext().getSharedPreferences(REGISTERING,getApplicationContext().MODE_PRIVATE);
+		final String REGISTER = "Register_Sensor";		
+		getApplicationContext();
+		SharedPreferences pref = getApplicationContext().getSharedPreferences(REGISTER,Context.MODE_PRIVATE);
 	    SharedPreferences.Editor editor = pref.edit();
 		
-		HashMap <String,String> sensor_packname=new HashMap();
-		HashMap <String,String> sensor_id = new HashMap();
- 		HashMap <String,List<String>> sensor_concept=new HashMap();
+		HashMap <String,String> sensor_package_name=new HashMap<String, String>();
+		HashMap <String,String> sensor_id = new HashMap<String, String>();
+ 		HashMap <String,List<String>> sensor_concept=new HashMap<String, List<String>>();
 			
-		List<String> concepts=new ArrayList();	
+		List<String> concepts=new ArrayList<String>();	
 			
 	    		 if(bundle!=null)
 				
-	    		 {   Set<String> keys=bundle.keySet();
-    			 
-	    		 for(String s1:keys)
-    			 {
-	    			    
-    				 if(s1.equals("Sensor"))
-    			 
-    			 { Sensor_name=bundle.getString(s1);
-    			 	System.out.println(Sensor_name);
-    			 	continue; }
-    				 
-    				 if(s1.equals("Package_Name"))
-    				 {  Pack_name=bundle.getString(s1);
-    				 System.out.println(Pack_name);
-    				 continue;	
-    				 }
-    		
-    				 else{
-    				String [] arr = bundle.getStringArray("Concepts");
-    				for(int i =0;i<arr.length;i++)
-	    			 concepts.add(arr[i]);
-	    			 
-    				 }
-	    		 }
-    			 sensor_concept.put(Sensor_name,concepts);
-    			 sensor_packname.put(Sensor_name,Pack_name);
-    			 sensor_id.put(Sensor_name, sens_id);
+	    		 { 
+	    			 	Set<String> keys=bundle.keySet();
+		    			 for(String key:keys)
+		    			 {
+			    			    
+		    				 	if(key.equals("Sensor"))
+		    			 
+					    			 {  Sensor_name=bundle.getString(key);
+					    			 	continue; }
+		    				 
+			    				 if(key.equals("Package_Name"))
+				    				 {  Package_name=bundle.getString(key);
+					    				 continue;	
+				    				 }
+		    		
+			    				 else
+			    				 {
+				    				String [] array_of_concepts = bundle.getStringArray("Concepts");
+				    				for(int i =0;i<array_of_concepts.length;i++)
+					    			 concepts.add(array_of_concepts[i]);
+					    			 
+			    				 }
+			    		 }
+		    			 sensor_concept.put(Sensor_name,concepts);
+		    			 sensor_package_name.put(Sensor_name,Package_name);
+		    			 sensor_id.put(Sensor_name, sens_id);
 	    		 }
 	    		
 	    		 GsonBuilder gsonb = new GsonBuilder();
 	    		 Gson gson = gsonb.create();
-	    		 String json=new Gson().toJson(sensor_packname);
-	    		 
+	    		 String json=new Gson().toJson(sensor_package_name);	    		 
 	    		String json2=new Gson().toJson(sensor_concept);
 	    		String json3=new Gson().toJson(sensor_id);
 	    		System.out.println(json.toString()+"  "+json2.toString());
@@ -270,20 +237,18 @@ public class Create_Sensor_Automatically extends Activity {
 		
 	}
 	
-	private class MyAsync extends AsyncTask<String, String, String>
+	private class Sensor_Create_AsynTask extends AsyncTask<String, String, String>
 	{
-		String res1,res2,res3;
-		Integer rs;
+		String result1;
+		Integer sensor_id;
 		@Override
 		protected String doInBackground(String... params) {
 			try {
-				JSONObject nm = new JSONObject();
-				
-				nm.put("sensor_id", 1);
-				nm.put("sensor_name",bundle.getString("Sensor"));
-				System.out.println("sensor_name "+bundle.getString("Sensor"));
-				res1 = NormalHttppost(params[0],params[1],params[2],nm);
-				rs=idJsonParse(res1);
+				JSONObject sensor_create = new JSONObject();				
+				sensor_create.put("sensor_id", 1);
+				sensor_create.put("sensor_name",bundle.getString("Sensor"));
+				result1 = Sensor_Create_Httppost(params[0],params[1],params[2],sensor_create);
+				sensor_id=idJsonParse(result1);
 			} catch (ClientProtocolException e) {
 				System.out.println("Client Protocol exception caught.");
 				e.printStackTrace();
@@ -295,48 +260,42 @@ public class Create_Sensor_Automatically extends Activity {
 				e.printStackTrace();
 			}
 			   
-			   return rs.toString();
+			   return sensor_id.toString();
 		}
 		
 		 protected void onPostExecute(String params){
-		 Toast.makeText(getApplicationContext(),"Sensor created successfully with ID "+params, Toast.LENGTH_LONG).show();
-		 SharedPreferences sharedPref = getSharedPreferences("mhealth", Context.MODE_PRIVATE);
-	        username = sharedPref.getString(getString(R.string.username), "");
-			password = sharedPref.getString(getString(R.string.password), "");
-			url = sharedPref.getString(getString(R.string.url), "");
-			System.out.println(username + " "+password+" "+url);
-			//new MyAsync().execute(username,password,url);
-		 new MyAsync2().execute(sharedPref.getString(getString(R.string.username), ""),sharedPref.getString(getString(R.string.password), ""),sharedPref.getString(getString(R.string.url), ""),params);
-			
+				 Toast.makeText(getApplicationContext(),"Sensor created successfully with ID "+params, Toast.LENGTH_LONG).show();
+				 SharedPreferences sharedPref = getSharedPreferences("mhealth", Context.MODE_PRIVATE);
+			     username = sharedPref.getString(getString(R.string.username), "");
+			     password = sharedPref.getString(getString(R.string.password), "");
+				 url = sharedPref.getString(getString(R.string.url), "");
+				 new Sensor_Concept_Async_Task().execute(sharedPref.getString(getString(R.string.username), ""),sharedPref.getString(getString(R.string.password), ""),sharedPref.getString(getString(R.string.url), ""),params);
+					
 			 
 		  
 		  }
 		
 	}
 	
-	private class MyAsync2 extends AsyncTask<String, String, String>
+	private class Sensor_Concept_Async_Task extends AsyncTask<String, String, String>
 	{
-		String res1,res2,res3;
-		Integer rs;
+		String result1;
 		@Override
 		protected String doInBackground(String... params) {
 			try {
-				JSONObject nm = new JSONObject();
-				System.out.println("URL>>>>"+params[2]);
-				System.out.println("id os sensor" + params[3]);
-				nm.put("sensor", params[3]);
-				JSONArray ja = new JSONArray();
-				System.out.println("............. in myasync2");
+				JSONObject sensor_concept = new JSONObject();
+				sensor_concept.put("sensor", params[3]);
+				JSONArray concept = new JSONArray();
 				String[] concepts = bundle.getStringArray("Concepts");
 				for(int i=0;i<bundle.getStringArray("Concepts").length;i++)
 				{
 					System.out.println("Concept_"+(i+1)+" "+concepts[i]);
-					ja.put(concepts[i]);
+					concept.put(concepts[i]);
 				}
 				
-				nm.put("concepts",ja);
-				res1 = Httppost(params[0],params[1],params[2],nm);
-				System.out.println("returned...   "+res1);
+				sensor_concept.put("concepts",concept);
+				result1 = Sensor_Concept_Mapping_Httppost(params[0],params[1],params[2],sensor_concept);
+				System.out.println("returned...   "+result1);
 				
 			} catch (ClientProtocolException e) {
 				System.out.println("Client Protocol exception caught.");
@@ -352,16 +311,17 @@ public class Create_Sensor_Automatically extends Activity {
 			   return params[3];
 		}
 		
-		 protected void onPostExecute(String params){
-			 Toast.makeText(getApplicationContext(),params, Toast.LENGTH_LONG).show();
-		 if(saveInPreference(params).equalsIgnoreCase("success"))
-			 {
-			 Toast.makeText(getApplicationContext(),"Concepts Mapped Successfully", Toast.LENGTH_LONG).show();
-			 };
+		 protected void onPostExecute(String params)
+		 {
+				 Toast.makeText(getApplicationContext(),params, Toast.LENGTH_LONG).show();
+				 if(saveInPreference(params).equalsIgnoreCase("success"))
+						 {
+						 Toast.makeText(getApplicationContext(),"Concepts Mapped Successfully", Toast.LENGTH_LONG).show();
+						 };
 		 
 			 
 		  
-		  }
+		}
 		
 	}
 

@@ -22,30 +22,22 @@ import com.couchbase.lite.android.AndroidContext;
 //import com.example.mhealth.Login.MyAsyncTask;
 
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.os.Build;
 
 public class Get_Patient_information extends ActionBarActivity implements View.OnClickListener {
 	
 	Button get ;
-	AutoCompleteTextView q; //magus
+	AutoCompleteTextView patient_name; //magus
 	String query;
 	ProgressBar pb;
 	String username;
@@ -56,44 +48,35 @@ public class Get_Patient_information extends ActionBarActivity implements View.O
 	TextView uuid;
 	TextView age,gender,birthdate;
 	public Patient patient = new Patient();
-	String[] countries; //magus
+	String[] hints; //magus
 	static couch_api ca; //magus
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.get_layout);
-		//TODO ask why button4 to button1
-		get=(Button)findViewById(R.id.button4);
-		q=(AutoCompleteTextView)findViewById(R.id.editText2);//magus
-		countries = new String[3];
-		countries[0]="talha";
-		countries[1]="horatio";
-		countries[2]="wtfuck seriously";
+		get=(Button)findViewById(R.id.button1);
+		patient_name=(AutoCompleteTextView)findViewById(R.id.editText2);//magus
+		hints = new String[1];
+		hints[0]="horatio";
 		
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, countries);
-		q.setAdapter(adapter);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, hints);
+		patient_name.setAdapter(adapter);
 		
 		num=(TextView)findViewById(R.id.textView7);
 		name=(TextView)findViewById(R.id.textView9);
-		// TODO ask why this was commented
+		// TODO add text view for this
 		uuid=(TextView)findViewById(R.id.textView11);
 		age=(TextView)findViewById(R.id.textView13);
 		gender=(TextView)findViewById(R.id.textView15);
 		birthdate=(TextView)findViewById(R.id.textView17);
 		Bundle extras = getIntent().getExtras();
-		/*username= extras.getString("uname");
-		password = extras.getString("pword");
-		url=extras.getString("url");
-		*/
 		SharedPreferences sharedPref = getSharedPreferences("mhealth", Context.MODE_PRIVATE);
         username = sharedPref.getString(getString(R.string.username), "");
 		password = sharedPref.getString(getString(R.string.password), "");
 		url = sharedPref.getString(getString(R.string.url), "");
 		System.out.println(username+" "+password+" "+url+" GetQuery");
 		get.setOnClickListener(this);
-		
-		//
 		System.out.println("before manager");
 		Manager manager = null;
 		try {
@@ -107,7 +90,7 @@ public class Get_Patient_information extends ActionBarActivity implements View.O
         	System.out.println("Failed to Set CouchApi");
         }
         
-		//
+		
 
 	}
 	
@@ -118,15 +101,14 @@ public class Get_Patient_information extends ActionBarActivity implements View.O
 		String name;
 		String uuid;
 		JSONObject obj = new JSONObject(str);
-	JSONArray ja = obj.getJSONArray("results");
-	if(ja.length()==0)
-	{
-		return "zero";
-	}
-	
-	else
-	{
-		try{
+		JSONArray ja = obj.getJSONArray("results");
+		if(ja.length()==0)
+		{
+			return "zero";
+		}
+		
+		else
+		{
 			System.out.println(str);
 			JSONObject j1= (JSONObject)ja.get(0);
 			info = (String) j1.get("display");
@@ -138,33 +120,27 @@ public class Get_Patient_information extends ActionBarActivity implements View.O
 			patient.setPatientId(Id);
 			name=stri[1];
 			System.out.println(name);
-			String[] st= name.split("\\s+");
+			String[] name_split= name.split("\\s+");
 			
-			if (st.length==1)
+			if (name_split.length==1)
 			{
-				patient.setGivenName(st[0]);
-			}
-			else if (st.length==2)
+				patient.setGivenName(name_split[0]);
+				}
+			else if (name_split.length==2)
 			{
-				patient.setGivenName(st[0]);
-				patient.setFamilyName(st[1]);
+				patient.setGivenName(name_split[0]);
+				patient.setFamilyName(name_split[1]);
 			}
 			else
 			{
-				patient.setGivenName(st[0]);
-				patient.setMiddleName(st[1]);
-				patient.setFamilyName(st[2]);
+				patient.setGivenName(name_split[0]);
+				patient.setMiddleName(name_split[1]);
+				patient.setFamilyName(name_split[2]);
 			}
-		}catch(ArrayIndexOutOfBoundsException e){
-			e.printStackTrace();
-			return "error";
-		}catch(Exception e){
-			e.printStackTrace();
-			return "error";
-		}
-		
-		
-		return Id+"*"+name+"*"+uuid; 
+			
+			
+			
+			return Id+"*"+name+"*"+uuid; 
 	}
 		
 		 
@@ -193,17 +169,12 @@ public class Get_Patient_information extends ActionBarActivity implements View.O
 	public static String Httpget (String username, String password, String url, String query) throws ClientProtocolException, IOException
 	{
 		HttpClient httpClient = new DefaultHttpClient();
-		
 		HttpGet httpGet = new HttpGet(url+"/ws/rest/v1/person?q="+query);
-		httpGet.addHeader(BasicScheme.authenticate(
-		 new UsernamePasswordCredentials(username, password),
-		 "UTF-8", false));
-
+		httpGet.addHeader(BasicScheme.authenticate( new UsernamePasswordCredentials(username, password),"UTF-8", false));
 		HttpResponse httpResponse = httpClient.execute(httpGet);
 		HttpEntity responseEntity = httpResponse.getEntity();
 		String str = inputStreamToString(responseEntity.getContent()).toString();
 		httpClient.getConnectionManager().shutdown();  
-		System.out.println("in http get @@@@ "+str);
 		return (str);            	
 
 		
@@ -220,7 +191,6 @@ public class Get_Patient_information extends ActionBarActivity implements View.O
 			HttpEntity responseEntity = httpResponse.getEntity();
 			String str = inputStreamToString(responseEntity.getContent()).toString();
 			httpClient.getConnectionManager().shutdown();
-			System.out.println("in details http get ^^^^  "+str);
 			return str;
 		}
 		catch (Exception e)
@@ -248,26 +218,23 @@ public class Get_Patient_information extends ActionBarActivity implements View.O
 		
 	}
 	
-	private  class MyAsyncTask extends AsyncTask<String, String, String>{
+	private  class Patient_Get_AsyncTask extends AsyncTask<String, String, String>{
 		
-		String res1,res2;
+		String result1,result2;
 		  @Override
 		  protected String doInBackground(String... params) {
 			  
 			   try {
 				   
-				   res1 = jsonParse(Httpget(params[0],params[1], params[2],params[3]));
-				   if(res1.equals("zero"))
+				   result1 = jsonParse(Httpget(params[0],params[1], params[2],params[3]));
+				   if(result1.equals("zero"))
 				   {
 					   return "zero";
 				   }
-				   else if(res1.equals("error")){
-					   return "error";
-				   }
 				   else
 				   {
-				   String arrayString[] = res1.split("\\*");
-				   res2=DetailsjsonParse(DetailsHttpget(params[0],params[1], params[2],arrayString[2]));}
+				   String details[] = result1.split("\\*");
+				   result2=DetailsjsonParse(DetailsHttpget(params[0],params[1], params[2],details[2]));}
 				   
 			   } catch (ClientProtocolException e) {
 					System.out.println("Client Protocol exception caught.");
@@ -285,7 +252,7 @@ public class Get_Patient_information extends ActionBarActivity implements View.O
 					e.printStackTrace();
 				}
 		       
-				return res1 +"*"+ res2;
+				return result1 +"*"+ result2;
 		  }
 		  
 		  
@@ -295,10 +262,7 @@ public class Get_Patient_information extends ActionBarActivity implements View.O
 			  {
 				  Toast.makeText(getApplicationContext(),"No patients found.", Toast.LENGTH_LONG).show();
 			  }
-			  else if(params.equals("error")){
-				  Toast.makeText(getApplicationContext(),"Some Error Occured while fetching patient details ", Toast.LENGTH_LONG).show();	  
-			  }
-				else if (params.equals("boo"))
+			  else if (params.equals("boo"))
 			  {
 				  Toast.makeText(getApplicationContext(),"Kindly check your Internet Connection, Settings and Server.", Toast.LENGTH_LONG).show();
 			  }
@@ -308,17 +272,13 @@ public class Get_Patient_information extends ActionBarActivity implements View.O
 			  }
 			  
 			  else{
-			  String arrayString[] = params.split("\\*");
-			  //Toast.makeText(getApplicationContext(),params, Toast.LENGTH_LONG).show();
-				// System.out.println(((String) j1.get("display")).substring(0, 3)); 
-				num.setText(arrayString[0]);
-				// why did you comment this?
-				uuid.setText(arrayString[2]);
-				name.setText(arrayString[1]);
-				age.setText(arrayString[3]);
-				gender.setText(arrayString[4]);
-				birthdate.setText(arrayString[5]);
-				
+					  String arrayString[] = params.split("\\*");
+					  	num.setText(arrayString[0]);
+						name.setText(arrayString[1]);
+						age.setText(arrayString[3]);
+						gender.setText(arrayString[4]);
+						birthdate.setText(arrayString[5]);
+			  
 				
 				//TODO Move this to some place appropriate as well
 				String patient_id = arrayString[2];
@@ -345,17 +305,16 @@ public class Get_Patient_information extends ActionBarActivity implements View.O
 	public void onClick(View v)
 	{
 		//query=q.getText().toString();
-		query=q.getText().toString();
+		query=patient_name.getText().toString();
 		
 		switch (v.getId())
 				{
-			// TODO ask why button4 to button1
-			case R.id.button4:
+			case R.id.button1:
 				if(query.equalsIgnoreCase("u"))
 				{
 					Toast.makeText(getApplicationContext(),"Invalid Argument", Toast.LENGTH_LONG).show();
 				}
-				else if(q.getText().toString().length()<1 ){
+				else if(patient_name.getText().toString().length()<1 ){
 					
 					// out of range
 					Toast.makeText(this, "Please enter complete details", Toast.LENGTH_LONG).show();
@@ -363,7 +322,7 @@ public class Get_Patient_information extends ActionBarActivity implements View.O
 		
 	
 				else
-					{new MyAsyncTask().execute(username,password,url,query);}
+					{new Patient_Get_AsyncTask().execute(username,password,url,query);}
 		  //Toast.makeText(getApplicationContext(), number+" "+full_name+" "+Uuid, Toast.LENGTH_LONG).show();
 		  break;
 					

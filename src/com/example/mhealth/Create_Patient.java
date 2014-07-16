@@ -46,38 +46,35 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 public class Create_Patient extends ActionBarActivity implements View.OnClickListener{
 	
-	EditText first,family,num,gender,age;
-	Button bt;
+	EditText first_name,family_name,openmrs_id,gender,age;
+	Button button;
 	String username;
 	String password;
 	String url;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) 
+	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.post_layout);
-		first=(EditText)findViewById(R.id.editText3);
-		family=(EditText)findViewById(R.id.editText4);
+		first_name=(EditText)findViewById(R.id.editText3);
+		family_name=(EditText)findViewById(R.id.editText4);
 		gender=(EditText)findViewById(R.id.editText5);
-		num=(EditText)findViewById(R.id.editText6);
+		openmrs_id=(EditText)findViewById(R.id.editText6);
 		age=(EditText)findViewById(R.id.editText7);
-		bt=(Button)findViewById(R.id.button5);
+		button=(Button)findViewById(R.id.button5);
 		Bundle extras = getIntent().getExtras();
-		/*username= extras.getString("uname");
-		password = extras.getString("pword");
-		url=extras.getString("url");
-		*/
 		SharedPreferences sharedPref = getSharedPreferences("mhealth", Context.MODE_PRIVATE);
         username = sharedPref.getString(getString(R.string.username), "");
 		password = sharedPref.getString(getString(R.string.password), "");
 		url = sharedPref.getString(getString(R.string.url), "");
-		bt.setOnClickListener(this);
-
+		button.setOnClickListener(this);
 
 	}
 	
 	
-	public static StringBuilder inputStreamToString (InputStream is) {
+	public static StringBuilder inputStreamToString (InputStream is)
+	{
 		String line = "";
 		StringBuilder total = new StringBuilder();
 		// Wrap a BufferedReader around the InputStream
@@ -92,7 +89,7 @@ public class Create_Patient extends ActionBarActivity implements View.OnClickLis
 		}
 		// Return full string
 		return total;
-		}
+	}
 	
 	
 	public static String Httppost(String username, String password ,String type, String url, JSONObject jo) throws ClientProtocolException, IOException, HttpResponseException
@@ -102,9 +99,6 @@ public class Create_Patient extends ActionBarActivity implements View.OnClickLis
 		HttpPost postMethod = new HttpPost(url+"/ws/rest/v1/"+type);    
 		postMethod.setEntity(new StringEntity(jo.toString()));
 		postMethod.setHeader( "Content-Type", "application/json");
-		//String authorizationString = "Basic " + Base64.encodeToString(("admin" + ":" + "Admin123").getBytes(), Base64.DEFAULT); //this line is diffe
-		//authorizationString.replace("\n", "");
-		//postMethod.setHeader("Authorization", authorizationString);
 		postMethod.addHeader(BasicScheme.authenticate(new UsernamePasswordCredentials(username,password),"UTF-8", false));
 		String response = httpClient.execute(postMethod,resonseHandler);
 		return response;
@@ -120,17 +114,17 @@ public class Create_Patient extends ActionBarActivity implements View.OnClickLis
 		HttpEntity responseEntity = httpResponse.getEntity();
 		String str = inputStreamToString(responseEntity.getContent()).toString();
 		httpClient.getConnectionManager().shutdown();
-		return str;  
-		       
+		return str;  	       
         
-    	} 
+	} 
+	
 	public static String JsonParse(String str) throws JSONException
 	{
 		JSONObject jo = new JSONObject(str);
 		JSONArray ja = jo.getJSONArray("results");
-			JSONObject j1= (JSONObject)ja.get(0);
-			String bla = (String)j1.get("uuid");
-			return bla;
+		JSONObject j1= (JSONObject)ja.get(0);
+		String uuid = (String)j1.get("uuid");
+		return uuid;
 		
 	}
 	
@@ -159,50 +153,47 @@ public class Create_Patient extends ActionBarActivity implements View.OnClickLis
 		json.put("age", num);
 		//json.put("preferredAddress", address);
 		
-		String res;
-		res=Httppost(username, password , "person",url,json);
+		String result;
+		result=Httppost(username, password , "person",url,json);
 		
-		String uuid = uuidJsonParse(res);
+		String uuid = uuidJsonParse(result);
 		String idType=JsonParse(Httpget(username,password,url,"patientidentifiertype"));
-		String loc=JsonParse(Httpget(username,password,url,"location"));
+		String location=JsonParse(Httpget(username,password,url,"location"));
 		
-		JSONObject fijo = new JSONObject();
-		JSONObject iden = new JSONObject();
-		iden.put("identifier", Id);
-		iden.put("identifierType", idType);
-		iden.put("location", loc);
-		iden.put("preferred", true);
+		JSONObject jObject= new JSONObject();
+		JSONObject identifier = new JSONObject();
+		identifier.put("identifier", Id);
+		identifier.put("identifierType", idType);
+		identifier.put("location", location);
+		identifier.put("preferred", true);
 		
-		JSONArray finarr = new JSONArray();
-		finarr.put(iden);
-		fijo.put("identifiers", finarr);
-		fijo.put("person", uuid);
+		JSONArray jArray = new JSONArray();
+		jArray.put(identifier);
+		jObject.put("identifiers", jArray);
+		jObject.put("person", uuid);
 		
-		String finstr;
-		finstr=Httppost(username,password,"patient",url, fijo);
-		return finstr;
-		
-			
-		
-		
+		String final_string;
+		final_string=Httppost(username,password,"patient",url,jObject);
+		return final_string;	
 	
 	}
 	
-		public  class DoAsyncTask extends AsyncTask<String, String, String>{
+		public  class Create_patient_AsyncTask extends AsyncTask<String, String, String>{
 				
-				String res;
+				String result;
 				  @Override
 				  protected String doInBackground(String... params) {
 					  
 					   try {
-						   Integer a = Integer.parseInt(params[7]);
-						   res =create_patient(params[0],params[1], params[2],params[3],params[4],params[5],params[6],a);
+						   Integer age = Integer.parseInt(params[7]);
+						   result =create_patient(params[0],params[1], params[2],params[3],params[4],params[5],params[6],age);
 						   			
 					   }
 						
-					   catch ( HttpResponseException e){
-						   
-						   return "boo";
+				   		 catch ( HttpResponseException e){
+					   			System.out.println("Http Response exception caught.");
+								e.printStackTrace();
+						   return "no";
 					   } catch (ClientProtocolException e) {
 							System.out.println("Client Protocol exception caught.");
 							e.printStackTrace();
@@ -213,18 +204,18 @@ public class Create_Patient extends ActionBarActivity implements View.OnClickLis
 							System.out.println("JSON exception caught.");
 							e.printStackTrace();
 						}   
-						return res;
+						return result;
 				  }
 		  
 		  
 		  protected void onPostExecute(String params){
 			  
-			  if(params.equals("boo"))	
+			  if(params.equals("no"))	
 			  {
 				 Toast.makeText(getApplicationContext(),"Patient could not be created\nID should be unique!!", Toast.LENGTH_LONG).show();  
 			  }
 			  else{
-			  Toast.makeText(getApplicationContext(),"Patient Created Successfully!!", Toast.LENGTH_LONG).show();
+				  Toast.makeText(getApplicationContext(),"Patient Created Successfully!!", Toast.LENGTH_LONG).show();
 			  }
 				
 				
@@ -238,12 +229,12 @@ public class Create_Patient extends ActionBarActivity implements View.OnClickLis
 		@Override
 		public void onClick(View v) {
 			
-			String name,last,gen,Id,ag;
-			name=first.getText().toString();
-			last=family.getText().toString();
+			String name,last,gen,Id,Age;
+			name=first_name.getText().toString();
+			last=family_name.getText().toString();
 			gen=gender.getText().toString();
-			Id=num.getText().toString();
-			ag=age.getText().toString();
+			Id=openmrs_id.getText().toString();
+			Age=age.getText().toString();
 		
 			
 			
@@ -251,22 +242,22 @@ public class Create_Patient extends ActionBarActivity implements View.OnClickLis
 			
 			switch (v.getId())
 					{
-				case R.id.button5:
-					//Toast.makeText(getApplicationContext(), "create selected", Toast.LENGTH_LONG).show();
-			
-					if(name.length()<1||last.length()<1||gen.length()<1||Id.length()<1||ag.length()<1)	
-					{
-						Toast.makeText(getApplicationContext(), "Enter complete details", Toast.LENGTH_LONG).show();	
-						
-					}
-					else{
+								case R.id.button5:
+							//Toast.makeText(getApplicationContext(), "create selected", Toast.LENGTH_LONG).show();
 					
-					new DoAsyncTask().execute(username,password,url,name,last,Id,gen,ag);
-			  //Toast.makeText(getApplicationContext(), number+" "+full_name+" "+Uuid, Toast.LENGTH_LONG).show();
-			  break;
-					}
+							if(name.length()<1||last.length()<1||gen.length()<1||Id.length()<1||Age.length()<1)	
+							{
+								Toast.makeText(getApplicationContext(), "Enter complete details", Toast.LENGTH_LONG).show();	
+								
+							}
+							else{
+							
+								new Create_patient_AsyncTask().execute(username,password,url,name,last,Id,gen,Age);
+								//Toast.makeText(getApplicationContext(), number+" "+full_name+" "+Uuid, Toast.LENGTH_LONG).show();
+								break;
+							}
 			
-		}
+					}
 		}
 		
 

@@ -62,14 +62,14 @@ public class Sensor_Reading_Manually extends ActionBarActivity implements View.O
 	EditText sensor,patient;
 	Button b1,b2;;
 	String query;
-	LinearLayout main1;
+	LinearLayout LLayout1;
 	String username;
 	String password;
 	String url;
-	TextView S, S1;
+	TextView enter_sensor_id;
 	HashMap<String, String> scm_name_to_id;
 	String[] sensor_name_hinting_array;
-	static couch_api ca; //magus
+	static couch_api ca; 
 	
 	
 	
@@ -77,27 +77,27 @@ public class Sensor_Reading_Manually extends ActionBarActivity implements View.O
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	
-		main1=new LinearLayout(this);
-       main1.setOrientation(LinearLayout.VERTICAL);
-  	 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-  	 Bundle extras = getIntent().getExtras(); 
-  	SharedPreferences sharedPref = getSharedPreferences("mhealth", Context.MODE_PRIVATE);
-    username = sharedPref.getString(getString(R.string.username), "");
-	password = sharedPref.getString(getString(R.string.password), "");
-	url = sharedPref.getString(getString(R.string.url), "");
-	  S=new TextView(this);
-      S.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));     
-      S.setText("Enter sensor Id");
-      main1.addView(S);
-  	 sensor =new EditText(this);
-  	 sensor.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT));     
-      main1.addView(sensor);
-      b1=new Button(this);
-      b1.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));   
-      b1.setText("Get Concepts");
-      b1.setOnClickListener(this);
-      main1.addView(b1);
-      setContentView(main1);
+		LLayout1=new LinearLayout(this);
+        LLayout1.setOrientation(LinearLayout.VERTICAL);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        Bundle extras = getIntent().getExtras(); 
+        SharedPreferences sharedPref = getSharedPreferences("mhealth", Context.MODE_PRIVATE);
+        username = sharedPref.getString(getString(R.string.username), "");
+        password = sharedPref.getString(getString(R.string.password), "");
+        url = sharedPref.getString(getString(R.string.url), "");
+        enter_sensor_id=new TextView(this);
+        enter_sensor_id.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));     
+        enter_sensor_id.setText("Enter sensor Id");
+        LLayout1.addView(enter_sensor_id);
+        sensor =new EditText(this);
+        sensor.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT));     
+        LLayout1.addView(sensor);
+        b1=new Button(this);
+        b1.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));   
+        b1.setText("Get Concepts");
+        b1.setOnClickListener(this);
+        LLayout1.addView(b1);
+        setContentView(LLayout1);
 		
 	
 }

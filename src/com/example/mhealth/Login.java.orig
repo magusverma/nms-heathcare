@@ -58,6 +58,38 @@ public class Login extends ActionBarActivity implements View.OnClickListener{
 	{
 		 username = (user.getText().toString());
 		 password= (pwd.getText().toString());
+<<<<<<< HEAD
+		 url=(add.getText().toString());
+		//Toast.makeText(this, username+"  " + password, Toast.LENGTH_LONG).show();
+//		Intent intent = new Intent(this, Options.class);
+		
+		//Previous Implementation
+/*		intent.putExtra("uname",username);
+//		intent.putExtra("pword",password);
+	//	intent.putExtra("url", url);
+*/		
+		//New Implementation
+		SharedPreferences sharedPref = getSharedPreferences("mhealth", Context.MODE_PRIVATE);
+        
+		SharedPreferences.Editor editor = sharedPref.edit();
+		editor.putString(getString(R.string.username), username);
+        editor.putString(getString(R.string.password), password);
+        editor.putString(getString(R.string.url), url);
+//        editor.putString("username", username);
+        editor.commit();
+        //http://192.168.1.7:8080/openmr
+//        String user = getResources().getString(R.string.username);
+//        String pass = getResources().getString(R.string.password);
+//        String uri = getResources().getString(R.string.url);
+        String user = sharedPref.getString(getString(R.string.username), "");
+        String pass = sharedPref.getString(getString(R.string.password), "");
+        String uri = sharedPref.getString(getString(R.string.url), "");
+        System.out.println(user+" "+pass+" "+uri);
+        Toast.makeText(this, "Settings Saved , trying to validate!", Toast.LENGTH_LONG).show();
+//      intent.putExtra("uname",user);
+//		intent.putExtra("pword",pass);
+//		intent.putExtra("url", uri);
+=======
 		 url=(address.getText().toString());
 		 SharedPreferences sharedPref = getSharedPreferences("mhealth", Context.MODE_PRIVATE);        
 		 SharedPreferences.Editor editor = sharedPref.edit();
@@ -67,6 +99,7 @@ public class Login extends ActionBarActivity implements View.OnClickListener{
 		 editor.commit();
          Toast.makeText(this, "Settings Saved!", Toast.LENGTH_LONG).show();
 
+>>>>>>> Before_refactor
 	}
 	
 	public void SwitchIntent(){
@@ -125,8 +158,13 @@ public class Login extends ActionBarActivity implements View.OnClickListener{
 		  
 		  
 		  protected void onPostExecute(String params){
+<<<<<<< HEAD
+			  //Toast.makeText(getApplicationContext(), "Invalid credentials", Toast.LENGTH_LONG).show();
+			  //buttonClick();
+=======
 			 
-			  
+			  buttonClick();
+>>>>>>> Before_refactor
 			 if(params.equals("cred"))
 			 {
 				 Toast.makeText(getApplicationContext(), "Invalid credentials", Toast.LENGTH_LONG).show();
@@ -143,6 +181,7 @@ public class Login extends ActionBarActivity implements View.OnClickListener{
 			 else if (params.equals("successful"))
 			 {
 				 Toast.makeText(getApplicationContext(), "Settings Verified", Toast.LENGTH_LONG).show();
+
 			 }
 			 else{
 				 Toast.makeText(getApplicationContext(), "Unable to Connect , Please Reverify when network comes!", Toast.LENGTH_LONG).show();
