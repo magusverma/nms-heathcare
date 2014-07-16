@@ -23,7 +23,7 @@ public class ShowDbData extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_show_db_data);
+		setContentView(R.layout.fragment_show_db_data);
 		Bundle extras = getIntent().getExtras();
 		String dbname = extras.getString("db");
 		String view_name = extras.getString("view");
@@ -43,13 +43,13 @@ public class ShowDbData extends ActionBarActivity {
 	    //
 	    
 	    TextView x =(TextView) findViewById(R.id.textView1);
-	   //x.setText(ca.get_view_data(dbname, view_name));
+	    x.setText(ca.get_view_data(dbname, view_name));
 	    System.out.println(ca.get_view_data(dbname, view_name));
 		
-		if (savedInstanceState == null) {
+		/*if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
-		}
+		}*/
 	}
 
 	@Override

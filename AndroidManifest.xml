@@ -112,11 +112,7 @@
         </activity>
         <activity
             android:name="com.example.mhealth.ShowDbData"
-            android:label="@string/title_activity_show_db_data"
-            android:parentActivityName="com.example.mhealth.SyncActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.mhealth.SyncActivity" />
+            android:label="@string/title_activity_show_db_data">
         </activity>
 
 

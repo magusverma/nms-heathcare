@@ -123,35 +123,42 @@ public class GetQuery extends ActionBarActivity implements View.OnClickListener 
 	
 	else
 	{
-		System.out.println(str);
-		JSONObject j1= (JSONObject)ja.get(0);
-		info = (String) j1.get("display");
-		uuid=(String)j1.get("uuid");
-		patient.setIdentifier(uuid);
-		String stri[] = info.split(" - ");
-		String temp = stri[0];
-		Id=temp;
-		patient.setPatientId(Id);
-		name=stri[1];
-		System.out.println(name);
-		String[] st= name.split("\\s+");
-		
-		if (st.length==1)
-		{
-			patient.setGivenName(st[0]);
+		try{
+			System.out.println(str);
+			JSONObject j1= (JSONObject)ja.get(0);
+			info = (String) j1.get("display");
+			uuid=(String)j1.get("uuid");
+			patient.setIdentifier(uuid);
+			String stri[] = info.split(" - ");
+			String temp = stri[0];
+			Id=temp;
+			patient.setPatientId(Id);
+			name=stri[1];
+			System.out.println(name);
+			String[] st= name.split("\\s+");
+			
+			if (st.length==1)
+			{
+				patient.setGivenName(st[0]);
+			}
+			else if (st.length==2)
+			{
+				patient.setGivenName(st[0]);
+				patient.setFamilyName(st[1]);
+			}
+			else
+			{
+				patient.setGivenName(st[0]);
+				patient.setMiddleName(st[1]);
+				patient.setFamilyName(st[2]);
+			}
+		}catch(ArrayIndexOutOfBoundsException e){
+			e.printStackTrace();
+			return "error";
+		}catch(Exception e){
+			e.printStackTrace();
+			return "error";
 		}
-		else if (st.length==2)
-		{
-			patient.setGivenName(st[0]);
-			patient.setFamilyName(st[1]);
-		}
-		else
-		{
-			patient.setGivenName(st[0]);
-			patient.setMiddleName(st[1]);
-			patient.setFamilyName(st[2]);
-		}
-		
 		
 		
 		return Id+"*"+name+"*"+uuid; 
@@ -252,6 +259,9 @@ public class GetQuery extends ActionBarActivity implements View.OnClickListener 
 				   {
 					   return "zero";
 				   }
+				   else if(res1.equals("error")){
+					   return "error";
+				   }
 				   else
 				   {
 				   String arrayString[] = res1.split("\\*");
@@ -278,6 +288,9 @@ public class GetQuery extends ActionBarActivity implements View.OnClickListener 
 			  if(params.equals("zero"))
 			  {
 				  Toast.makeText(getApplicationContext(),"No patients found.", Toast.LENGTH_LONG).show();
+			  }
+			  else if(params.equals("error")){
+				  Toast.makeText(getApplicationContext(),"Some Error Occured while fetching patient details ", Toast.LENGTH_LONG).show();	  
 			  }
 			  
 			  else{

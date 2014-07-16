@@ -154,6 +154,14 @@ public class SyncActivity extends ActionBarActivity {
 		startActivity(intent);
 	}
 	
+	/** Called when the user clicks the Visualize Patients button */
+	public void viewPatients(View view) {
+		Intent intent = new Intent(this, ShowDbData.class);
+		intent.putExtra("db", ca.patients_db_name);
+		intent.putExtra("view", ca.patients_view);
+		startActivity(intent);
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will

@@ -49,4 +49,14 @@
         android:onClick="viewReadings"
         android:text="Visualize Pending Readings" />
 
+    <Button
+        android:id="@+id/button2"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/Button04"
+        android:layout_below="@+id/Button04"
+        android:onClick="viewPatients"
+        android:text="Visualize Synced Patients" />
+
 </RelativeLayout>
