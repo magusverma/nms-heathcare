@@ -47,10 +47,15 @@ public class Sensor_Listing extends ListActivity {
 		 catch(Exception e){
 	            
 	        }
+		try{
         ListView lv = getListView(); 
         lv.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_checked,sensors));
         lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		lv.setTextFilterEnabled(true);
+		}
+		 catch(NullPointerException e) {
+		   Toast.makeText(getApplicationContext(), "No sensors registered", Toast.LENGTH_SHORT).show();
+		}
         
  }
         

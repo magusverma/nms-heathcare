@@ -9,6 +9,7 @@ public class RegisterSensorBroadcastReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
+		System.out.println("in register broadcast");
 		Bundle bundle = intent.getExtras();
 		 Intent i = new Intent();
 	     i.setClassName("com.example.mhealth", "com.example.mhealth.Create_Sensor_Automatically");
@@ -28,5 +29,7 @@ public class RegisterSensorBroadcastReceiver extends BroadcastReceiver {
 				
 	}
 }
+
+
 	
 	

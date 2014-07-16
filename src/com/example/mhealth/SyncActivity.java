@@ -13,11 +13,14 @@ import org.apache.http.HttpResponse;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import utils.HTTP.HTTP_Functions;
 
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Database;
@@ -74,9 +77,6 @@ public class SyncActivity extends ActionBarActivity {
 		System.out.println("In Oncreate");
 		setContentView(R.layout.activity_sync);
 		Bundle extras = getIntent().getExtras();
-//		username= extras.getString("uname");
-//		password = extras.getString("pword");
-//		url=extras.getString("url");
 		SharedPreferences sharedPref = getSharedPreferences("mhealth", Context.MODE_PRIVATE);
         username = sharedPref.getString(getString(R.string.username), "");
 		password = sharedPref.getString(getString(R.string.password), "");
@@ -109,7 +109,16 @@ public class SyncActivity extends ActionBarActivity {
 		protected String doInBackground(String... arg0) {
 			System.out.println("Doing AsyncSensors");
 //			Integer synced_count = ca.syncSensors(username, password, url);
-			Integer synced_count = syncSensors(username, password, url);
+			Integer synced_count=0;
+			try {
+				synced_count = syncSensors(username, password, url);
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			return synced_count.toString();
 		}
 		protected void onPostExecute(String synced_count){
@@ -128,7 +137,19 @@ public class SyncActivity extends ActionBarActivity {
 		@Override
 		protected String doInBackground(String... arg0) {
 			System.out.println("Doing AsyncpushReadings");
-			Integer pushed_count = ca.push_readings(username, password, url);
+			Integer pushed_count=0;
+			try {
+				pushed_count = ca.push_readings(username, password, url);
+			} catch (HttpResponseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			return pushed_count.toString();
 		}
 		protected void onPostExecute(String pushed_count){
@@ -245,7 +266,7 @@ public class SyncActivity extends ActionBarActivity {
 		startActivity(intent);
 	}
 	
-	public Integer syncSensors(String username, String password, String url){
+	public Integer syncSensors(String username, String password, String url) throws ClientProtocolException, IOException{
 //		TODO:Remove This
 //		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 //		StrictMode.setThreadPolicy(policy);
@@ -262,41 +283,7 @@ public class SyncActivity extends ActionBarActivity {
 		database = ca.getDatabase(ca.sensors_db_name);
 		System.out.println("Document Count = "+database.getDocumentCount());
 		//
-		
-		System.out.println("Username="+username);
-		System.out.println("Password="+password);
-		System.out.println("URL="+url);
-		
-		
-		HttpClient httpClient = new DefaultHttpClient();
-		HttpGet httpGet = new HttpGet(url+"/ws/rest/v1/sensor/scm");
-		httpGet.addHeader(BasicScheme.authenticate(
-		 new UsernamePasswordCredentials(username, password),
-		 "UTF-8", false));
-
-		HttpResponse httpResponse = null;
-		try {
-			httpResponse = httpClient.execute(httpGet);
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		String str = null;
-		try {
-			HttpEntity responseEntity = httpResponse.getEntity();
-			str = Get_Patient_information.inputStreamToString(responseEntity.getContent()).toString();
-			httpClient.getConnectionManager().shutdown();
-//			System.out.println(str);
-		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		String str = HTTP_Functions.Httpget(username, password, url+"/ws/rest/v1/sensor/scm");
 		try{
 			JSONObject j = new JSONObject(str);
 			JSONArray ja = (JSONArray) j.get("results");

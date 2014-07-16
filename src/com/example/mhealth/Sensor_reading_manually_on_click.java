@@ -20,6 +20,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -32,6 +33,8 @@ import org.codehaus.jackson.type.TypeReference;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import utils.HTTP.HTTP_Functions;
 
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Document;
@@ -57,7 +60,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class Sensor_Reading_Manually2 extends ActionBarActivity {
+public class Sensor_reading_manually_on_click extends ActionBarActivity {
 
 	EditText sensor,patient;
 	Button b1,b2;
@@ -113,22 +116,11 @@ public class Sensor_Reading_Manually2 extends ActionBarActivity {
 	
 }
 	
-	public String get_sensor_concept_mapping() throws ClientProtocolException, IOException{
-		HttpClient httpClient = new DefaultHttpClient();
-		ResponseHandler<String> responseHandler = new BasicResponseHandler();
-		System.out.println(url+"/ws/rest/v1/sensor/scm"+" "+username+password);
-		HttpGet getMethod = new HttpGet(this.url+"/ws/rest/v1/sensor/scm");    
-		getMethod.setHeader( "Content-Type", "application/json");
-		getMethod.addHeader(BasicScheme.authenticate(new UsernamePasswordCredentials(username,password),"UTF-8", false));
-		String response = httpClient.execute(getMethod,responseHandler);
-		return response;
-	}
-	
 	
 		public void process_sensor_hinting() throws ClientProtocolException, IOException{
 			JSONObject query = null;
 			try {
-				query = new JSONObject(get_sensor_concept_mapping());
+				query = new JSONObject(HTTP_Functions.Httpget(username, password,url+"/ws/rest/v1/sensor/scm"));
 			} catch (JSONException e1) {
 				
 				e1.printStackTrace();
@@ -154,21 +146,7 @@ public class Sensor_Reading_Manually2 extends ActionBarActivity {
 			Set<String> hinting_set = scm_name_to_id.keySet();
 			sensor_name_hinting_array = hinting_set.toArray(new String[hinting_set.size()]);
 		}
-	    
-		public static String SensorName_Httpget (String username, String password, String url,String query) throws ClientProtocolException, IOException
-		{
-			HttpClient httpClient = new DefaultHttpClient();
-			HttpGet httpGet = new HttpGet(url+"/ws/rest/v1/sensor/sm/"+query);
-			httpGet.addHeader(BasicScheme.authenticate(new UsernamePasswordCredentials(username, password),"UTF-8", false));
-			HttpResponse httpResponse = httpClient.execute(httpGet);
-			HttpEntity responseEntity = httpResponse.getEntity();
-			String str = inputStreamToString(responseEntity.getContent()).toString();
-			httpClient.getConnectionManager().shutdown();
-			return str;  
-			       
-	        
-	    	}
-		
+	  
 		public static String SensorName_JsonParse(String str) throws JSONException
 		{
 			JSONObject jo = new JSONObject(str);
@@ -183,7 +161,7 @@ public class Sensor_Reading_Manually2 extends ActionBarActivity {
 			protected String doInBackground(String... params) {
 				
 					try {
-						result = SensorName_JsonParse(SensorName_Httpget(params[0], params[1], params[2], extras.getString("Sensor")));
+						result = SensorName_JsonParse(HTTP_Functions.Httpget(username, password, url+"/ws/rest/v1/sensor/sm/"+extras.getString("Sensor")));
 					} catch (ClientProtocolException e) {
 						System.out.println("Client Protocol exception caught.");
 						e.printStackTrace();
@@ -200,7 +178,7 @@ public class Sensor_Reading_Manually2 extends ActionBarActivity {
 			
 			 protected void onPostExecute(String params){
 				 
-				 message=new TextView(Sensor_Reading_Manually2.this);
+				 message=new TextView(Sensor_reading_manually_on_click.this);
 			     message.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));     
 			     message.setText("Readings for sensor "+params);
 			     LLayout1.addView(message);
@@ -209,37 +187,7 @@ public class Sensor_Reading_Manually2 extends ActionBarActivity {
 			
 			
 		}
-	public static StringBuilder inputStreamToString (InputStream is) {
-		String line = "";
-		StringBuilder total = new StringBuilder();
-		// Wrap a BufferedReader around the InputStream
-		BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-		// Read response until the end
-		try {
-			while ((line = rd.readLine()) != null) { 
-				total.append(line); 
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		// Return full string
-		return total;
-		}
-	
-	
-	public static String sensor_concept_Httpget (String username, String password, String uri,String query) throws ClientProtocolException, IOException
-	{
-		System.out.println("Looking up for Sensors Online");
-		HttpClient httpClient = new DefaultHttpClient();
-		HttpGet httpGet = new HttpGet(uri+"/ws/rest/v1/sensor/scm/"+query);
-		httpGet.addHeader(BasicScheme.authenticate(new UsernamePasswordCredentials(username, password),"UTF-8", false));
-		HttpResponse httpResponse = httpClient.execute(httpGet);
-		HttpEntity responseEntity = httpResponse.getEntity();
-		String str = inputStreamToString(responseEntity.getContent()).toString();
-		httpClient.getConnectionManager().shutdown();
-		return str;
-	} 
-	
+		
 	public static String get_sensor_concepts_from_db(String id){
 		String str="";
 		Document retrievedDocument = ca.getSensor(id);
@@ -257,20 +205,18 @@ public class Sensor_Reading_Manually2 extends ActionBarActivity {
 		return str;
 	}
 	
-
-	public static String Readings_Httppost(String username, String password ,String uri, String id_string, String reading_string, String sens, String pat) throws ClientProtocolException, IOException, JSONException
+	public static JSONObject readings_json_create(String id_string, String readings_string, String sens, String pat) throws JSONException
 	{
-		JSONObject obj = new JSONObject();
-		
+		JSONObject obj = new JSONObject();		
 		obj.put("sensor", sens);
 		obj.put("patient", pat);
 		JSONObject id_reading = new JSONObject();
 		String id_array[]=id_string.split("\\*");
-		String reading_array[] = reading_string.split("\\*");
-		int size=id_array.length;
+		String readings_array[] = readings_string.split("\\*");
+		int size = id_array.length;
 		for(int i=0;i<size;i++)
 		{
-			id_reading.put(id_array[i], reading_array[i]);
+			id_reading.put(id_array[i], readings_array[i]);
 		}
 		obj.put("readings", id_reading);
 		System.out.println(obj);
@@ -279,25 +225,11 @@ public class Sensor_Reading_Manually2 extends ActionBarActivity {
 			HashMap<String,Object> readings = new HashMap<String,Object>();
 			for(int i=0;i<size;i++)
 			{
-				readings.put(id_array[i], reading_array[i]);
+				readings.put(id_array[i], readings_array[i]);
 			}
 			ca.createDocument("reading", ca.makeReadingMap(pat, sens, readings));
 			ca.getAllDocument("reading");
-		//
-		HttpClient httpClient = new DefaultHttpClient();
-		ResponseHandler<String> resonseHandler = new BasicResponseHandler();
-		HttpPost postMethod = new HttpPost(uri+"/module/sensorreading/sr.form");    
-		postMethod.setEntity(new StringEntity(obj.toString()));
-		postMethod.setHeader( "Content-Type", "application/json");
-		postMethod.addHeader(BasicScheme.authenticate(new UsernamePasswordCredentials(username,password),"UTF-8", false));
-		String response = null;
-		try{
-			 response = httpClient.execute(postMethod,resonseHandler);
-		}catch(Exception e){
-			System.out.println("caught exception");
-			e.printStackTrace();
-		}
-		return response;
+			return obj;
 		
 	}
 	
@@ -356,7 +288,18 @@ public class Sensor_Reading_Manually2 extends ActionBarActivity {
 		@Override
 		protected String doInBackground(String... params) {
 			
-				ca.push_readings(username, password, url);
+				try {
+					ca.push_readings(username, password, url);
+				} catch (HttpResponseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ClientProtocolException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
 			return result;
 			
@@ -389,9 +332,10 @@ public class Sensor_Reading_Manually2 extends ActionBarActivity {
 		  
 		  protected String doInBackground(String... params) {
 			   result2 = get_sensor_concepts_from_db(params[3]); // params[3] has sensor_id
+			   System.out.println("result2 >>> "+result2);
 			   if(result2.length()==0){
 				   try {
-					   result1 = (sensor_concept_Httpget(params[0],params[1], params[2],params[3]));
+					   result1 = (HTTP_Functions.Httpget(username, password, url+"/ws/rest/v1/sensor/scm/"+params[3]));
 					   result2=JsonParse(result1);
 				   } catch (ClientProtocolException e) {
 						System.out.println("Client Protocol exception caught.");
@@ -427,10 +371,10 @@ public class Sensor_Reading_Manually2 extends ActionBarActivity {
 				     final int size=arrayString.length;
 			     for(int i=0;i<size;i++)
 						 {
-							 TextView rowTextView = new TextView(Sensor_Reading_Manually2.this);
+							 TextView rowTextView = new TextView(Sensor_reading_manually_on_click.this);
 							 rowTextView.setText(arrayString[i]);
 							 LLayout1.addView(rowTextView);
-						    ed = new EditText(Sensor_Reading_Manually2.this);
+						    ed = new EditText(Sensor_reading_manually_on_click.this);
 						    readings.add(ed);
 						    ed.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT));
 						    LLayout1.addView(ed);	 
@@ -439,7 +383,7 @@ public class Sensor_Reading_Manually2 extends ActionBarActivity {
 						 }
 						 
 				
-				 b2=new Button(Sensor_Reading_Manually2.this);
+				 b2=new Button(Sensor_reading_manually_on_click.this);
 			     b2.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));   
 			     b2.setText("Post Readings");
 			     LLayout1.addView(b2);
@@ -460,6 +404,8 @@ public class Sensor_Reading_Manually2 extends ActionBarActivity {
 				    	    	 }
 			    	        final String send = readings_concat.substring(0,readings_concat.length()-1);
 			    	    	query=extras.getString("Sensor");
+			    	    	System.out.println("query>>> " +query);
+			    	    	System.out.println("send>>>> "+send);
 			    	    	que(query,send);
 			    	   	 	Toast.makeText(getApplicationContext(),"Queued Successfully!", Toast.LENGTH_LONG).show();
 			 			 	 new Reading_Post_AsyncTask().execute(username,password,url,query,send);
@@ -506,8 +452,7 @@ public class Sensor_Reading_Manually2 extends ActionBarActivity {
 					reading.put(id_array[i], reading_array[i]);
 				}
 				String pat = patient.getText().toString();
-				String sens = sensor.getText().toString();
-				ca.createDocument("reading", ca.makeReadingMap(pat, sens, reading));
+				ca.createDocument("reading", ca.makeReadingMap(pat, sensor_id, reading));
 			//
 		}
 	}

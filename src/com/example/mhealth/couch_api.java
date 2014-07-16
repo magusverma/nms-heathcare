@@ -9,24 +9,21 @@ package com.example.mhealth;
  */
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+
+import utils.HTTP.*;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-//import android.provider.Settings.System;
-import org.apache.http.impl.auth.BasicScheme;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
+
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpResponseException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
+
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Database;
 import com.couchbase.lite.Document;
@@ -402,7 +399,7 @@ public class couch_api{
 		}
 		// use d using "d.getProperty(key)"
 	}
-	public Integer push_readings(String username,String password,String uri){
+	public Integer push_readings(String username,String password,String uri) throws HttpResponseException, ClientProtocolException, IOException{
 		Integer pushed = new Integer(0);
 		Database database = getDatabase(readings_db_name);
 		com.couchbase.lite.View v = database.getView("pending_reading");
@@ -425,8 +422,8 @@ public class couch_api{
 				Map<String, Object> updateProperties = new HashMap<String, Object>();
 				updateProperties.putAll(document_being_pushed.getProperties());
 				
-								
-				System.out.println(http_reading_post_request(username,password,uri,json_being_pushed));
+				json_being_pushed.remove("status");			
+				System.out.println(HTTP_Functions.Httppost(username,password,uri+"/module/sensorreading/sr.form",json_being_pushed));
 				
 				updateProperties.put("status", "pushed");
 				document_being_pushed.putProperties(updateProperties);
@@ -464,42 +461,6 @@ public class couch_api{
 			
 		//
 	    return v.dump().toString();		 
-	}
-	
-	
-	public String http_reading_post_request(String username,String password,String uri,JSONObject obj){
-		//
-//			HttpParams httpParameters = new BasicHttpParams();
-//			int timeoutConnection = 10000;
-//			HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
-//			int timeoutSocket = 1000;
-//			HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
-//	
-//			DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
-		//
-
-		//uri = uri+ "/module/sensorreading/sr.form";
-		System.out.println(uri);
-		obj.remove("status");
-		System.out.println(obj);
-		HttpClient httpClient = new DefaultHttpClient();
-		ResponseHandler<String> resonseHandler = new BasicResponseHandler();
-		HttpPost postMethod = new HttpPost(uri+"/module/sensorreading/sr.form");    
-		try {
-			postMethod.setEntity(new StringEntity(obj.toString()));
-		} catch (UnsupportedEncodingException e1) {
-			e1.printStackTrace();
-		}
-		postMethod.setHeader( "Content-Type", "application/json");
-		postMethod.addHeader(BasicScheme.authenticate(new UsernamePasswordCredentials(username,password),"UTF-8", false));
-		String response = null;
-		try{
-			 response = httpClient.execute(postMethod,resonseHandler);
-		}catch(Exception e){
-			System.out.println("caught exception");
-			e.printStackTrace();
-		}
-		return response;
 	}
 	
 	//Log.d(TAG, "Begin Hello World App");	

@@ -61,7 +61,7 @@
                 </action>
             </intent-filter>
         </receiver>
-        <receiver android:name="com.example.mhealth.RegisterSensorBroadcastReceiver" >
+        <receiver android:name="com.example.mhealth.RegisterSensorBroadcastReceiver" android:enabled="true" >
             <intent-filter>
                 <action android:name="RegisterBroadcast" >
                 </action>
@@ -127,7 +127,7 @@
             android:label="@string/title_activity_create__activity2" >
         </activity>
         <activity
-            android:name="com.example.mhealth.Sensor_Reading_Manually2"
+            android:name="com.example.mhealth.Sensor_reading_manually_on_click"
             android:label="@string/title_activity_sensorconcept2" >
         </activity>
     </application>

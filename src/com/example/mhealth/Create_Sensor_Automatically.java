@@ -23,6 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import utils.HTTP.HTTP_Functions;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -98,20 +99,7 @@ public class Create_Sensor_Automatically extends Activity {
 		
 	}
 	
-	public static String Sensor_Create_Httppost(String username, String password ,String url, JSONObject jo) throws ClientProtocolException, IOException
-	{
-		HttpClient httpClient = new DefaultHttpClient();
-		ResponseHandler<String> resonseHandler = new BasicResponseHandler();
-		System.out.println("in n URL  "+url);
-		HttpPost postMethod = new HttpPost(url+"/ws/rest/v1/sensor/sm");    
-		postMethod.setEntity(new StringEntity(jo.toString()));
-		postMethod.setHeader( "Content-Type", "application/json");
-		postMethod.addHeader(BasicScheme.authenticate(new UsernamePasswordCredentials(username,password),"UTF-8", false));
-		String response = httpClient.execute(postMethod,resonseHandler);
-		return response;
 		
-	}
-	
 	/*
 	 * Returns concept name for a concept id by looking it up from a csv
 	 */
@@ -155,21 +143,6 @@ public class Create_Sensor_Automatically extends Activity {
 		return "-1";
 	}
 
-	
-	public static String Sensor_Concept_Mapping_Httppost(String username, String password ,String url, JSONObject jo) throws ClientProtocolException, IOException
-	{
-		HttpClient httpClient = new DefaultHttpClient();
-		ResponseHandler<String> responseHandler = new BasicResponseHandler();		
-		HttpPost postMethod = new HttpPost(url+"/module/sensorreading/scm.form");    
-		postMethod.setEntity(new StringEntity(jo.toString()));
-		postMethod.setHeader( "Content-Type", "application/json");
-		postMethod.addHeader(BasicScheme.authenticate(new UsernamePasswordCredentials(username,password),"UTF-8", false));
-		String response = httpClient.execute(postMethod,responseHandler);
-		return response;
-		
-	}
-	
-	
 	public static Integer idJsonParse(String str) throws JSONException
 	{
 		
@@ -247,7 +220,7 @@ public class Create_Sensor_Automatically extends Activity {
 				JSONObject sensor_create = new JSONObject();				
 				sensor_create.put("sensor_id", 1);
 				sensor_create.put("sensor_name",bundle.getString("Sensor"));
-				result1 = Sensor_Create_Httppost(params[0],params[1],params[2],sensor_create);
+				result1 = HTTP_Functions.Httppost(params[0],params[1],url+"/ws/rest/v1/sensor/sm",sensor_create);
 				sensor_id=idJsonParse(result1);
 			} catch (ClientProtocolException e) {
 				System.out.println("Client Protocol exception caught.");
@@ -294,7 +267,7 @@ public class Create_Sensor_Automatically extends Activity {
 				}
 				
 				sensor_concept.put("concepts",concept);
-				result1 = Sensor_Concept_Mapping_Httppost(params[0],params[1],params[2],sensor_concept);
+				result1 = HTTP_Functions.Httppost(params[0],params[1],url+"/module/sensorreading/scm.form",sensor_concept);
 				System.out.println("returned...   "+result1);
 				
 			} catch (ClientProtocolException e) {
@@ -317,7 +290,7 @@ public class Create_Sensor_Automatically extends Activity {
 				 if(saveInPreference(params).equalsIgnoreCase("success"))
 						 {
 						 Toast.makeText(getApplicationContext(),"Concepts Mapped Successfully", Toast.LENGTH_LONG).show();
-						 };
+						 }
 		 
 			 
 		  

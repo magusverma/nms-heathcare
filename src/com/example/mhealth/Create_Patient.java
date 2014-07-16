@@ -40,7 +40,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
-
+import utils.HTTP.*;
 
 
 
@@ -71,53 +71,7 @@ public class Create_Patient extends ActionBarActivity implements View.OnClickLis
 		button.setOnClickListener(this);
 
 	}
-	
-	
-	public static StringBuilder inputStreamToString (InputStream is)
-	{
-		String line = "";
-		StringBuilder total = new StringBuilder();
-		// Wrap a BufferedReader around the InputStream
-		BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-		// Read response until the end
-		try {
-			while ((line = rd.readLine()) != null) { 
-				total.append(line); 
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		// Return full string
-		return total;
-	}
-	
-	
-	public static String Httppost(String username, String password ,String type, String url, JSONObject jo) throws ClientProtocolException, IOException, HttpResponseException
-	{
-		HttpClient httpClient = new DefaultHttpClient();
-		ResponseHandler<String> resonseHandler = new BasicResponseHandler();
-		HttpPost postMethod = new HttpPost(url+"/ws/rest/v1/"+type);    
-		postMethod.setEntity(new StringEntity(jo.toString()));
-		postMethod.setHeader( "Content-Type", "application/json");
-		postMethod.addHeader(BasicScheme.authenticate(new UsernamePasswordCredentials(username,password),"UTF-8", false));
-		String response = httpClient.execute(postMethod,resonseHandler);
-		return response;
-		
-	}
-	
-	public static String Httpget (String username, String password, String url,String query) throws ClientProtocolException, IOException
-	{
-		HttpClient httpClient = new DefaultHttpClient();
-		HttpGet httpGet = new HttpGet(url+"/ws/rest/v1/"+query);
-		httpGet.addHeader(BasicScheme.authenticate(new UsernamePasswordCredentials(username, password),"UTF-8", false));
-		HttpResponse httpResponse = httpClient.execute(httpGet);
-		HttpEntity responseEntity = httpResponse.getEntity();
-		String str = inputStreamToString(responseEntity.getContent()).toString();
-		httpClient.getConnectionManager().shutdown();
-		return str;  	       
-        
-	} 
-	
+			
 	public static String JsonParse(String str) throws JSONException
 	{
 		JSONObject jo = new JSONObject(str);
@@ -138,6 +92,7 @@ public class Create_Patient extends ActionBarActivity implements View.OnClickLis
 		
 	}
 	
+	
 	public static String create_patient(String username, String password, String url, String givenName,String familyName, String Id, String gender,int num) throws JSONException, ClientProtocolException, IOException
 	{
 		JSONObject nm = new JSONObject();
@@ -154,11 +109,11 @@ public class Create_Patient extends ActionBarActivity implements View.OnClickLis
 		//json.put("preferredAddress", address);
 		
 		String result;
-		result=Httppost(username, password , "person",url,json);
+		result=HTTP_Functions.Httppost(username, password, url+"/ws/rest/v1/person", json);
 		
 		String uuid = uuidJsonParse(result);
-		String idType=JsonParse(Httpget(username,password,url,"patientidentifiertype"));
-		String location=JsonParse(Httpget(username,password,url,"location"));
+		String idType=JsonParse(HTTP_Functions.Httpget(username,password,url+"/ws/rest/v1/patientidentifiertype"));
+		String location=JsonParse(HTTP_Functions.Httpget(username,password,url+"/ws/rest/v1/location"));
 		
 		JSONObject jObject= new JSONObject();
 		JSONObject identifier = new JSONObject();
@@ -173,7 +128,7 @@ public class Create_Patient extends ActionBarActivity implements View.OnClickLis
 		jObject.put("person", uuid);
 		
 		String final_string;
-		final_string=Httppost(username,password,"patient",url,jObject);
+		final_string = HTTP_Functions.Httppost(username, password, url+"/ws/rest/v1/patient", jObject);
 		return final_string;	
 	
 	}

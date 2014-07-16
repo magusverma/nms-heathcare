@@ -2,6 +2,9 @@ package com.example.mhealth;
 
 import java.io.IOException;
 
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpResponseException;
+
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Manager;
 import com.couchbase.lite.android.AndroidContext;
@@ -105,7 +108,19 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
 		@Override
 		protected String doInBackground(String... arg0) {
 			System.out.println("Doing AsyncpushReadings");
-			Integer pushed_count = ca.push_readings(username, password, url);
+			Integer pushed_count=0;
+			try {
+				pushed_count = ca.push_readings(username, password, url);
+			} catch (HttpResponseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			return pushed_count.toString();
 		}
@@ -116,9 +131,5 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
 		  
 	}
 
-	private SharedPreferences getSharedPreferences(String string,
-			int modePrivate) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 }

@@ -39,7 +39,7 @@ public class Create_Sensor_Manually extends ActionBarActivity  {
 		url = sharedPref.getString(getString(R.string.url), "");
 		Sensor=new TextView(this);
         Sensor.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));     
-        Sensor.setText("Enter Sensor ID");
+        Sensor.setText("Enter Sensor Name");
 	    LLayout1.addView(Sensor);
 	  	Sensor_ID =new EditText(this);
 	  	Sensor_ID.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT));     

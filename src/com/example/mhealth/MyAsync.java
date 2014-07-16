@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
 import android.support.v7.app.ActionBarActivity;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -21,6 +23,8 @@ import org.json.JSONObject;
 
 //import com.example.mhealth.GetQuery.MyAsyncTask;
 
+
+import utils.HTTP.HTTP_Functions;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
@@ -40,7 +44,7 @@ public  class MyAsync extends AsyncTask<String, String, String>{
 			
 			   try {
 				  
-				   res1 = JsonParse(Httpget(params[0],params[1], params[2],params[3]));
+				   res1 = JsonParse(HTTP_Functions.Httpget(params[0],params[1], params[2]+"/ws/rest/v1/patient?q="+params[3]));
 				  
 				   System.out.println("in back"+res1);
 				  }
@@ -68,37 +72,7 @@ public  class MyAsync extends AsyncTask<String, String, String>{
 		  protected void onProgressUpdate(Integer... progress){
 			    			
 		  }
-		  public static StringBuilder inputStreamToString (InputStream is) {
-				String line = "";
-				StringBuilder total = new StringBuilder();
-				// Wrap a BufferedReader around the InputStream
-				BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-				// Read response until the end
-				try {
-					while ((line = rd.readLine()) != null) { 
-						total.append(line); 
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				// Return full string
-				return total;
-				}
-			
-			
-			public static String Httpget (String username, String password, String uri,String query) throws ClientProtocolException, IOException
-			{
-				HttpClient httpClient = new DefaultHttpClient();
-				HttpGet httpGet = new HttpGet(uri+"/ws/rest/v1/patient?q="+query);
-				httpGet.addHeader(BasicScheme.authenticate(new UsernamePasswordCredentials(username, password),"UTF-8", false));
-				HttpResponse httpResponse = httpClient.execute(httpGet);
-				HttpEntity responseEntity = httpResponse.getEntity();
-				String str = inputStreamToString(responseEntity.getContent()).toString();
-				httpClient.getConnectionManager().shutdown();
-				System.out.println("get func"+str);
-				return str;  
-				         
-		    	} 
+		
 			public static String JsonParse(String str) throws JSONException
 			{ 
 				String res="";

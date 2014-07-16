@@ -17,6 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import utils.HTTP.HTTP_Functions;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -84,28 +85,21 @@ public class Create_Sensor_Manually2 extends ActionBarActivity implements View.O
 
 	}
 	
-	
-	public static String Sensor_Create_Httppost(String username, String password , String url, String sensor_name ) throws ClientProtocolException, IOException, JSONException
+	public static JSONObject sensor_create_json(String sensor_name) throws JSONException
 	{
+
 		JSONObject obj = new JSONObject();
 		obj.put("sensor_id",1);
 		obj.put("sensor_name", sensor_name);
-		HttpClient httpClient = new DefaultHttpClient();
-		ResponseHandler<String> responseHandler = new BasicResponseHandler();
-		HttpPost postMethod = new HttpPost(url+"/ws/rest/v1/sensor/sm");    
-		postMethod.setEntity(new StringEntity(obj.toString()));
-		postMethod.setHeader( "Content-Type", "application/json");
-		postMethod.addHeader(BasicScheme.authenticate(new UsernamePasswordCredentials(username,password),"UTF-8", false));
-		String response = httpClient.execute(postMethod,responseHandler);
-		return response;
+		return obj;
+		
 	}
 	
-	public static String Sensor_Concept_Httppost(String username, String password , String uri, String str, String sensor) throws ClientProtocolException, IOException, JSONException
+	public static JSONObject Sensor_concept_json(String to_be_split, String sensor) throws JSONException
 	{
-		
 		JSONObject obj = new JSONObject();
 		obj.put("sensor", sensor);
-		String [] arrayString = str.split("\\*");
+		String [] arrayString = to_be_split.split("\\*");
 		int size= arrayString.length;
 		JSONArray ja = new JSONArray();
 		for(int i =0 ; i<size;i++)
@@ -113,23 +107,9 @@ public class Create_Sensor_Manually2 extends ActionBarActivity implements View.O
 			ja.put(arrayString[i]);
 		}
 		obj.put("concepts", ja);
-		HttpClient httpClient = new DefaultHttpClient();
-		ResponseHandler<String> responseHandler = new BasicResponseHandler();
-		HttpPost postMethod = new HttpPost(uri+"/module/sensorreading/scm.form");    
-		postMethod.setEntity(new StringEntity(obj.toString()));
-		postMethod.setHeader( "Content-Type", "application/json");
-		postMethod.addHeader(BasicScheme.authenticate(new UsernamePasswordCredentials(username,password),"UTF-8", false));
-		String response = null;
-		try{
-			 response = httpClient.execute(postMethod,responseHandler);
-		}
-		catch(Exception e){
-			System.out.println("caught exception");
-			e.printStackTrace();
-		}
-		return response;
-		
+		return obj;
 	}
+	
 	
 	private class Sensor_Concept_AsyncTask extends AsyncTask<String, String, String>
 	{
@@ -139,7 +119,8 @@ public class Create_Sensor_Manually2 extends ActionBarActivity implements View.O
 			
 			
 			try {
-				result= Sensor_Concept_Httppost(params[0],params[1],params[2],params[3],params[4]);
+				
+				result= HTTP_Functions.Httppost(params[0],params[1],url+"/module/sensorreading/scm.form",Sensor_concept_json(params[3],params[4]));
 			} catch (ClientProtocolException e) {
 				System.out.println("Client Protocol exception caught.");
 				e.printStackTrace();
@@ -173,7 +154,7 @@ public class Create_Sensor_Manually2 extends ActionBarActivity implements View.O
 		protected String doInBackground(String... params) {
 			
 			try {
-				return result=Sensor_Create_Httppost(params[0],params[1],params[2],params[3]);
+				return result=HTTP_Functions.Httppost(params[0],params[1],url+"/ws/rest/v1/sensor/sm",sensor_create_json(params[3]));
 			} catch (ClientProtocolException e) {
 				System.out.println("Client Protocol exception caught.");
 				e.printStackTrace();

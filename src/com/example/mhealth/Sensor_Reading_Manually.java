@@ -73,7 +73,7 @@ public class Sensor_Reading_Manually extends ActionBarActivity implements View.O
 	
 	
 	
-		
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	
@@ -109,7 +109,7 @@ public class Sensor_Reading_Manually extends ActionBarActivity implements View.O
 			Toast.makeText(getApplicationContext(), "Enter Complete Details", Toast.LENGTH_LONG).show();
 		}
 		else{
-		Intent intent = new Intent(this, Sensor_Reading_Manually2.class);
+		Intent intent = new Intent(this, Sensor_reading_manually_on_click.class);
 		intent.putExtra("Sensor", sensor.getText().toString());
 		startActivity(intent);
 		}

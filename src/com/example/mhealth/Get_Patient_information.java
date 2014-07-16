@@ -17,9 +17,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
+import utils.HTTP.HTTP_Functions;
+
 import com.couchbase.lite.Manager;
 import com.couchbase.lite.android.AndroidContext;
 //import com.example.mhealth.Login.MyAsyncTask;
+
 
 import android.support.v7.app.ActionBarActivity;
 import android.content.Context;
@@ -48,7 +51,6 @@ public class Get_Patient_information extends ActionBarActivity implements View.O
 	TextView uuid;
 	TextView age,gender,birthdate;
 	public Patient patient = new Patient();
-	String[] hints; //magus
 	static couch_api ca; //magus
 	
 	@Override
@@ -57,16 +59,8 @@ public class Get_Patient_information extends ActionBarActivity implements View.O
 		setContentView(R.layout.get_layout);
 		get=(Button)findViewById(R.id.button1);
 		patient_name=(AutoCompleteTextView)findViewById(R.id.editText2);//magus
-		hints = new String[1];
-		hints[0]="horatio";
-		
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, hints);
-		patient_name.setAdapter(adapter);
-		
 		num=(TextView)findViewById(R.id.textView7);
 		name=(TextView)findViewById(R.id.textView9);
-		// TODO add text view for this
-		uuid=(TextView)findViewById(R.id.textView11);
 		age=(TextView)findViewById(R.id.textView13);
 		gender=(TextView)findViewById(R.id.textView15);
 		birthdate=(TextView)findViewById(R.id.textView17);
@@ -146,62 +140,8 @@ public class Get_Patient_information extends ActionBarActivity implements View.O
 		 
 				 	
 	}
-	
-	public static StringBuilder inputStreamToString (InputStream is) {
-		String line = "";
-		StringBuilder total = new StringBuilder();
-		// Wrap a BufferedReader around the InputStream
-		BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-		// Read response until the end
-		try {
-			while ((line = rd.readLine()) != null) { 
-				total.append(line); 
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		// Return full string
-		return total;
-		}
-	
-	
-	
-	public static String Httpget (String username, String password, String url, String query) throws ClientProtocolException, IOException
-	{
-		HttpClient httpClient = new DefaultHttpClient();
-		HttpGet httpGet = new HttpGet(url+"/ws/rest/v1/person?q="+query);
-		httpGet.addHeader(BasicScheme.authenticate( new UsernamePasswordCredentials(username, password),"UTF-8", false));
-		HttpResponse httpResponse = httpClient.execute(httpGet);
-		HttpEntity responseEntity = httpResponse.getEntity();
-		String str = inputStreamToString(responseEntity.getContent()).toString();
-		httpClient.getConnectionManager().shutdown();  
-		return (str);            	
-
 		
-	}
-	
-	public static String DetailsHttpget (String username, String password, String url, String uuid) throws ClientProtocolException, IOException
-	{
-		HttpClient httpClient = new DefaultHttpClient();
-		HttpGet httpGet = new HttpGet(url+"/ws/rest/v1/patient/"+uuid+"?v=custom:(gender,age,birthdate)");
-		httpGet.addHeader(BasicScheme.authenticate(new UsernamePasswordCredentials(username, password),"UTF-8", false));
 		
-		try{
-			HttpResponse httpResponse = httpClient.execute(httpGet);
-			HttpEntity responseEntity = httpResponse.getEntity();
-			String str = inputStreamToString(responseEntity.getContent()).toString();
-			httpClient.getConnectionManager().shutdown();
-			return str;
-		}
-		catch (Exception e)
-		{
-			System.out.println("exception caught");
-		}
-		  
-		    return "Exception";   
-        
-    	} 
-	
 	public String DetailsjsonParse(String str) throws JSONException
 	{
 		JSONObject obj = new JSONObject(str);
@@ -226,7 +166,7 @@ public class Get_Patient_information extends ActionBarActivity implements View.O
 			  
 			   try {
 				   
-				   result1 = jsonParse(Httpget(params[0],params[1], params[2],params[3]));
+				   result1 = jsonParse(HTTP_Functions.Httpget(params[0],params[1], url+"/ws/rest/v1/person?q="+params[3]));
 				   if(result1.equals("zero"))
 				   {
 					   return "zero";
@@ -234,7 +174,7 @@ public class Get_Patient_information extends ActionBarActivity implements View.O
 				   else
 				   {
 				   String details[] = result1.split("\\*");
-				   result2=DetailsjsonParse(DetailsHttpget(params[0],params[1], params[2],details[2]));}
+				   result2=DetailsjsonParse(HTTP_Functions.Httpget(params[0],params[1], url+"/ws/rest/v1/patient/"+details[2]+"?v=custom:(gender,age,birthdate)"));}
 				   
 			   } catch (ClientProtocolException e) {
 					System.out.println("Client Protocol exception caught.");

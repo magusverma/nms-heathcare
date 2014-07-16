@@ -41,15 +41,15 @@ public class Options extends ActionBarActivity implements View.OnClickListener{
 			public void onClick(View v)
             {
 				Intent intent = new Intent(Options.this,Sensor_Listing.class);
-				intent.putExtra("db", ca.sensors_db_name);
-				intent.putExtra("view", ca.sensor_view);
+				//intent.putExtra("db", ca.sensors_db_name);
+				//intent.putExtra("view", ca.sensor_view);
 				startActivity(intent);
 				
             }
 		}
 		);
        
-		sensor_read_auto.setOnClickListener(this);
+		sensor_read_manual.setOnClickListener(this);
 		find_patient.setOnClickListener(this);
 		create_patient.setOnClickListener(this);
 		create_sensor.setOnClickListener(this);

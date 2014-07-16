@@ -21,6 +21,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -33,6 +34,8 @@ import org.codehaus.jackson.type.TypeReference;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import utils.HTTP.HTTP_Functions;
 
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Document;
@@ -114,26 +117,12 @@ public class Sensor_Reading_Automatically extends ActionBarActivity implements V
 		     setContentView(sv);
 				
 	}
-		   
-     
-	
-	public String get_sensor_concept_mapping() throws ClientProtocolException, IOException{
-		HttpClient httpClient = new DefaultHttpClient();
-		ResponseHandler<String> responseHandler = new BasicResponseHandler();
-		System.out.println(url+"/ws/rest/v1/sensor/scm"+" "+username+password);
-		HttpGet getMethod = new HttpGet(this.url+"/ws/rest/v1/sensor/scm");    
-		getMethod.setHeader( "Content-Type", "application/json");
-		getMethod.addHeader(BasicScheme.authenticate(new UsernamePasswordCredentials(username,password),"UTF-8", false));
-		String response = httpClient.execute(getMethod,responseHandler);
-		return response;
-	}
-	
-	
+		
 		public void process_sensor_hinting() throws ClientProtocolException, IOException
 		{
 			JSONObject query = null;
 			try {
-				query = new JSONObject(get_sensor_concept_mapping());
+				query = new JSONObject(HTTP_Functions.Httpget(username, password, url+"/ws/rest/v1/sensor/scm"));
 			} catch (JSONException e1) {
 				System.out.println("JSON Exception Caught");
 				e1.printStackTrace();
@@ -163,23 +152,6 @@ public class Sensor_Reading_Automatically extends ActionBarActivity implements V
 	    
 		
 	
-
-	public static StringBuilder inputStreamToString (InputStream is) {
-		String line = "";
-		StringBuilder total = new StringBuilder();
-		// Wrap a BufferedReader around the InputStream
-		BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-		// Read response until the end
-		try {
-			while ((line = rd.readLine()) != null) { 
-				total.append(line); 
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		// Return full string
-		return total;
-		}
 	
 	/*
 	 * Returns concept name for a concept id by looking it up from a csv
@@ -224,20 +196,6 @@ public class Sensor_Reading_Automatically extends ActionBarActivity implements V
 				}
 				return "-1";
 	}
-
-	
-	public static String Sensor_concept_mapping_Httpget (String username, String password, String uri,String query) throws ClientProtocolException, IOException
-	{
-		System.out.println("Looking up for Sensors Online");
-		HttpClient httpClient = new DefaultHttpClient();
-		HttpGet httpGet = new HttpGet(uri+"/ws/rest/v1/sensor/scm/"+query);
-		httpGet.addHeader(BasicScheme.authenticate(new UsernamePasswordCredentials(username, password),"UTF-8", false));
-		HttpResponse httpResponse = httpClient.execute(httpGet);
-		HttpEntity responseEntity = httpResponse.getEntity();
-		String str = inputStreamToString(responseEntity.getContent()).toString();
-		httpClient.getConnectionManager().shutdown();
-		return str;
-	} 
 	
 	public static String get_sensor_concepts_from_db(String id){
 		String concepts_string="";
@@ -255,8 +213,7 @@ public class Sensor_Reading_Automatically extends ActionBarActivity implements V
 		return concepts_string;
 	}
 	
-
-	public static String Readings_Httppost(String username, String password ,String uri, String id_string, String readings_string, String sens, String pat) throws ClientProtocolException, IOException, JSONException
+	public static JSONObject readings_json_create(String id_string, String readings_string, String sens, String pat) throws JSONException
 	{
 		JSONObject obj = new JSONObject();		
 		obj.put("sensor", sens);
@@ -280,21 +237,7 @@ public class Sensor_Reading_Automatically extends ActionBarActivity implements V
 			}
 			ca.createDocument("reading", ca.makeReadingMap(pat, sens, readings));
 			ca.getAllDocument("reading");
-		//
-		HttpClient httpClient = new DefaultHttpClient();
-		ResponseHandler<String> responseHandler = new BasicResponseHandler();
-		HttpPost postMethod = new HttpPost(uri+"/module/sensorreading/sr.form");    
-		postMethod.setEntity(new StringEntity(obj.toString()));
-		postMethod.setHeader( "Content-Type", "application/json");
-		postMethod.addHeader(BasicScheme.authenticate(new UsernamePasswordCredentials(username,password),"UTF-8", false));
-		String response = null;
-		try{
-			 response = httpClient.execute(postMethod,responseHandler);
-		}catch(Exception e){
-			System.out.println("caught exception");
-			e.printStackTrace();
-		}
-		return response;
+			return obj;
 		
 	}
 	
@@ -350,7 +293,18 @@ public class Sensor_Reading_Automatically extends ActionBarActivity implements V
 					
 					ca.createDocument("reading", ca.makeReadingMap(pat, params[3], readings));
 				//
-				ca.push_readings(username, password, url);
+				try {
+					ca.push_readings(username, password, url);
+				} catch (HttpResponseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ClientProtocolException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			
 			
 
@@ -390,7 +344,7 @@ public class Sensor_Reading_Automatically extends ActionBarActivity implements V
 			   result2 = get_sensor_concepts_from_db(params[3]); // params[3] has sensor_id
 			   if(result2.length()==0){
 				   try {
-					   result1 = (Sensor_concept_mapping_Httpget(params[0],params[1], params[2],params[3]));
+					   result1 = (HTTP_Functions.Httpget(params[0],params[1],url+"/ws/rest/v1/sensor/scm/"+params[3]));
 					   result2=JsonParse(result1);
 				   } catch (ClientProtocolException e) {
 						// TODO Auto-generated catch block
