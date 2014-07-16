@@ -27,7 +27,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.os.Build;
 
-public class SensorReading extends ListActivity {
+public class Sensor_Listing extends ListActivity {
 
 	String sensors[];
 	@Override
@@ -48,7 +48,7 @@ public class SensorReading extends ListActivity {
 		        String key = keys.next();
 		        String val = null;
 		        try{
-		        	Toast.makeText(this,"Listing  - " + key,Toast.LENGTH_SHORT).show();
+		        	//Toast.makeText(this,"Listing  - " + key,Toast.LENGTH_SHORT).show();
 		             sensors[i++]=key;
 		             
 		           }
@@ -82,7 +82,7 @@ public class SensorReading extends ListActivity {
 	 
 	//STEP 9:Text to be displayed in toast message, here it is set as name of the item clicked
 	Toast.makeText(this,"You selected the sensor - " + sensors[position],Toast.LENGTH_SHORT).show();
-	Intent intent1 = new Intent(this,SensorConceptAuto.class);
+	Intent intent1 = new Intent(this,Sensor_Reading_Automatically.class);
 	intent1.putExtra("sensor", sensors[position] );
 	startActivity(intent1);
 	

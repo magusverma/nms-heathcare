@@ -30,7 +30,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 		
 		//prefs.edit().clear().commit();
 				SharedPreferences.Editor editor = prefs.edit();
-	    	 Sensorconcept s=new Sensorconcept();
+	    	 Sensor_Reading_Manually s=new Sensor_Reading_Manually();
 	    	//Toast.makeText(context," in broadcast", Toast.LENGTH_SHORT).show();
 	    	List<EditText> e;
 	    	EditText e2;
@@ -52,7 +52,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 	  	    		   editor.putInt(a2[m], array[m]);
 	  	    		 		
 	    			//	 e2=s.sensor;
-	  	    		 	Toast.makeText(context,"value in broadcast:"+array[m], Toast.LENGTH_SHORT).show(); 		
+	  	    		 	//Toast.makeText(context,"value in broadcast:"+array[m], Toast.LENGTH_SHORT).show(); 		
 	    				// e2.setText(array[m]);
 	    				 m++;
 	    				 j++;

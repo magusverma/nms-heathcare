@@ -3,10 +3,15 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.mhealth.Create_Sensor"
+    tools:context="com.example.mhealth.Create_Sensor_Automatically"
     tools:ignore="MergeRootFrame" >
 
-    <LinearLayout
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <LinearLayout
         android:id="@+id/lay1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -21,12 +26,13 @@
     <EditText
         android:id="@+id/editText1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="42dp"
         android:ems="10"
         android:paddingTop="30dp" >
 
         <requestFocus />
     </EditText>
     </LinearLayout>
+    </ScrollView>
 
 </FrameLayout>

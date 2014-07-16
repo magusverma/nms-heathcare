@@ -44,7 +44,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 
 
-public class PostQuery extends ActionBarActivity implements View.OnClickListener{
+public class Create_Patient extends ActionBarActivity implements View.OnClickListener{
 	
 	EditText first,family,num,gender,age;
 	Button bt;
@@ -203,17 +203,16 @@ public class PostQuery extends ActionBarActivity implements View.OnClickListener
 					   catch ( HttpResponseException e){
 						   
 						   return "boo";
-					} catch (ClientProtocolException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				       
+					   } catch (ClientProtocolException e) {
+							System.out.println("Client Protocol exception caught.");
+							e.printStackTrace();
+						} catch (IOException e) {
+							System.out.println("IO exception caught.");
+							e.printStackTrace();
+						} catch (JSONException e) {
+							System.out.println("JSON exception caught.");
+							e.printStackTrace();
+						}   
 						return res;
 				  }
 		  

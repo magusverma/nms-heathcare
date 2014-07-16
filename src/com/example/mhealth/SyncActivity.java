@@ -287,7 +287,7 @@ public class SyncActivity extends ActionBarActivity {
 		String str = null;
 		try {
 			HttpEntity responseEntity = httpResponse.getEntity();
-			str = GetQuery.inputStreamToString(responseEntity.getContent()).toString();
+			str = Get_Patient_information.inputStreamToString(responseEntity.getContent()).toString();
 			httpClient.getConnectionManager().shutdown();
 //			System.out.println(str);
 		} catch (IllegalStateException e) {
@@ -351,7 +351,7 @@ public class SyncActivity extends ActionBarActivity {
 				concept_name = concept_name.replaceAll("\"", "");
 				if(concept_name.equals(concept_name_to_search_for))
 					return concept_id;
-				System.out.println(concept_id+" : "+concept_name);
+				//System.out.println(concept_id+" : "+concept_name);
 			}
 	 
 		} catch (FileNotFoundException e) {

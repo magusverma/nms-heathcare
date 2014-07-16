@@ -1,28 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">MHealth</string>
+    <string name="app_name">MedAssist</string>
     <string name="hello_world">MHealth</string>
     <string name="sync_title">Sync From Server</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_login">Login</string>
     <string name="title_activity_options">Options</string>
-    <string name="title_activity_get_query">GetQuery</string>
-    <string name="title_activity_post_query">PostQuery</string>
+    <string name="title_activity_get_query">Patient Information</string>
+    <string name="title_activity_post_query">Send Patient Information</string>
     <string name="title_activity_get_input">GetInput</string>
-    <string name="title_activity_sensor_concept">Sensorconcept</string>
-    <string name="title_activity_create_sensor">CreateSensor</string>
-    <string name="title_activity_create__sensor">Create_Sensor</string>
+    <string name="title_activity_sensor_concept">Sensor Readings</string>
+    <string name="title_activity_create_sensor">Create Sensor</string>
+    <string name="title_activity_create__sensor">Create Sensor</string>
     <string name="title_activity_create_">Create_Activity</string>
     <string name="title_item_list">Items</string>
     <string name="title_item_detail">Item Detail</string>
-    <string name="title_activity_sync">SyncActivity</string>
+    <string name="title_activity_sync">Sync Activity</string>
     <string name="sync_button">Sync Data</string>
-    <string name="title_activity_show_db_data">ShowDbData</string>
+    <string name="title_activity_show_db_data">Show Database Data</string>
     <string name="username">username</string>
     <string name="password">password</string>
     <string name="url">url</string>
-    <string name="title_activity_sensor_reading">SensorReading</string>
-    <string name="title_activity_sensor_concept_auto">SensorConceptAuto</string>
+    <string name="title_activity_sensor_reading">Sensor List</string>
+    <string name="title_activity_sensor_concept_auto">Sensor Readings</string>
+    <string name="title_activity_create__activity2">Create Sensor</string>
+    <string name="title_activity_sensorconcept2">Sensor Reading</string>
 
 </resources>

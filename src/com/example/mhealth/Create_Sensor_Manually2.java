@@ -29,10 +29,11 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Create_Activity extends ActionBarActivity implements View.OnClickListener {
+public class Create_Sensor_Manually2 extends ActionBarActivity implements View.OnClickListener{
 
 	
 	LinearLayout main1;
@@ -41,38 +42,47 @@ public class Create_Activity extends ActionBarActivity implements View.OnClickLi
 	EditText E1,E2;
 	Button b1,b2,b3;
 	JSONObject jo;
-
+	List<EditText> allEds;
+	Bundle extras;
+	ScrollView sv;
+	EditText et;
+	
 	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		sv=new ScrollView(this);
 		main1=new LinearLayout(this);
 	       main1.setOrientation(LinearLayout.VERTICAL);
 	  	 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-	  	 Bundle extras = getIntent().getExtras(); 
-	  	 /*username= extras.getString("uname");
-		 password = extras.getString("pword");	
-		 url=extras.getString("url");*/
+	  	 sv.addView(main1);
+	  	 extras = getIntent().getExtras(); 
 	  	SharedPreferences sharedPref = getSharedPreferences("mhealth", Context.MODE_PRIVATE);
         username = sharedPref.getString(getString(R.string.username), "");
 		password = sharedPref.getString(getString(R.string.password), "");
 		url = sharedPref.getString(getString(R.string.url), "");
 		S=new TextView(this);
 	      S.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));     
-	      S.setText("Enter sensor Name");
+	      S.setText("Creating Sensor "+extras.getString("Sensor"));
 	      main1.addView(S);
-	  	 E1 =new EditText(this);
-	  	 E1.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT));     
-	      main1.addView(E1);
-	      b1=new Button(this);
-	      b1.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));   
-	      b1.setText("Create Sensor");
-	      b1.setOnClickListener(this);
-	      main1.addView(b1);
-	      
-	      
-	      setContentView(main1);
+		EditText ed;
+		allEds = new ArrayList<EditText>();
+		System.out.println(extras.getInt("CNumber"));
+		for(int i=0;i<extras.getInt("CNumber");i++)
+		 {
+			// Toast.makeText(getApplicationContext(),i+"  ", Toast.LENGTH_LONG).show();
+			 ed = new EditText(Create_Sensor_Manually2.this);
+		    allEds.add(ed);
+	     ed.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT));
+		    main1.addView(ed);	
+		 }
+		  b2=new Button(Create_Sensor_Manually2.this);
+	      b2.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));   
+	      b2.setText("Create Sensor "+extras.getString("Sensor"));
+	      main1.addView(b2);
+	      b2.setOnClickListener(this);   	 
+	      setContentView(sv);
 
 	}
 	
@@ -138,13 +148,13 @@ public class Create_Activity extends ActionBarActivity implements View.OnClickLi
 			try {
 				res= Httppost2(params[0],params[1],params[2],params[3],params[4]);
 			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
+				System.out.println("Client Protocol exception caught.");
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				System.out.println("IO exception caught.");
 				e.printStackTrace();
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
+				System.out.println("JSON exception caught.");
 				e.printStackTrace();
 			}
 			
@@ -155,7 +165,7 @@ public class Create_Activity extends ActionBarActivity implements View.OnClickLi
 		}
 		
 		 protected void onPostExecute(String params){
-			 Toast.makeText(getApplicationContext(),"Sensor concept mapping successfully done!!!", Toast.LENGTH_LONG).show();
+			 Toast.makeText(getApplicationContext(),"Sensor Concept mapping successfully done!!!", Toast.LENGTH_LONG).show();
 			 
 		 }
 		
@@ -171,13 +181,13 @@ public class Create_Activity extends ActionBarActivity implements View.OnClickLi
 			try {
 				return res=Httppost(params[0],params[1],params[2],params[3]);
 			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
+				System.out.println("Client Protocol exception caught.");
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				System.out.println("IO exception caught.");
 				e.printStackTrace();
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
+				System.out.println("JSON exception caught.");
 				e.printStackTrace();
 			}
 			return res;
@@ -187,7 +197,7 @@ public class Create_Activity extends ActionBarActivity implements View.OnClickLi
 		 protected void onPostExecute(String params){
 			 try {
 				jo = new JSONObject(params);
-				if(jo.get("sensor_name").equals(E1.getText().toString()))
+				if(jo.get("sensor_name").equals(extras.getString("Sensor")))
 				{
 					Toast.makeText(getApplicationContext(),"Sensor successfully created with ID"+jo.get("sensor_id"), Toast.LENGTH_LONG).show();
 				
@@ -196,95 +206,45 @@ public class Create_Activity extends ActionBarActivity implements View.OnClickLi
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			 
-			 
-				
+			String[] strings = new String[extras.getInt("CNumber")];
+		    String fin = "" ;
+		    for(int i=0; i < allEds.size(); i++){
+		    	  strings[i] = allEds.get(i).getText().toString();
+		    	  fin=fin+(strings[i]+"*");
+			}
+
+			 String send = fin.substring(0,fin.length()-1);
+		     //Toast.makeText(getApplicationContext(),((String)jo.get("sensor_id")), Toast.LENGTH_LONG).show();
+			 String s;
+			try {
+				s = Integer.toString(jo.getInt("sensor_id"));
+				new MyAsyncTask2().execute(username,password,url,send,s);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
-			 S1=new TextView(Create_Activity.this);
-		      S1.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));     
-		      S1.setText("Enter the number of concepts");
-		      main1.addView(S1);
-		  	 E2 =new EditText(Create_Activity.this);
-		  	 E2.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT));     
-		      main1.addView(E2);
-		      b2=new Button(Create_Activity.this);
-		      b2.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));   
-		      b2.setText("Write Concepts ");
-		      b2.setOnClickListener(Create_Activity.this);
-		      main1.addView(b2);
-		      b2.setOnClickListener(new View.OnClickListener() {
-		    	    @Override
-		    	    public void onClick(View v) {
-		    	    	
-		    	    	 EditText ed;
-		    				final List<EditText> allEds = new ArrayList<EditText>();
-		    				for(int i=0;i<Integer.parseInt(E2.getText().toString());i++)
-		    				 {
-		    					// Toast.makeText(getApplicationContext(),i+"  ", Toast.LENGTH_LONG).show();
-		    					 ed = new EditText(Create_Activity.this);
-		    				    allEds.add(ed);
-		    			     ed.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT));
-		    				    main1.addView(ed);	 
-		    					
-		    					 
-		    				 }
-		    				
-		    				 
-		    				 b3=new Button(Create_Activity.this);
-		    			     b3.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));   
-		    			     b3.setText("Post Concepts");
-		    			     b3.setOnClickListener(Create_Activity.this);
-		    			     main1.addView(b3); 
-		    			    
-		    			     b3.setOnClickListener(new View.OnClickListener() {
-		    			    	    @Override
-		    			    	    public void onClick(View v) {
-		    			    	    	 try {
-		    			    	    		 
-		    			    				 String[] strings = new String[Integer.parseInt(E2.getText().toString())];
-		    			    				 String fin = "" ;
-		    			    				 for(int i=0; i < allEds.size(); i++){
-		    			    				     strings[i] = allEds.get(i).getText().toString();
-		    			    				     fin=fin+(strings[i]+"*");
-
-		    				    			     
-										}
-
-		    				    			 final String send = fin.substring(0,fin.length()-1);
-		    			    			     //Toast.makeText(getApplicationContext(),((String)jo.get("sensor_id")), Toast.LENGTH_LONG).show();
-		    				    			 String s= Integer.toString(jo.getInt("sensor_id"));
-											new MyAsyncTask2().execute(username,password,url,send,s);
-		    			    	    	 }catch (JSONException e) {
-											// TODO Auto-generated catch block
-											e.printStackTrace();
-										};
-		    			    	    }
-		    			    	});
-		    	    }
-		    				
-		    	    
-			 
-			 
-			 
-		 
-		 });
-		
-		
+    	 
+				
+		 }
 	}
 		 
-
-	
-
-	
-
-}
-	
-
-
 	@Override
 	public void onClick(View v) {
-		String sensor= E1.getText().toString();
-		new MyAsyncTask().execute(username,password,url,sensor);
+		int flag = 0;
+		for(int i=0; i < allEds.size(); i++){
+	    	  if( allEds.get(i).getText().toString().length()<1)
+	    	  {
+	    		  flag =1;
+	    	  }
+	    	  
+		}
+		if (flag==1)
+		{
+			Toast.makeText(getApplicationContext(),"Enter all concepts", Toast.LENGTH_LONG).show();
+		}
+		else
+		 new MyAsyncTask().execute(username,password,url,extras.getString("Sensor"));
 		
 	}
-}
+	}

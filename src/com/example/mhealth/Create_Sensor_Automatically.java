@@ -1,6 +1,10 @@
 package com.example.mhealth;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +33,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,7 +42,7 @@ import com.google.gson.GsonBuilder;
 
 
 
-public class Create_Sensor extends Activity {
+public class Create_Sensor_Automatically extends Activity {
 	String Sensor_name;
 	String Pack_name;
 	int conc_num;
@@ -55,6 +60,7 @@ public class Create_Sensor extends Activity {
 		bundle = getIntent().getExtras();
 //		SharedPreferences prefs = getApplicationContext().getSharedPreferences(CRED,getApplicationContext().MODE_PRIVATE);
 //	    new MyAsync().execute(prefs.getString("username", "admin"),prefs.getString("password", "Admin123"),prefs.getString("url",""));
+		//ScrollView sv = new ScrollView(this);
 		main1=(LinearLayout) findViewById(R.id.lay1);
 		e1=(EditText) findViewById(R.id.editText1);
 		e1.setText(bundle.getString("Sensor"));
@@ -64,24 +70,23 @@ public class Create_Sensor extends Activity {
 		url = sharedPref.getString(getString(R.string.url), "");
 		System.out.println(username + " "+password+" "+url);
 	 List<EditText> allEds = new ArrayList<EditText>();
-	 	System.out.println("fsjhjshfkjd8787&*&&&"+bundle.getInt("Concept_num"));
-		for(int j=0;j<2;j++) 
- 		{      
-
-			
+	 	String [] concepts = bundle.getStringArray("Concepts");
+	 	System.out.println("fsjhjshfkjd8787&*&&&"+bundle.getStringArray("Concepts").length);
+		for(int j=0;j<concepts.length;j++) 
+ 		{      	
 
 				EditText ed;
  			
- 			TextView rowTextView = new TextView(Create_Sensor.this);
+ 			TextView rowTextView = new TextView(Create_Sensor_Automatically.this);
  			 rowTextView.setText("Concept"+(j+1));
  			 main1.addView(rowTextView);
- 		    ed = new EditText(Create_Sensor.this);
+ 		    ed = new EditText(Create_Sensor_Automatically.this);
  		    allEds.add(ed);
  	     ed.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT));
  		    main1.addView(ed);	
  		    
  		    
- 		    ed.setText(bundle.getString("Concept_"+(j+1)));
+ 		    ed.setText(getConceptName(concepts[j]));
 
 
 
@@ -106,7 +111,8 @@ public class Create_Sensor extends Activity {
 		    	}	 }  ); 
 
 	     
-		
+		//sv.addView(main1);
+		//setContentView(sv);
 		
 	
 	}
@@ -127,6 +133,50 @@ public class Create_Sensor extends Activity {
 		return response;
 		
 	}
+	
+	/*
+	 * Returns concept name for a concept id by looking it up from a csv
+	 */
+	public String getConceptName(String concept_id_to_search_for) {
+		System.out.println(concept_id_to_search_for);
+		BufferedReader br = null;
+		String line = "";
+		String cvsSplitBy = ",";
+		//concept_name_to_search_for = concept_name_to_search_for.replaceAll(",","");
+		try {
+			InputStream is = getResources().openRawResource(R.raw.cd);
+			br = new BufferedReader(new InputStreamReader(is));
+			while ((line = br.readLine()) != null) {
+				String[] concept_line = line.split(cvsSplitBy);
+				String concept_id = "", concept_name = "";
+				for (int i = 0; i < concept_line.length; i++) {
+					if (i==0) concept_id = concept_line[0];
+					else{
+						concept_name = concept_name + concept_line[i];
+					}
+				}
+				concept_name = concept_name.replaceAll("\"", "");
+				if(concept_id.equals(concept_id_to_search_for))
+					return concept_name;
+				//System.out.println(concept_id+" : "+concept_name);
+			}
+	 
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return "-1";
+	}
+
 	
 	public static String Httppost(String username, String password ,String url, JSONObject jo) throws ClientProtocolException, IOException
 	{
@@ -194,7 +244,9 @@ public class Create_Sensor extends Activity {
     				 }
     		
     				 else{
-	    			 concepts.add(bundle.getString(s1));
+    				String [] arr = bundle.getStringArray("Concepts");
+    				for(int i =0;i<arr.length;i++)
+	    			 concepts.add(arr[i]);
 	    			 
     				 }
 	    		 }
@@ -232,19 +284,22 @@ public class Create_Sensor extends Activity {
 				System.out.println("sensor_name "+bundle.getString("Sensor"));
 				res1 = NormalHttppost(params[0],params[1],params[2],nm);
 				rs=idJsonParse(res1);
-			} catch (ClientProtocolException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			} catch (ClientProtocolException e) {
+				System.out.println("Client Protocol exception caught.");
+				e.printStackTrace();
+			} catch (IOException e) {
+				System.out.println("IO exception caught.");
+				e.printStackTrace();
+			} catch (JSONException e) {
+				System.out.println("JSON exception caught.");
+				e.printStackTrace();
 			}
 			   
 			   return rs.toString();
 		}
 		
 		 protected void onPostExecute(String params){
-		 Toast.makeText(getApplicationContext(),"Successful sensor created with ID "+params, Toast.LENGTH_LONG).show();
+		 Toast.makeText(getApplicationContext(),"Sensor created successfully with ID "+params, Toast.LENGTH_LONG).show();
 		 SharedPreferences sharedPref = getSharedPreferences("mhealth", Context.MODE_PRIVATE);
 	        username = sharedPref.getString(getString(R.string.username), "");
 			password = sharedPref.getString(getString(R.string.password), "");
@@ -272,22 +327,26 @@ public class Create_Sensor extends Activity {
 				nm.put("sensor", params[3]);
 				JSONArray ja = new JSONArray();
 				System.out.println("............. in myasync2");
-				for(int i=1;i<3;i++)
+				String[] concepts = bundle.getStringArray("Concepts");
+				for(int i=0;i<bundle.getStringArray("Concepts").length;i++)
 				{
-					System.out.println("Concept_"+(i)+" "+bundle.getString("Concept_"+(i)));
-					ja.put(bundle.getString("Concept_"+(i)));
+					System.out.println("Concept_"+(i+1)+" "+concepts[i]);
+					ja.put(concepts[i]);
 				}
 				
 				nm.put("concepts",ja);
 				res1 = Httppost(params[0],params[1],params[2],nm);
 				System.out.println("returned...   "+res1);
 				
-			} catch (ClientProtocolException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			} catch (ClientProtocolException e) {
+				System.out.println("Client Protocol exception caught.");
+				e.printStackTrace();
+			} catch (IOException e) {
+				System.out.println("IO exception caught.");
+				e.printStackTrace();
+			} catch (JSONException e) {
+				System.out.println("JSON exception caught.");
+				e.printStackTrace();
 			}
 			   
 			   return params[3];
@@ -297,7 +356,7 @@ public class Create_Sensor extends Activity {
 			 Toast.makeText(getApplicationContext(),params, Toast.LENGTH_LONG).show();
 		 if(saveInPreference(params).equalsIgnoreCase("success"))
 			 {
-			 Toast.makeText(getApplicationContext(),"Successful concepts mapped", Toast.LENGTH_LONG).show();
+			 Toast.makeText(getApplicationContext(),"Concepts Mapped Successfully", Toast.LENGTH_LONG).show();
 			 };
 		 
 			 

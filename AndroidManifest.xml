@@ -35,11 +35,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.mhealth.GetQuery"
+            android:name="com.example.mhealth.Get_Patient_information"
             android:label="@string/title_activity_get_query" >
         </activity>
         <activity
-            android:name="com.example.mhealth.PostQuery"
+            android:name="com.example.mhealth.Create_Patient"
             android:label="@string/title_activity_post_query" >
         </activity>
         <activity
@@ -51,7 +51,7 @@
             android:label="@string/title_activity_get_input" >
         </activity>
         <activity
-            android:name="com.example.mhealth.Sensorconcept"
+            android:name="com.example.mhealth.Sensor_Reading_Manually"
             android:label="@string/title_activity_sensor_concept" >
         </activity>
 
@@ -87,11 +87,11 @@
             android:label="@string/title_activity_create_sensor" >
         </activity>
         <activity
-            android:name="com.example.mhealth.Create_Sensor"
+            android:name="com.example.mhealth.Create_Sensor_Automatically"
             android:label="@string/title_activity_create__sensor" >
         </activity>
         <activity
-            android:name="com.example.mhealth.Create_Activity"
+            android:name="com.example.mhealth.Create_Sensor_Manually"
             android:label="@string/title_activity_create_" >
         </activity>
         <activity
@@ -114,16 +114,21 @@
             android:name="com.example.mhealth.ShowDbData"
             android:label="@string/title_activity_show_db_data">
         </activity>
-
-
-
         <activity
-            android:name="com.example.mhealth.SensorReading"
+            android:name="com.example.mhealth.Sensor_Listing"
             android:label="@string/title_activity_sensor_reading" >
         </activity>
         <activity
-            android:name="com.example.mhealth.SensorConceptAuto"
+            android:name="com.example.mhealth.Sensor_Reading_Automatically"
             android:label="@string/title_activity_sensor_concept_auto" >
+        </activity>
+        <activity
+            android:name="com.example.mhealth.Create_Sensor_Manually2"
+            android:label="@string/title_activity_create__activity2" >
+        </activity>
+        <activity
+            android:name="com.example.mhealth.Sensor_Reading_Manually2"
+            android:label="@string/title_activity_sensorconcept2" >
         </activity>
     </application>
 
