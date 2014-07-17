@@ -124,12 +124,18 @@ public class Create_Sensor_Manually2 extends ActionBarActivity implements View.O
 			} catch (ClientProtocolException e) {
 				System.out.println("Client Protocol exception caught.");
 				e.printStackTrace();
+				return "failed";
 			} catch (IOException e) {
 				System.out.println("IO exception caught.");
 				e.printStackTrace();
+				return "failed";
 			} catch (JSONException e) {
 				System.out.println("JSON exception caught.");
 				e.printStackTrace();
+				return "failed";
+			} catch (NullPointerException e) {
+				System.out.println("No internet Connection");
+				return "failed";
 			}
 			
 			
@@ -140,7 +146,12 @@ public class Create_Sensor_Manually2 extends ActionBarActivity implements View.O
 		
 		 protected void onPostExecute(String params)
 		 {
-			 	Toast.makeText(getApplicationContext(),"Sensor Concept mapping successfully done!!!", Toast.LENGTH_LONG).show();
+			 if(params.equals("failed"))
+			 {
+				 Toast.makeText(getApplicationContext(),"Sensor Concept mapping unsuccessful. Check your settings and connection.", Toast.LENGTH_LONG).show(); 
+			 }
+			 else
+				 {Toast.makeText(getApplicationContext(),"Sensor Concept mapping successfully don!!!", Toast.LENGTH_LONG).show();}
 			 
 		 }
 		
@@ -158,18 +169,28 @@ public class Create_Sensor_Manually2 extends ActionBarActivity implements View.O
 			} catch (ClientProtocolException e) {
 				System.out.println("Client Protocol exception caught.");
 				e.printStackTrace();
+				return "failed";
 			} catch (IOException e) {
 				System.out.println("IO exception caught.");
 				e.printStackTrace();
+				return "failed";
 			} catch (JSONException e) {
 				System.out.println("JSON exception caught.");
 				e.printStackTrace();
+				return "failed";
+			} catch (NullPointerException e) {
+				System.out.println("No internet Connection");
+				return "failed";
 			}
-			return result;
+			
 			
 		}
 		
 		 protected void onPostExecute(String params){
+			 if(params.equals("failed"))
+			 {
+				 Toast.makeText(getApplicationContext(), "Unsuccesful. Check your settings and connection.", Toast.LENGTH_SHORT).show();
+			 }
 			 try {
 					jo = new JSONObject(params);
 					if(jo.get("sensor_name").equals(bundle.getString("Sensor")))

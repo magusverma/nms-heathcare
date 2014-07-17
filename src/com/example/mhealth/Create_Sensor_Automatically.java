@@ -27,6 +27,7 @@ import utils.HTTP.HTTP_Functions;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -50,20 +51,27 @@ public class Create_Sensor_Automatically extends Activity {
 	Button b1;
 	EditText Sensor;
 	LinearLayout LLayout1;
+	TextView Sensor_Name;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_create__sensor);
 		bundle = getIntent().getExtras();
-		LLayout1=(LinearLayout) findViewById(R.id.lay1);
-		Sensor=(EditText) findViewById(R.id.editText1);
-		Sensor.setText(bundle.getString("Sensor"));
+		LLayout1=new LinearLayout(this);
+        LLayout1.setOrientation(LinearLayout.VERTICAL);
+  	 	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+	  	Sensor_Name=new TextView(this);
+        Sensor_Name.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));     
+        Sensor_Name.setText("Sensor Name");
+        LLayout1.addView(Sensor_Name);
+	  	Sensor =new EditText(this);
+	  	Sensor.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT));     
+	  	Sensor.setText(bundle.getString("Sensor"));
+	  	LLayout1.addView(Sensor); 
 		SharedPreferences sharedPref = getSharedPreferences("mhealth", Context.MODE_PRIVATE);
         username = sharedPref.getString(getString(R.string.username), "");
 		password = sharedPref.getString(getString(R.string.password), "");
 		url = sharedPref.getString(getString(R.string.url), "");
-		System.out.println(username + " "+password+" "+url);
 		List<EditText> allEds = new ArrayList<EditText>();
 	 	String [] concepts = bundle.getStringArray("Concepts");
 	 	for(int j=0;j<concepts.length;j++) 
@@ -96,7 +104,7 @@ public class Create_Sensor_Automatically extends Activity {
 	    	 												}  		
         							); 
 
-		
+		setContentView(LLayout1);
 	}
 	
 		
@@ -225,25 +233,36 @@ public class Create_Sensor_Automatically extends Activity {
 			} catch (ClientProtocolException e) {
 				System.out.println("Client Protocol exception caught.");
 				e.printStackTrace();
+				return "failed";
 			} catch (IOException e) {
 				System.out.println("IO exception caught.");
 				e.printStackTrace();
+				return "failed";
 			} catch (JSONException e) {
 				System.out.println("JSON exception caught.");
 				e.printStackTrace();
+				return "failed";
+			} catch (NullPointerException e) {
+				System.out.println("No internet Connection");
+				return "failed";
 			}
 			   
 			   return sensor_id.toString();
 		}
 		
 		 protected void onPostExecute(String params){
-				 Toast.makeText(getApplicationContext(),"Sensor created successfully with ID "+params, Toast.LENGTH_LONG).show();
+			 	if(params.equals("failed"))
+			 	{
+			 		Toast.makeText(getApplicationContext(),"Sensor creation unsuccessful. Check your settings and connection."+params, Toast.LENGTH_LONG).show();
+			 	}
+			 	else{
+				 Toast.makeText(getApplicationContext(),"Sensor created successfully with ID.", Toast.LENGTH_LONG).show();
 				 SharedPreferences sharedPref = getSharedPreferences("mhealth", Context.MODE_PRIVATE);
 			     username = sharedPref.getString(getString(R.string.username), "");
 			     password = sharedPref.getString(getString(R.string.password), "");
 				 url = sharedPref.getString(getString(R.string.url), "");
 				 new Sensor_Concept_Async_Task().execute(sharedPref.getString(getString(R.string.username), ""),sharedPref.getString(getString(R.string.password), ""),sharedPref.getString(getString(R.string.url), ""),params);
-					
+			 	}	
 			 
 		  
 		  }
@@ -273,12 +292,18 @@ public class Create_Sensor_Automatically extends Activity {
 			} catch (ClientProtocolException e) {
 				System.out.println("Client Protocol exception caught.");
 				e.printStackTrace();
+				return "failed";
 			} catch (IOException e) {
 				System.out.println("IO exception caught.");
 				e.printStackTrace();
+				return "failed";
 			} catch (JSONException e) {
 				System.out.println("JSON exception caught.");
 				e.printStackTrace();
+				return "failed";
+			} catch (NullPointerException e) {
+				System.out.println("No internet Connection");
+				return "failed";
 			}
 			   
 			   return params[3];
@@ -286,6 +311,11 @@ public class Create_Sensor_Automatically extends Activity {
 		
 		 protected void onPostExecute(String params)
 		 {
+			 if(params.equals("failed"))
+				 
+			 {
+				 Toast.makeText(getApplicationContext(),"Mapping Unsuccessful", Toast.LENGTH_LONG).show();
+			 }
 				 Toast.makeText(getApplicationContext(),params, Toast.LENGTH_LONG).show();
 				 if(saveInPreference(params).equalsIgnoreCase("success"))
 						 {

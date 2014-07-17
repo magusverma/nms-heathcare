@@ -295,15 +295,17 @@ public class Sensor_Reading_Automatically extends ActionBarActivity implements V
 				//
 				try {
 					ca.push_readings(username, password, url);
-				} catch (HttpResponseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				} catch (ClientProtocolException e) {
-					// TODO Auto-generated catch block
+					System.out.println("Client Protocol exception caught.");
 					e.printStackTrace();
+					return "failed";
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
+					System.out.println("IO exception caught.");
 					e.printStackTrace();
+					return "failed";
+				} catch (NullPointerException e) {
+					System.out.println("No internet Connection");
+					return "failed";
 				}
 			
 			
@@ -313,6 +315,11 @@ public class Sensor_Reading_Automatically extends ActionBarActivity implements V
 		}
 		
 		 protected void onPostExecute(String params){
+			 if(params.equals("failed"))
+			 {
+				 Toast.makeText(getApplicationContext(),"Unsuccessful. Check your settings and connection.", Toast.LENGTH_LONG).show();
+			 }
+			 else{
 			 try {
 				ca.getDatabase(ca.readings_db_name).getView(ca.pending_reading_view).createQuery().run();
 			} catch (CouchbaseLiteException e) {
@@ -330,6 +337,7 @@ public class Sensor_Reading_Automatically extends ActionBarActivity implements V
 			final String READINGS = "Sensor_Readings";
 	 	   	SharedPreferences prefs = getApplicationContext().getSharedPreferences(READINGS, MODE_PRIVATE);
 	 	   	prefs.edit().clear().commit();
+		 }
 		 }
 		
 		

@@ -40,6 +40,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+
 import utils.HTTP.*;
 
 
@@ -149,16 +150,22 @@ public class Create_Patient extends ActionBarActivity implements View.OnClickLis
 					   			System.out.println("Http Response exception caught.");
 								e.printStackTrace();
 						   return "no";
-					   } catch (ClientProtocolException e) {
+				   		} catch (ClientProtocolException e) {
 							System.out.println("Client Protocol exception caught.");
 							e.printStackTrace();
+							return "failed";
 						} catch (IOException e) {
 							System.out.println("IO exception caught.");
 							e.printStackTrace();
+							return "failed";
 						} catch (JSONException e) {
 							System.out.println("JSON exception caught.");
 							e.printStackTrace();
-						}   
+							return "failed";
+						} catch (NullPointerException e) {
+							System.out.println("No internet Connection");
+							return "failed";
+						} 
 						return result;
 				  }
 		  
@@ -168,6 +175,10 @@ public class Create_Patient extends ActionBarActivity implements View.OnClickLis
 			  if(params.equals("no"))	
 			  {
 				 Toast.makeText(getApplicationContext(),"Patient could not be created\nID should be unique!!", Toast.LENGTH_LONG).show();  
+			  }
+			  else if (params.equals("failed"))
+			  {
+				  Toast.makeText(getApplicationContext(),"Patient could not be created!! Check your settings and connection.", Toast.LENGTH_LONG).show();
 			  }
 			  else{
 				  Toast.makeText(getApplicationContext(),"Patient Created Successfully!!", Toast.LENGTH_LONG).show();
