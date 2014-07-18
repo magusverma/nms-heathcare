@@ -16,17 +16,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class Create_Sensor_Manually extends ActionBarActivity  {
-
-	
 	LinearLayout LLayout1;
 	String username, password,url;
 	TextView Sensor,Concept_number;
 	EditText Sensor_ID,Number_of_concepts;
 	Button button;
-	
 
-	
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -72,20 +67,6 @@ public class Create_Sensor_Manually extends ActionBarActivity  {
 	    	    	}
 	    	    }
 	      });
-	    				
-	    
-	      
-	      
 	     setContentView(LLayout1);
-
-	
-	
-	
-	
 		}
-
-
-
-
 	}
-
