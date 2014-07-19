@@ -51,8 +51,7 @@ public class Create_Sensor_Automatically extends Activity {
     LinearLayout LLayout1;
     TextView Sensor_Name;
 
-    @
-    Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bundle = getIntent().getExtras();
@@ -92,8 +91,7 @@ public class Create_Sensor_Automatically extends Activity {
         LLayout1.addView(create);
         create.setOnClickListener(new View.OnClickListener() {
 
-            @
-            Override
+            @Override
             public void onClick(View v) {
 
                 new Sensor_Create_AsynTask().execute(username, password, url);
@@ -218,7 +216,8 @@ public class Create_Sensor_Automatically extends Activity {
                 JSONObject sensor_create = new JSONObject();
                 sensor_create.put("sensor_id", 1);
                 sensor_create.put("sensor_name", bundle.getString("Sensor"));
-                result1 = HTTP_Functions.Httppost(params[0], params[1], url + "/ws/rest/v1/sensor/sm", sensor_create);
+                HTTP_Functions http = new HTTP_Functions();
+                result1 = http.Httppost(params[0], params[1], url + "/ws/rest/v1/sensor/sm", sensor_create);
                 sensor_id = idJsonParse(result1);
             } catch (ClientProtocolException e) {
                 System.out.println("Client Protocol exception caught.");
@@ -271,7 +270,8 @@ public class Create_Sensor_Automatically extends Activity {
                 }
 
                 sensor_concept.put("concepts", concept);
-                result1 = HTTP_Functions.Httppost(params[0], params[1], url + "/module/sensorreading/scm.form", sensor_concept);
+                HTTP_Functions http = new HTTP_Functions();
+                result1 = http.Httppost(params[0], params[1], url + "/module/sensorreading/scm.form", sensor_concept);
                 System.out.println("returned...   " + result1);
 
             } catch (ClientProtocolException e) {
