@@ -29,8 +29,8 @@ public class Sensor_Reading_Manually extends ActionBarActivity implements View.O
     String[] sensor_name_hinting_array;
     static couch_api ca;
 
-    @
-    Override
+    
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -55,8 +55,8 @@ public class Sensor_Reading_Manually extends ActionBarActivity implements View.O
         LLayout1.addView(b1);
         setContentView(LLayout1);
 
-    }@
-    Override
+    }
+    @Override
     public void onClick(View v) {
 
         if (sensor.getText().toString().length() < 1) {
