@@ -33,13 +33,14 @@ public class MyAsync extends AsyncTask < String, String, String > {
     public MyAsync(OnAsyncResult lis) {
         this.lis = lis;
 
-    }@
-    Override
+    }
+    @Override
     protected String doInBackground(String...params) {
+        HTTP_Functions http = new HTTP_Functions();
 
         try {
 
-            res1 = JsonParse(HTTP_Functions.Httpget(params[0], params[1], params[2] + "/ws/rest/v1/patient?q=" + params[3]));
+            res1 = JsonParse(http.Httpget(params[0], params[1], params[2] + "/ws/rest/v1/patient?q=" + params[3]));
 
             System.out.println("in back" + res1);
         } catch (ClientProtocolException e) {
