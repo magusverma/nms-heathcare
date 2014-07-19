@@ -118,8 +118,9 @@ public class Sensor_Reading_Automatically extends ActionBarActivity implements V
 
     public void process_sensor_hinting() throws ClientProtocolException, IOException {
         JSONObject query = null;
+        HTTP_Functions http = new HTTP_Functions();
         try {
-            query = new JSONObject(HTTP_Functions.Httpget(username, password, url + "/ws/rest/v1/sensor/scm"));
+            query = new JSONObject(http.Httpget(username, password, url + "/ws/rest/v1/sensor/scm"));
         } catch (JSONException e1) {
             System.out.println("JSON Exception Caught");
             e1.printStackTrace();
@@ -253,8 +254,8 @@ public class Sensor_Reading_Automatically extends ActionBarActivity implements V
     private class Post_reading_AsyncTask extends AsyncTask < String, String, String > //Marker
         {
 
-            @
-            Override
+            
+            @Override
             protected String doInBackground(String...params) {
 
                 Document retrievedDocument = ca.getSensor(params[3]);
@@ -326,10 +327,11 @@ public class Sensor_Reading_Automatically extends ActionBarActivity implements V
         String result1, result2;
 
         protected String doInBackground(String...params) {
-            result2 = get_sensor_concepts_from_db(params[3]); // params[3] has sensor_id
+            result2 = get_sensor_concepts_from_db(params[3]);
+            HTTP_Functions http = new HTTP_Functions();// params[3] has sensor_id
             if (result2.length() == 0) {
                 try {
-                    result1 = (HTTP_Functions.Httpget(params[0], params[1], url + "/ws/rest/v1/sensor/scm/" + params[3]));
+                    result1 = (http.Httpget(params[0], params[1], url + "/ws/rest/v1/sensor/scm/" + params[3]));
                     result2 = JsonParse(result1);
                 } catch (ClientProtocolException e) {
                     // TODO Auto-generated catch block
