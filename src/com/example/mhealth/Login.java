@@ -30,8 +30,8 @@ public class Login extends ActionBarActivity implements View.OnClickListener {
     public String password;
     public String url;
 
-    @
-    Override
+    
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.first_act);
