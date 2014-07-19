@@ -47,8 +47,7 @@ public class Create_Sensor_Manually2 extends ActionBarActivity implements View.O
     ScrollView sv;
     EditText et;
 
-    @
-    Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sv = new ScrollView(this);
@@ -105,13 +104,13 @@ public class Create_Sensor_Manually2 extends ActionBarActivity implements View.O
     }
 
     private class Sensor_Concept_AsyncTask extends AsyncTask < String, String, String > {
-        String result;@
-        Override
+        String result;
+        @Override
         protected String doInBackground(String...params) {
-
+            HTTP_Functions http = new HTTP_Functions();
             try {
-
-                result = HTTP_Functions.Httppost(params[0], params[1], url + "/module/sensorreading/scm.form", Sensor_concept_json(params[3], params[4]));
+                
+                result = http.Httppost(params[0], params[1], url + "/module/sensorreading/scm.form", Sensor_concept_json(params[3], params[4]));
             } catch (ClientProtocolException e) {
                 System.out.println("Client Protocol exception caught.");
                 e.printStackTrace();
@@ -144,12 +143,12 @@ public class Create_Sensor_Manually2 extends ActionBarActivity implements View.O
     }
 
     private class Sensor_Create_AsyncTask extends AsyncTask < String, String, String > {
-        String result;@
-        Override
+        String result;
+        @Override
         protected String doInBackground(String...params) {
-
+                HTTP_Functions http = new HTTP_Functions();
             try {
-                return result = HTTP_Functions.Httppost(params[0], params[1], url + "/ws/rest/v1/sensor/sm", sensor_create_json(params[3]));
+                return result = http.Httppost(params[0], params[1], url + "/ws/rest/v1/sensor/sm", sensor_create_json(params[3]));
             } catch (ClientProtocolException e) {
                 System.out.println("Client Protocol exception caught.");
                 e.printStackTrace();
