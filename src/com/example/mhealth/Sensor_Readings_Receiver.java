@@ -10,12 +10,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
-@
-SuppressLint("NewApi")
+
+@SuppressLint("NewApi")
 public class Sensor_Readings_Receiver extends BroadcastReceiver {
 
-    @
-    Override
+    
+    @Override
     public void onReceive(Context context, Intent intent) {
         Integer concept_readings[] = new Integer[50];
         String concept_ids[] = new String[50];
