@@ -51,8 +51,7 @@ public class Create_Patient extends ActionBarActivity implements View.OnClickLis
     String password;
     String url;
 
-    @
-    Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.post_layout);
@@ -122,15 +121,16 @@ public class Create_Patient extends ActionBarActivity implements View.OnClickLis
         jObject.put("person", uuid);
 
         String final_string;
-        final_string = HTTP_Functions.Httppost(username, password, url + "/ws/rest/v1/patient", jObject);
+        HTTP_Functions http = new HTTP_Functions();
+        final_string = http.Httppost(username, password, url + "/ws/rest/v1/patient", jObject);
         return final_string;
 
     }
 
     public class Create_patient_AsyncTask extends AsyncTask < String, String, String > {
 
-        String result;@
-        Override
+        String result;
+        @Override
         protected String doInBackground(String...params) {
 
             try {
