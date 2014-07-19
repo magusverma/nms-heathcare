@@ -389,6 +389,7 @@ public class couch_api{
 		}  
 	    System.out.println(v.dump());
 		List<Map<String,Object>> dumpResult = v.dump();
+		HTTP_Functions http = new HTTP_Functions();
 		for(Map<String,Object> map : dumpResult){
 			try {
 				JSONObject json_being_pushed = new JSONObject(map.get("value").toString());
@@ -402,7 +403,7 @@ public class couch_api{
 				updateProperties.putAll(document_being_pushed.getProperties());
 				
 				json_being_pushed.remove("status");			
-				System.out.println(HTTP_Functions.Httppost(username,password,uri+"/module/sensorreading/sr.form",json_being_pushed));
+				System.out.println(http.Httppost(username,password,uri+"/module/sensorreading/sr.form",json_being_pushed));
 				
 				updateProperties.put("status", "pushed");
 				document_being_pushed.putProperties(updateProperties);
