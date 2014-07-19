@@ -89,8 +89,9 @@ public class Sensor_reading_manually_on_click extends ActionBarActivity {
 
     public void process_sensor_hinting() throws ClientProtocolException, IOException {
         JSONObject query = null;
+        HTTP_Functions http = new HTTP_Functions();
         try {
-            query = new JSONObject(HTTP_Functions.Httpget(username, password, url + "/ws/rest/v1/sensor/scm"));
+            query = new JSONObject(http.Httpget(username, password, url + "/ws/rest/v1/sensor/scm"));
         } catch (JSONException e1) {
 
             e1.printStackTrace();
@@ -124,12 +125,12 @@ public class Sensor_reading_manually_on_click extends ActionBarActivity {
     }
 
     private class Sensor_name_AsyncTask extends AsyncTask < String, String, String > {
-        String result = "";@
-        Override
+        String result = "";
+        @Override
         protected String doInBackground(String...params) {
-
+        HTTP_Functions http = new HTTP_Functions();
             try {
-                result = SensorName_JsonParse(HTTP_Functions.Httpget(username, password, url + "/ws/rest/v1/sensor/sm/" + extras.getString("Sensor")));
+                result = SensorName_JsonParse(http.Httpget(username, password, url + "/ws/rest/v1/sensor/sm/" + extras.getString("Sensor")));
             } catch (ClientProtocolException e) {
                 System.out.println("Client Protocol exception caught.");
                 e.printStackTrace();
@@ -238,8 +239,8 @@ public class Sensor_reading_manually_on_click extends ActionBarActivity {
 
     private class Reading_Post_AsyncTask extends AsyncTask < String, String, String > //Marker
         {
-            String result = "";@
-            Override
+            String result = "";
+            @Override
             protected String doInBackground(String...params) {
 
                 try {
