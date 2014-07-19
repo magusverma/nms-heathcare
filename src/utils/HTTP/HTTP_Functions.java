@@ -39,7 +39,7 @@ public class HTTP_Functions {
 		return total;
 		}
 
-	public static String Httpget (String username, String password, String url) throws ClientProtocolException, IOException
+	public String Httpget (String username, String password, String url) throws ClientProtocolException, IOException
 	{
 		HttpClient httpClient = new DefaultHttpClient();
 		HttpGet httpGet = new HttpGet(url);
@@ -53,7 +53,7 @@ public class HTTP_Functions {
 		
 	}
 	
-	public static String Httppost(String username, String password ,String url, JSONObject jo) throws ClientProtocolException, IOException, HttpResponseException
+	public String Httppost(String username, String password ,String url, JSONObject jo) throws ClientProtocolException, IOException, HttpResponseException
 	{
 		HttpClient httpClient = new DefaultHttpClient();
 		ResponseHandler<String> resonseHandler = new BasicResponseHandler();
