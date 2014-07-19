@@ -106,8 +106,8 @@ public class Create_Patient extends ActionBarActivity implements View.OnClickLis
         result = http.Httppost(username, password, url + "/ws/rest/v1/person", json);
 
         String uuid = uuidJsonParse(result);
-        String idType = JsonParse(HTTP_Functions.Httpget(username, password, url + "/ws/rest/v1/patientidentifiertype"));
-        String location = JsonParse(HTTP_Functions.Httpget(username, password, url + "/ws/rest/v1/location"));
+        String idType = JsonParse(http.Httpget(username, password, url + "/ws/rest/v1/patientidentifiertype"));
+        String location = JsonParse(http.Httpget(username, password, url + "/ws/rest/v1/location"));
 
         JSONObject jObject = new JSONObject();
         JSONObject identifier = new JSONObject();
