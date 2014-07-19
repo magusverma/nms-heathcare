@@ -17,8 +17,8 @@ import com.couchbase.lite.android.AndroidContext;
 
 public class ShowDbData extends ActionBarActivity {
     static couch_api ca; //magus
-    @
-    Override
+    
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_show_db_data);
