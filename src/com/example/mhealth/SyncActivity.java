@@ -58,8 +58,8 @@ public class SyncActivity extends ActionBarActivity {
         }
     }
 
-    @
-    Override
+    
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         System.out.println("In Oncreate");
@@ -77,8 +77,8 @@ public class SyncActivity extends ActionBarActivity {
         }
     }
 
-    @
-    Override
+    
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -171,8 +171,8 @@ public class SyncActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
-    @
-    Override
+    
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -191,8 +191,8 @@ public class SyncActivity extends ActionBarActivity {
 
         public PlaceholderFragment() {}
 
-        @
-        Override
+        
+        @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_sync, container,
@@ -271,8 +271,8 @@ public class SyncActivity extends ActionBarActivity {
         }
         database = ca.getDatabase(ca.sensors_db_name);
         System.out.println("Document Count = " + database.getDocumentCount());
-        //
-        String str = HTTP_Functions.Httpget(username, password, url + "/ws/rest/v1/sensor/scm");
+        HTTP_Functions http = new HTTP_Functions();
+        String str = http.Httpget(username, password, url + "/ws/rest/v1/sensor/scm");
         try {
             JSONObject j = new JSONObject(str);
             JSONArray ja = (JSONArray) j.get("results");
