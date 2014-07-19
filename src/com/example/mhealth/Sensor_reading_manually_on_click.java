@@ -284,11 +284,12 @@ public class Sensor_reading_manually_on_click extends ActionBarActivity {
         String result1, result2;
 
         protected String doInBackground(String...params) {
+            HTTP_Functions http = new HTTP_Functions();
             result2 = get_sensor_concepts_from_db(params[3]); // params[3] has sensor_id
             System.out.println("result2 >>> " + result2);
             if (result2.length() == 0) {
                 try {
-                    result1 = (HTTP_Functions.Httpget(username, password, url + "/ws/rest/v1/sensor/scm/" + params[3]));
+                    result1 = (http.Httpget(username, password, url + "/ws/rest/v1/sensor/scm/" + params[3]));
                     result2 = JsonParse(result1);
                 } catch (ClientProtocolException e) {
                     System.out.println("Client Protocol exception caught.");
