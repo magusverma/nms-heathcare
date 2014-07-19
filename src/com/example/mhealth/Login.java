@@ -67,11 +67,7 @@ public class Login extends ActionBarActivity implements View.OnClickListener {
 
     }
 
-    public void SwitchIntent() {
-        Intent intent = new Intent(this, Options.class);
-        startActivity(intent);
-    }
-
+    
     public static int Check_Credentials_Httpget(String username, String password, String url) throws ClientProtocolException, IOException, HttpHostConnectException {
         HttpClient httpClient = new DefaultHttpClient();
         HttpGet httpGet = new HttpGet(url + "/ws/rest/v1/patientidentifiertype");
