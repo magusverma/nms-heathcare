@@ -52,8 +52,7 @@ public class Get_Patient_information extends ActionBarActivity implements View.O
     public Patient patient = new Patient();
     static couch_api ca; //magus
 
-    @
-    Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.get_layout);
@@ -144,15 +143,15 @@ public class Get_Patient_information extends ActionBarActivity implements View.O
         String result1, result2;@
         Override
         protected String doInBackground(String...params) {
-
+            HTTP_Functions http = new HTTP_Functions();
             try {
 
-                result1 = jsonParse(HTTP_Functions.Httpget(params[0], params[1], url + "/ws/rest/v1/person?q=" + params[3]));
+                result1 = jsonParse(http.Httpget(params[0], params[1], url + "/ws/rest/v1/person?q=" + params[3]));
                 if (result1.equals("zero")) {
                     return "zero";
                 } else {
                     String details[] = result1.split("\\*");
-                    result2 = DetailsjsonParse(HTTP_Functions.Httpget(params[0], params[1], url + "/ws/rest/v1/patient/" + details[2] + "?v=custom:(gender,age,birthdate)"));
+                    result2 = DetailsjsonParse(http.Httpget(params[0], params[1], url + "/ws/rest/v1/patient/" + details[2] + "?v=custom:(gender,age,birthdate)"));
                 }
 
             } catch (ClientProtocolException e) {
@@ -208,8 +207,7 @@ public class Get_Patient_information extends ActionBarActivity implements View.O
         }
     }
 
-    @
-    Override
+    @Override
     public void onClick(View v) {
         //query=q.getText().toString();
         query = patient_name.getText().toString();
