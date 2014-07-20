@@ -116,37 +116,9 @@ public class Sensor_Reading_Automatically extends ActionBarActivity implements V
 
     }
 
-    public void process_sensor_hinting() throws ClientProtocolException, IOException {
-        JSONObject query = null;
-        HTTP_Functions http = new HTTP_Functions();
-        try {
-            query = new JSONObject(http.Httpget(username, password, url + "/ws/rest/v1/sensor/scm"));
-        } catch (JSONException e1) {
-            System.out.println("JSON Exception Caught");
-            e1.printStackTrace();
-        }
-        JSONArray results = null;
-        try {
-            results = query.getJSONArray("results");
-        } catch (JSONException e) {
-            System.out.println("JSON Exception Caught");
-            e.printStackTrace();
-        }
+   
 
-        // Iterates over SCMs JSON Array
-        for (int it = 0; it < results.length(); it++) {
-            JSONObject current_sensor = null;
-            try {
-                current_sensor = (JSONObject)((JSONObject) results.get(it)).get("sensor");
-                scm_name_to_id.put(current_sensor.get("sensor_name").toString(), current_sensor.get("sensor_id").toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        Set < String > hinting_set = scm_name_to_id.keySet();
-        sensor_name_hinting_array = hinting_set.toArray(new String[hinting_set.size()]);
-    }
+       
 
     /*
      * Returns concept name for a concept id by looking it up from a csv
