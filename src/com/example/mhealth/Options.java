@@ -74,10 +74,7 @@ public class Options extends ActionBarActivity implements View.OnClickListener {
         }
     }
 
-    /** Called when the user clicks the Visualize Sensors button */
-    public void viewSensors(View view) {
-        System.out.println("Viewing sensors");
-    }
+    
 
     public void buttonClick1() {
         Intent intent = new Intent(this, Get_Patient_information.class);
