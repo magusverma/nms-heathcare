@@ -21,8 +21,8 @@ public class Options extends ActionBarActivity implements View.OnClickListener {
     String url;
     static couch_api ca;
 
-    @
-    Override
+    
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.option_layout);
