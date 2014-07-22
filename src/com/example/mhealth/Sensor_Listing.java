@@ -15,8 +15,8 @@ import android.widget.Toast;
 
 public class Sensor_Listing extends ListActivity {
 
-    String sensors[];@
-    Override
+    String sensors[];
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final String REGISTER = "Register_Sensor";

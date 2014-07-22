@@ -287,8 +287,8 @@ public class Sensor_reading_manually_on_click extends ActionBarActivity {
                 b2.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
                 b2.setText("Post Readings");
                 LLayout1.addView(b2);
-                b2.setOnClickListener(new View.OnClickListener() {@
-                    Override
+                b2.setOnClickListener(new View.OnClickListener() {
+                	@Override
                     public void onClick(View v) {
                         if (patient.getText().toString().length() < 1) {
                             Toast.makeText(getApplicationContext(), "Enter Complete Details", Toast.LENGTH_LONG).show();

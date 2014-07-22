@@ -92,8 +92,8 @@ public class SyncActivity extends ActionBarActivity {
         new AsyncSensors().execute(username, password, url);
     }
 
-    private class AsyncSensors extends AsyncTask < String, String, String > {@
-            Override
+    private class AsyncSensors extends AsyncTask < String, String, String > {
+    		@Override
             protected String doInBackground(String...arg0) {
                 System.out.println("Doing AsyncSensors");
                 //			Integer synced_count = ca.syncSensors(username, password, url);
@@ -121,8 +121,8 @@ public class SyncActivity extends ActionBarActivity {
         new AsyncpushReadings().execute(username, password, url);
     }
 
-    private class AsyncpushReadings extends AsyncTask < String, String, String > {@
-        Override
+    private class AsyncpushReadings extends AsyncTask < String, String, String > {
+    	@Override
         protected String doInBackground(String...arg0) {
             System.out.println("Doing AsyncpushReadings");
             Integer pushed_count = 0;

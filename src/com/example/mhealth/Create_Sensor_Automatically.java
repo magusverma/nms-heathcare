@@ -209,8 +209,8 @@ public class Create_Sensor_Automatically extends Activity {
 
     private class Sensor_Create_AsynTask extends AsyncTask < String, String, String > {
         String result1;
-        Integer sensor_id;@
-        Override
+        Integer sensor_id;
+        @Override
         protected String doInBackground(String...params) {
             try {
                 JSONObject sensor_create = new JSONObject();
@@ -256,8 +256,8 @@ public class Create_Sensor_Automatically extends Activity {
     }
 
     private class Sensor_Concept_Async_Task extends AsyncTask < String, String, String > {
-        String result1;@
-        Override
+        String result1;
+        @Override
         protected String doInBackground(String...params) {
             try {
                 JSONObject sensor_concept = new JSONObject();

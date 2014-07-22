@@ -140,8 +140,8 @@ public class Get_Patient_information extends ActionBarActivity implements View.O
 
     private class Patient_Get_AsyncTask extends AsyncTask < String, String, String > {
 
-        String result1, result2;@
-        Override
+        String result1, result2;
+        @Override
         protected String doInBackground(String...params) {
             HTTP_Functions http = new HTTP_Functions();
             try {

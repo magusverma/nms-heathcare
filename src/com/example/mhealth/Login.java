@@ -80,8 +80,8 @@ public class Login extends ActionBarActivity implements View.OnClickListener {
 
     private class Check_Credentials_AsyncTask extends AsyncTask < String, String, String > {
 
-        int status_code;@
-        Override
+        int status_code;
+        @Override
         protected String doInBackground(String...params) {
 
             try {

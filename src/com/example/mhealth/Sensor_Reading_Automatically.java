@@ -338,8 +338,8 @@ public class Sensor_Reading_Automatically extends ActionBarActivity implements V
                 b3.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
                 b3.setText("Go to app");
                 LLayout1.addView(b3);
-                b3.setOnClickListener(new View.OnClickListener() {@
-                    Override
+                b3.setOnClickListener(new View.OnClickListener() {
+                	@Override
                     public void onClick(View v) {
                         String pack;
                         Intent i = null;
@@ -367,8 +367,8 @@ public class Sensor_Reading_Automatically extends ActionBarActivity implements V
                 b4.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
                 b4.setText("Get the readings");
                 LLayout1.addView(b4);
-                b4.setOnClickListener(new View.OnClickListener() {@
-                    Override
+                b4.setOnClickListener(new View.OnClickListener() {
+                	@Override
                     public void onClick(View v) {
                         final String READINGS = "Sensor_Readings";
                         SharedPreferences prefs = getApplicationContext().getSharedPreferences(READINGS, MODE_PRIVATE);
@@ -398,8 +398,8 @@ public class Sensor_Reading_Automatically extends ActionBarActivity implements V
                 b2.setText("Post Readings");
                 b2.setOnClickListener(Sensor_Reading_Automatically.this);
                 LLayout1.addView(b2);
-                b2.setOnClickListener(new View.OnClickListener() {@
-                    Override
+                b2.setOnClickListener(new View.OnClickListener() {
+                	@Override
                     public void onClick(View v) {
                         final String READINGS = "Sensor_Readings";
                         SharedPreferences prefs = getApplicationContext().getSharedPreferences(READINGS, MODE_PRIVATE);
@@ -440,8 +440,7 @@ public class Sensor_Reading_Automatically extends ActionBarActivity implements V
         }
     }
 
-    @
-    Override
+    @Override
     public void onClick(View v) {
 
         if (patient.getText().toString().length() < 1) {

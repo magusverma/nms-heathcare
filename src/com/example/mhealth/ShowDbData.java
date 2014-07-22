@@ -50,8 +50,7 @@ public class ShowDbData extends ActionBarActivity {
 		}*/
     }
 
-    @
-    Override
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -59,8 +58,7 @@ public class ShowDbData extends ActionBarActivity {
         return true;
     }
 
-    @
-    Override
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -79,8 +77,7 @@ public class ShowDbData extends ActionBarActivity {
 
         public PlaceholderFragment() {}
 
-        @
-        Override
+        @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_show_db_data,

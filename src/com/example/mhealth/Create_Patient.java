@@ -122,7 +122,6 @@ public class Create_Patient extends ActionBarActivity implements View.OnClickLis
         jObject.put("person", uuid);
 
         String final_string;
-        HTTP_Functions http = new HTTP_Functions();
         final_string = http.Httppost(username, password, url + "/ws/rest/v1/patient", jObject);
         return final_string;
 
@@ -178,8 +177,7 @@ public class Create_Patient extends ActionBarActivity implements View.OnClickLis
         }
     }
 
-    @
-    Override
+    @Override
     public void onClick(View v) {
 
         String name, last, gen, Id, Age;

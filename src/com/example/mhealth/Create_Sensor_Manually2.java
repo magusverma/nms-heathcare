@@ -203,8 +203,7 @@ public class Create_Sensor_Manually2 extends ActionBarActivity implements View.O
         }
     }
 
-    @
-    Override
+    @Override
     public void onClick(View v) {
         int flag = 0;
         for (int i = 0; i < list_of_concepts.size(); i++) {
